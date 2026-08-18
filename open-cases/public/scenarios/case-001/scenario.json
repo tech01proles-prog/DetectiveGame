@@ -1,0 +1,884 @@
+{
+  "$schema": "../scenario-schema.json",
+  "scenario": {
+    "id": "case-001",
+    "title": "Тишина на Мэдисон",
+    "city": "Сиэтл, штат Вашингтон",
+    "year": 2026,
+    "duration": "90–120 минут",
+    "players": "1–6 игроков",
+    "difficulty": "Средняя",
+    "premise": "Вечером в понедельник шестнадцатилетняя Майя Беннетт не вернулась домой после школьного занятия. Телефон выключен, добровольный уход из дома не похож на неё. Через сорок минут после заявления о пропаже следователи получают первое странное сообщение: кто-то видел автомобиль, который несколько раз проезжал возле школы, но никто не запомнил номер целиком.",
+    "opening": "Это не история о гениальном преступнике. Здесь нет тайного общества и случайной мистики. Есть обычный город, десятки людей, которые видели только маленькие фрагменты происходящего, и одна ночь, которую нужно восстановить по минутам."
+  },
+  "mapTemplateId": "seattle_downtown",
+  "characters": [
+    {
+      "id": "maya",
+      "name": "Майя Беннетт",
+      "age": 16,
+      "role": "ученица Lincoln High School",
+      "relation": "Пропавшая",
+      "summary": "Спокойная, внимательная к деталям, занимается фотографией и подрабатывает в фотолаборатории по субботам.",
+      "quote": "«Я буду дома до девяти. Не волнуйся.»",
+      "portrait": "portraits/maya.jpg",
+      "status": "missing"
+    },
+    {
+      "id": "elena",
+      "name": "Елена Беннетт",
+      "age": 42,
+      "role": "мать Майи, бухгалтер",
+      "relation": "Мать пропавшей",
+      "summary": "Звонила дочери в 20:51 и первой заявила о пропаже. Настаивает, что Майя не стала бы исчезать добровольно.",
+      "quote": "«Она может спорить со мной, но никогда не оставляет телефон выключенным.»",
+      "portrait": "portraits/elena.jpg",
+      "locationId": "bennett_home",
+      "status": "witness"
+    },
+    {
+      "id": "daniel",
+      "name": "Дэниел Кроу",
+      "age": 39,
+      "role": "учитель фотографии",
+      "relation": "Преподаватель Майи",
+      "summary": "Последним видел Майю после школьного фотокружка. Утверждает, что она ушла одна.",
+      "quote": "«Она торопилась. Сказала, что ей нужно кое-что забрать.»",
+      "portrait": "portraits/daniel.jpg",
+      "locationId": "lincoln_school",
+      "status": "witness"
+    },
+    {
+      "id": "nora",
+      "name": "Нора Вэйл",
+      "age": 27,
+      "role": "администратор фотолаборатории",
+      "relation": "Работодатель Майи",
+      "summary": "Майя часто оставляла у неё пленку и старые камеры. Нора знала о последнем заказе Майи.",
+      "quote": "«Она спрашивала, можно ли распечатать снимки без записи в журнале.»",
+      "portrait": "portraits/nora.jpg",
+      "locationId": "rainier_lab",
+      "status": "witness"
+    },
+    {
+      "id": "marcus",
+      "name": "Маркус Хилл",
+      "age": 31,
+      "role": "водитель службы доставки",
+      "relation": "Случайный свидетель",
+      "summary": "Вёз заказ по Мэдисон-стрит и заметил девушку возле серого фургона.",
+      "quote": "«Я не уверен, что это была она. Но рюкзак точно был такой же.»",
+      "portrait": "portraits/marcus.jpg",
+      "locationId": "madison_market",
+      "status": "witness"
+    },
+    {
+      "id": "june",
+      "name": "Джун Пак",
+      "age": 17,
+      "role": "одноклассница Майи",
+      "relation": "Подруга",
+      "summary": "Переписывалась с Майей до исчезновения. Сначала скрывает часть переписки, опасаясь наказания родителей.",
+      "quote": "«Она сказала, что нашла доказательство. Я решила, что она драматизирует.»",
+      "portrait": "portraits/june.jpg",
+      "locationId": "lincoln_school",
+      "status": "witness"
+    },
+    {
+      "id": "sam",
+      "name": "Сэмюэл Рид",
+      "age": 45,
+      "role": "владелец автомастерской",
+      "relation": "Знакомый семьи",
+      "summary": "Живёт и работает неподалёку от маршрута Майи. Его камера смотрит на переулок.",
+      "quote": "«Камера старая. Если хотите запись — ищите конкретный промежуток.»",
+      "portrait": "portraits/sam.jpg",
+      "locationId": "reed_garage",
+      "status": "witness"
+    },
+    {
+      "id": "leah",
+      "name": "Лия Моррис",
+      "age": 34,
+      "role": "журналистка местной газеты",
+      "relation": "Источник Майи",
+      "summary": "Получала от Майи фотографии, которые та считала важными. Не сразу говорит, откуда они.",
+      "quote": "«Я обещала не публиковать это, пока не проверю второй источник.»",
+      "portrait": "portraits/leah.jpg",
+      "locationId": "city_news",
+      "status": "suspect"
+    }
+  ],
+  "clues": [
+    {
+      "id": "clue_phone",
+      "title": "Телефон Майи",
+      "type": "предмет",
+      "description": "Телефон найден дома, хотя мать ожидала, что Майя заберёт его с собой.",
+      "detail": "На 20:48 пришло сообщение от неизвестного номера: «Не поезжай одна. Встретимся там, где ты снимала окна». Через три минуты сообщение удалено с устройства, но сохранилось в резервной копии.",
+      "locationId": "bennett_home",
+      "importance": "critical",
+      "relatedCharacters": ["maya", "elena"],
+      "relatedClues": ["clue_photo"],
+      "foundWhen": "Осмотр спальни Майи"
+    },
+    {
+      "id": "clue_photo",
+      "title": "Контактный лист с окнами",
+      "type": "фотография",
+      "description": "Шесть кадров одного здания, снятых с противоположной стороны улицы.",
+      "detail": "На двух кадрах виден служебный вход старого здания на 14th Ave. На третьем — серый фургон без читаемого номера. В углу каждого кадра стоит время съёмки.",
+      "locationId": "bennett_home",
+      "importance": "critical",
+      "relatedCharacters": ["maya", "leah"],
+      "relatedClues": ["clue_van"],
+      "foundWhen": "Папка «MAY_14» на столе"
+    },
+    {
+      "id": "clue_attendance",
+      "title": "Журнал фотокружка",
+      "type": "документ",
+      "description": "Майя отметилась на занятии в 18:02 и ушла позже остальных.",
+      "detail": "Дэниел Кроу записал, что Майя задержалась до 20:14. Но автоматическая карта доступа школы показывает выход в 20:07.",
+      "locationId": "lincoln_school",
+      "importance": "important",
+      "relatedCharacters": ["maya", "daniel"],
+      "relatedClues": ["clue_camera"],
+      "foundWhen": "Административная система школы"
+    },
+    {
+      "id": "clue_june_chat",
+      "title": "Переписка Джун",
+      "type": "сообщения",
+      "description": "Джун показывает последние сообщения с Майей.",
+      "detail": "В 19:52 Майя пишет: «Я поняла, кто подменял номера на коробках». В 20:03: «Если я не отвечу, отправь Лии снимки».",
+      "locationId": "lincoln_school",
+      "importance": "critical",
+      "relatedCharacters": ["maya", "june", "leah"],
+      "relatedClues": ["clue_boxes"],
+      "foundWhen": "Телефон Джун"
+    },
+    {
+      "id": "clue_boxes",
+      "title": "Фотографии коробок",
+      "type": "фотография",
+      "description": "На снимках видны паллеты с одинаковыми белыми коробками.",
+      "detail": "На коробках виден частично заклеенный код «RB-14». Такой же код встречается в журнале поставок одной из компаний на Мэдисон-стрит.",
+      "locationId": "rainier_lab",
+      "importance": "important",
+      "relatedCharacters": ["maya", "nora"],
+      "relatedClues": ["clue_manifest"],
+      "foundWhen": "Компьютер фотолаборатории"
+    },
+    {
+      "id": "clue_manifest",
+      "title": "Накладная RB-14",
+      "type": "документ",
+      "description": "Старая копия накладной на партию оборудования.",
+      "detail": "Груз прибыл на склад временного хранения два дня назад. Получатель указан как «Northline Storage», но подпись в журнале не совпадает с образцом подписи менеджера.",
+      "locationId": "madison_market",
+      "importance": "critical",
+      "relatedCharacters": ["leah", "sam"],
+      "relatedClues": ["clue_camera", "clue_van"],
+      "foundWhen": "Книга поставок"
+    },
+    {
+      "id": "clue_van",
+      "title": "Серый фургон",
+      "type": "наблюдение",
+      "description": "Свидетель видел серый Ford Transit рядом с остановкой.",
+      "detail": "Маркус запомнил наклейку в виде маленького белого треугольника на задней двери. Позже такой же знак виден на фотографии Майи.",
+      "locationId": "madison_market",
+      "importance": "important",
+      "relatedCharacters": ["marcus", "maya"],
+      "relatedClues": ["clue_photo"],
+      "foundWhen": "Разговор с Маркусом"
+    },
+    {
+      "id": "clue_camera",
+      "title": "Запись камеры мастерской",
+      "type": "видео",
+      "description": "Камера Сэма смотрит на переулок за мастерской.",
+      "detail": "В 20:19 в кадре появляется серый фургон. В 20:22 из него выходит человек в тёмной куртке. Лицо не видно. В 20:27 фургон уезжает в сторону I-90.",
+      "locationId": "reed_garage",
+      "importance": "critical",
+      "relatedCharacters": ["sam", "maya"],
+      "relatedClues": ["clue_van", "clue_route"],
+      "foundWhen": "Архив камеры за 20:00–20:40"
+    },
+    {
+      "id": "clue_route",
+      "title": "Маршрут до склада",
+      "type": "карта",
+      "description": "Сопоставление времени камеры и дорожной обстановки.",
+      "detail": "Из переулка фургон физически мог добраться до Northline Storage за 8–11 минут. Другой путь занял бы минимум 20 минут.",
+      "locationId": "reed_garage",
+      "importance": "important",
+      "relatedCharacters": ["sam"],
+      "relatedClues": ["clue_manifest"],
+      "foundWhen": "Сопоставление времени"
+    },
+    {
+      "id": "clue_news",
+      "title": "Конверт Лии",
+      "type": "документ",
+      "description": "В конверте — две фотографии и распечатка реестра.",
+      "detail": "Лия признаётся, что Майя передала ей материалы по подмене серийных номеров на оборудовании. Она не публиковала их, потому что хотела проверить источник.",
+      "locationId": "city_news",
+      "importance": "critical",
+      "relatedCharacters": ["leah", "maya"],
+      "relatedClues": ["clue_manifest"],
+      "foundWhen": "Разговор с Лией"
+    },
+    {
+      "id": "clue_storage",
+      "title": "Запись доступа Northline",
+      "type": "журнал",
+      "description": "Система показывает вход в секцию B в 20:36.",
+      "detail": "Код доступа использован временной картой подрядчика. Карта была оформлена на сотрудника, который в тот день официально не работал.",
+      "locationId": "northline_storage",
+      "importance": "critical",
+      "relatedCharacters": ["leah", "sam"],
+      "relatedClues": ["clue_camera"],
+      "foundWhen": "Запрос в журнал доступа"
+    },
+    {
+      "id": "clue_bag",
+      "title": "Рюкзак Майи",
+      "type": "предмет",
+      "description": "Рюкзак найден в пустом коридоре склада.",
+      "detail": "Внутри нет телефона и камеры. Осталась только записка: «RB-14 — не случайность». Бумага вырвана из блокнота Майи.",
+      "locationId": "northline_storage",
+      "importance": "critical",
+      "relatedCharacters": ["maya"],
+      "relatedClues": ["clue_boxes", "clue_storage"],
+      "foundWhen": "Осмотр секции B"
+    },
+    {
+      "id": "clue_second_car",
+      "title": "Второй автомобиль",
+      "type": "наблюдение",
+      "description": "На дальнем краю парковки виден белый седан.",
+      "detail": "Лия утверждает, что не знает владельца. Однако в её календаре есть встреча с человеком, связанным с Northline, на 21:00.",
+      "locationId": "northline_storage",
+      "importance": "important",
+      "relatedCharacters": ["leah"],
+      "relatedClues": ["clue_news"],
+      "foundWhen": "Камера парковки"
+    },
+    {
+      "id": "clue_truth",
+      "title": "Лист с номерами",
+      "type": "документ",
+      "description": "Таблица серийных номеров оборудования и их замен.",
+      "detail": "Список показывает, что три партии были переоформлены задним числом. Последняя запись сделана в день исчезновения Майи.",
+      "locationId": "northline_storage",
+      "importance": "critical",
+      "relatedCharacters": ["leah", "maya"],
+      "relatedClues": ["clue_manifest", "clue_news"],
+      "foundWhen": "Компьютер менеджера склада"
+    },
+    {
+      "id": "clue_elena_route",
+      "title": "Обычный маршрут Майи",
+      "type": "показание",
+      "description": "Елена восстанавливает привычный путь дочери домой.",
+      "detail": "Майя обычно шла на юг до Madison St, а затем сворачивала к остановке. В понедельник она сказала, что задержится на десять минут из-за одного конверта.",
+      "locationId": "bennett_home",
+      "importance": "context",
+      "relatedCharacters": ["elena", "maya"],
+      "relatedClues": ["clue_phone"],
+      "foundWhen": "Беседа с Еленой"
+    },
+    {
+      "id": "clue_daniel_keycard",
+      "title": "Запись о запасной карте",
+      "type": "документ",
+      "description": "Дэниел признаёт, что у фотокружка есть запасная карта доступа.",
+      "detail": "Карта хранится в кабинете преподавателя. В журнале видно, что после 20:00 ею не пользовались, а значит Дэниел не мог закрыть кабинет после ухода Майи один.",
+      "locationId": "lincoln_school",
+      "importance": "important",
+      "relatedCharacters": ["daniel", "maya"],
+      "relatedClues": ["clue_attendance"],
+      "foundWhen": "Допрос Дэниела"
+    },
+    {
+      "id": "clue_june_deleted",
+      "title": "Удалённое сообщение Джун",
+      "type": "сообщения",
+      "description": "Джун восстанавливает сообщение, которое сначала не хотела показывать.",
+      "detail": "В 20:05 Майя спросила: «Ты видела человека с белым треугольником на машине?» Джун ответила, что нет. Это означает, что фотографию машины Майя сделала незадолго до встречи.",
+      "locationId": "lincoln_school",
+      "importance": "important",
+      "relatedCharacters": ["june", "maya"],
+      "relatedClues": ["clue_van", "clue_june_chat"],
+      "foundWhen": "Повторный разговор с Джун"
+    },
+    {
+      "id": "clue_nora_invoice",
+      "title": "Скрытая квитанция",
+      "type": "документ",
+      "description": "Нора показывает внутреннюю квитанцию фотолаборатории.",
+      "detail": "Один из заказов RB-14 был оплачен наличными через посредника. Нора запомнила только инициалы «L.M.».",
+      "locationId": "rainier_lab",
+      "importance": "important",
+      "relatedCharacters": ["nora", "leah"],
+      "relatedClues": ["clue_boxes", "clue_news"],
+      "foundWhen": "Разговор с Норой"
+    },
+    {
+      "id": "clue_marcus_delivery",
+      "title": "Маршрут Маркуса",
+      "type": "показание",
+      "description": "Маркус восстанавливает точное окно времени своей доставки.",
+      "detail": "Он стоял у Madison Market с 20:14 до 20:23 и видел, как серый фургон припарковался всего на три минуты. Водитель не заходил в магазин.",
+      "locationId": "madison_market",
+      "importance": "context",
+      "relatedCharacters": ["marcus", "maya"],
+      "relatedClues": ["clue_van", "clue_camera"],
+      "foundWhen": "Повторная беседа с Маркусом"
+    },
+    {
+      "id": "clue_sam_sticker",
+      "title": "Белый треугольник",
+      "type": "наблюдение",
+      "description": "Сэм увеличивает кадр камеры возле мастерской.",
+      "detail": "На задней двери фургона виден не просто треугольник, а надломленная белая наклейка. Та же форма присутствует на отражении в одном из кадров Майи.",
+      "locationId": "reed_garage",
+      "importance": "important",
+      "relatedCharacters": ["sam", "maya"],
+      "relatedClues": ["clue_van", "clue_photo"],
+      "foundWhen": "Повторный просмотр камеры"
+    },
+    {
+      "id": "clue_leah_contact",
+      "title": "Черновик письма Лии",
+      "type": "документ",
+      "description": "На ноутбуке Лии сохранился незаконченный черновик.",
+      "detail": "В письме есть фраза: «Если Майя придёт раньше меня, скажите ей не ехать к складу». Дата создания — 20:11. Лия утверждает, что это просто осторожность.",
+      "locationId": "city_news",
+      "importance": "critical",
+      "relatedCharacters": ["leah", "maya"],
+      "relatedClues": ["clue_news", "clue_storage"],
+      "foundWhen": "Повторный разговор с Лией"
+    }
+  ],
+  "locations": [
+    {
+      "id": "bennett_home",
+      "title": "Дом Беннеттов",
+      "subtitle": "Первичная точка расследования",
+      "description": "Небольшой семейный дом на тихой улице. Здесь начинается расследование: мать Майи ждёт в гостиной, а её комната осталась практически нетронутой.",
+      "lat": 47.6114,
+      "lng": -122.3148,
+      "address": "14th Ave, Seattle",
+      "image": "locations/home.jpg",
+      "category": "Жильё",
+      "initial": true,
+      "discovered": true,
+      "clueIds": ["clue_phone", "clue_photo"],
+      "characterIds": ["elena"],
+      "actions": [
+        {
+          "id": "home_room",
+          "label": "Осмотреть комнату Майи",
+          "description": "Проверить рабочий стол, телефон, рюкзак и фотографии.",
+          "clueIds": ["clue_phone", "clue_photo"],
+          "once": true,
+          "event": "home_inspected"
+        },
+        {
+          "id": "home_mother",
+          "label": "Поговорить с Еленой",
+          "description": "Уточнить привычки Майи, маршрут домой и последние сообщения.",
+          "clueIds": [],
+          "characterId": "elena",
+          "once": true,
+          "event": "mother_questioned"
+        }
+      ]
+    },
+    {
+      "id": "lincoln_school",
+      "title": "Lincoln High School",
+      "subtitle": "Последнее подтверждённое место",
+      "description": "После школьного фотокружка Майя должна была вернуться домой. Здесь остались журналы доступа, камера коридора и люди, которые видели её вечером.",
+      "lat": 47.6174,
+      "lng": -122.3054,
+      "address": "2800 17th Ave S, Seattle",
+      "image": "locations/school.jpg",
+      "category": "Образование",
+      "initial": true,
+      "discovered": true,
+      "clueIds": ["clue_attendance", "clue_june_chat"],
+      "characterIds": ["daniel", "june"],
+      "actions": [
+        {
+          "id": "school_records",
+          "label": "Проверить журнал доступа",
+          "description": "Сопоставить отметку кружка с электронной системой школы.",
+          "clueIds": ["clue_attendance"],
+          "once": true,
+          "requiresClueIds": ["clue_photo"],
+          "event": "school_records"
+        },
+        {
+          "id": "school_june",
+          "label": "Поговорить с Джун",
+          "description": "Попросить показать последние сообщения Майи.",
+          "clueIds": ["clue_june_chat"],
+          "characterId": "june",
+          "once": true,
+          "event": "june_questioned"
+        },
+        {
+          "id": "school_daniel",
+          "label": "Допросить Дэниела Кроу",
+          "description": "Уточнить, когда именно Майя ушла и что забирала.",
+          "clueIds": [],
+          "characterId": "daniel",
+          "once": true,
+          "event": "daniel_questioned"
+        }
+      ]
+    },
+    {
+      "id": "rainier_lab",
+      "title": "Rainier Photo Lab",
+      "subtitle": "Работа Майи по выходным",
+      "description": "Фотолаборатория хранит архивы заказов и старые негативы. Нора знает, что Майя несколько дней подряд печатала одну и ту же серию.",
+      "lat": 47.6095,
+      "lng": -122.3158,
+      "address": "S Jackson St, Seattle",
+      "image": "locations/lab.jpg",
+      "category": "Бизнес",
+      "initial": false,
+      "discovered": false,
+      "lockedReason": "Нужна зацепка о фотографиях Майи.",
+      "clueIds": ["clue_boxes"],
+      "characterIds": ["nora"],
+      "actions": [
+        {
+          "id": "lab_archive",
+          "label": "Проверить архив заказов",
+          "description": "Найти последние задания Майи и номера заказов.",
+          "clueIds": ["clue_boxes"],
+          "once": true,
+          "requiresClueIds": ["clue_photo"],
+          "event": "lab_archive"
+        },
+        {
+          "id": "lab_nora",
+          "label": "Поговорить с Норой",
+          "description": "Уточнить, что Майя печатала и кому показывала фотографии.",
+          "clueIds": [],
+          "characterId": "nora",
+          "once": true,
+          "requiresClueIds": ["clue_photo"],
+          "event": "nora_questioned"
+        }
+      ]
+    },
+    {
+      "id": "madison_market",
+      "title": "Madison Market",
+      "subtitle": "Свидетель видел серый фургон",
+      "description": "Небольшой магазин и парковка на оживлённой улице. Здесь в 20:15–20:30 находился водитель доставки Маркус Хилл.",
+      "lat": 47.6108,
+      "lng": -122.3093,
+      "address": "Madison St, Seattle",
+      "image": "locations/market.jpg",
+      "category": "Торговля",
+      "initial": false,
+      "discovered": false,
+      "lockedReason": "Нужно установить связь Майи с серым фургоном.",
+      "clueIds": ["clue_manifest", "clue_van"],
+      "characterIds": ["marcus"],
+      "actions": [
+        {
+          "id": "market_marcus",
+          "label": "Поговорить с Маркусом",
+          "description": "Попросить восстановить маршрут доставки и описать автомобиль.",
+          "clueIds": ["clue_van"],
+          "characterId": "marcus",
+          "once": true,
+          "requiresClueIds": ["clue_photo"],
+          "event": "marcus_questioned"
+        },
+        {
+          "id": "market_books",
+          "label": "Проверить книгу поставок",
+          "description": "Сопоставить код RB-14 с поставками рядом со складом.",
+          "clueIds": ["clue_manifest"],
+          "once": true,
+          "requiresClueIds": ["clue_van"],
+          "event": "manifest_found"
+        }
+      ]
+    },
+    {
+      "id": "reed_garage",
+      "title": "Reed Auto",
+      "subtitle": "Камера, которая видела фургон",
+      "description": "Автомастерская Сэма выходит задним двором прямо на переулок. Архив камер хранится локально и удаляется каждые семь дней.",
+      "lat": 47.6078,
+      "lng": -122.3086,
+      "address": "Rainier Ave S, Seattle",
+      "image": "locations/garage.jpg",
+      "category": "Сервис",
+      "initial": false,
+      "discovered": false,
+      "lockedReason": "Нужен номер/описание автомобиля.",
+      "clueIds": ["clue_camera", "clue_route"],
+      "characterIds": ["sam"],
+      "actions": [
+        {
+          "id": "garage_camera",
+          "label": "Просмотреть запись камеры",
+          "description": "Посмотреть интервал 20:00–20:40.",
+          "clueIds": ["clue_camera"],
+          "once": true,
+          "requiresClueIds": ["clue_van"],
+          "event": "camera_reviewed"
+        },
+        {
+          "id": "garage_route",
+          "label": "Восстановить маршрут",
+          "description": "Сопоставить время и направление движения фургона.",
+          "clueIds": ["clue_route"],
+          "once": true,
+          "requiresClueIds": ["clue_camera"],
+          "event": "route_reconstructed"
+        }
+      ]
+    },
+    {
+      "id": "city_news",
+      "title": "Seattle Ledger",
+      "subtitle": "Журналистский источник Майи",
+      "description": "Редакция небольшой местной газеты. Лия Моррис получила от Майи фотографии и обещала не публиковать их до проверки.",
+      "lat": 47.6069,
+      "lng": -122.3331,
+      "address": "Downtown Seattle",
+      "image": "locations/news.jpg",
+      "category": "Медиа",
+      "initial": false,
+      "discovered": false,
+      "lockedReason": "Нужно узнать, кому Майя собиралась отправить фотографии.",
+      "clueIds": ["clue_news"],
+      "characterIds": ["leah"],
+      "actions": [
+        {
+          "id": "news_leah",
+          "label": "Поговорить с Лией",
+          "description": "Предъявить ей фотографию и спросить о материалах Майи.",
+          "clueIds": ["clue_news"],
+          "characterId": "leah",
+          "once": true,
+          "requiresClueIds": ["clue_june_chat"],
+          "event": "leah_questioned"
+        }
+      ]
+    },
+    {
+      "id": "northline_storage",
+      "title": "Northline Storage",
+      "subtitle": "Последняя известная точка",
+      "description": "Склад временного хранения на промышленной окраине. Доступ контролируется электронными картами, но система ведёт журналы даже при отключённой камере.",
+      "lat": 47.5958,
+      "lng": -122.3174,
+      "address": "SODO, Seattle",
+      "image": "locations/storage.jpg",
+      "category": "Склад",
+      "initial": false,
+      "discovered": false,
+      "lockedReason": "Нужен код RB-14 и связь со складом.",
+      "clueIds": ["clue_storage", "clue_bag", "clue_second_car", "clue_truth"],
+      "characterIds": [],
+      "actions": [
+        {
+          "id": "storage_access",
+          "label": "Проверить журнал доступа",
+          "description": "Найти вход в секцию B около 20:36.",
+          "clueIds": ["clue_storage"],
+          "once": true,
+          "requiresClueIds": ["clue_manifest"],
+          "event": "storage_log"
+        },
+        {
+          "id": "storage_section",
+          "label": "Осмотреть секцию B",
+          "description": "Проверить коридор, парковку и оставленные предметы.",
+          "clueIds": ["clue_bag", "clue_second_car"],
+          "once": true,
+          "requiresClueIds": ["clue_storage"],
+          "event": "storage_search"
+        },
+        {
+          "id": "storage_records",
+          "label": "Изучить таблицу серийных номеров",
+          "description": "Проверить компьютер менеджера склада.",
+          "clueIds": ["clue_truth"],
+          "once": true,
+          "requiresClueIds": ["clue_news", "clue_storage"],
+          "event": "truth_found"
+        }
+      ]
+    }
+  ],
+  "timeline": [
+    {
+      "id": "t1",
+      "time": "18:02",
+      "title": "Майя отмечается в фотокружке",
+      "text": "Электронный журнал фиксирует вход Майи в Lincoln High School.",
+      "source": "Журнал доступа"
+    },
+    {
+      "id": "t2",
+      "time": "19:52",
+      "title": "Сообщение Джун",
+      "text": "Майя пишет, что обнаружила подмену номеров на коробках.",
+      "source": "Телефон Джун"
+    },
+    {
+      "id": "t3",
+      "time": "20:07",
+      "title": "Выход из школы",
+      "text": "Карта доступа фиксирует выход Майи. Учитель помнит время иначе.",
+      "source": "Система школы"
+    },
+    {
+      "id": "t4",
+      "time": "20:19",
+      "title": "Фургон появляется у мастерской",
+      "text": "Серый фургон входит в переулок и останавливается.",
+      "source": "Камера Reed Auto"
+    },
+    {
+      "id": "t5",
+      "time": "20:22",
+      "title": "Человек выходит из фургона",
+      "text": "Лицо не видно. В руках небольшой чёрный предмет.",
+      "source": "Камера Reed Auto"
+    },
+    {
+      "id": "t6",
+      "time": "20:27",
+      "title": "Фургон уезжает",
+      "text": "Автомобиль направляется к SODO.",
+      "source": "Камера Reed Auto"
+    },
+    {
+      "id": "t7",
+      "time": "20:36",
+      "title": "Использована временная карта",
+      "text": "Карта подрядчика открывает секцию B Northline Storage.",
+      "source": "Журнал склада"
+    },
+    {
+      "id": "t8",
+      "time": "20:51",
+      "title": "Елена звонит Майе",
+      "text": "Звонок не принят. Через несколько минут телефон уже находится дома.",
+      "source": "Телефон Елены"
+    }
+  ],
+  "dialogueNodes": {
+    "home_mother_1": {
+      "id": "home_mother_1",
+      "characterId": "elena",
+      "title": "Разговор с Еленой",
+      "eyebrow": "ПЕРВИЧНОЕ ПОКАЗАНИЕ",
+      "intro": "Елена отвечает быстро, но каждое предложение будто заранее выучено. Она всё время поглядывает на телефон Майи.",
+      "lines": [
+        "«Она никогда не уходила так. Даже когда злилась, она писала мне».",
+        "«В понедельник она сказала, что задержится после кружка. Потом позвонила Лия — или Майя собиралась ей позвонить. Я не уверена»."
+      ],
+      "choices": [
+        {
+          "id": "route",
+          "label": "Расспросить о маршруте домой",
+          "text": "Елена описывает привычный путь Майи и упоминает конверт.",
+          "clueIds": ["clue_elena_route"]
+        },
+        {
+          "id": "phone",
+          "label": "Спросить о телефоне",
+          "text": "Елена вспоминает, что телефон оставался дома уже в 20:51.",
+          "clueIds": ["clue_phone"]
+        }
+      ]
+    },
+    "school_daniel_1": {
+      "id": "school_daniel_1",
+      "characterId": "daniel",
+      "title": "Допрос Дэниела Кроу",
+      "eyebrow": "СВИДЕТЕЛЬ",
+      "intro": "Дэниел держится спокойно. Он отвечает охотно, пока разговор не касается времени ухода Майи.",
+      "lines": [
+        "«Она хотела забрать снимки. Я сказал ей, что кабинет закрывается».",
+        "«Да, я помню 20:14. Примерно. Не ждите от меня секунмомера»."
+      ],
+      "choices": [
+        {
+          "id": "records",
+          "label": "Показать журнал доступа",
+          "text": "Когда вы показываете ему 20:07, Дэниел замолкает и вспоминает запасную карту.",
+          "clueIds": ["clue_daniel_keycard"]
+        },
+        {
+          "id": "leave",
+          "label": "Не давить на время",
+          "text": "Дэниел повторяет, что Майя ушла одна и выглядела встревоженной."
+        }
+      ]
+    },
+    "school_june_1": {
+      "id": "school_june_1",
+      "characterId": "june",
+      "title": "Разговор с Джун",
+      "eyebrow": "ОДНОКЛАССНИЦА",
+      "intro": "Джун нервничает и несколько раз спрашивает, точно ли разговор не попадёт к её родителям.",
+      "lines": [
+        "«Она сказала, что заметила заменённые номера. Я подумала, что это просто школьная фотография».",
+        "«Потом она спросила про машину с белым треугольником. Я ничего не видела»."
+      ],
+      "choices": [
+        {
+          "id": "deleted",
+          "label": "Спросить о скрытом сообщении",
+          "text": "Джун всё-таки показывает сообщение, которое сначала удалила.",
+          "clueIds": ["clue_june_deleted"]
+        },
+        {
+          "id": "liapath",
+          "label": "Почему Майя доверяла Лии?",
+          "text": "Джун объясняет, что Лия уже помогала Майе проверять один старый снимок.",
+          "clueIds": ["clue_june_chat"]
+        }
+      ]
+    },
+    "lab_nora_1": {
+      "id": "lab_nora_1",
+      "characterId": "nora",
+      "title": "Разговор с Норой",
+      "eyebrow": "ФОТОЛАБОРАТОРИЯ",
+      "intro": "Нора начинает разговор с защиты: она не хочет выглядеть человеком, который вмешивается в чужие дела.",
+      "lines": [
+        "«Майя была очень аккуратной. Если она печатала что-то без записи, значит, боялась, что кто-то увидит заказ».",
+        "«Я видела фамилию в оплате, но не уверена, что помню её правильно»."
+      ],
+      "choices": [
+        {
+          "id": "receipt",
+          "label": "Попросить показать внутренние записи",
+          "text": "Нора достаёт квитанцию с инициалами L.M.",
+          "clueIds": ["clue_nora_invoice"]
+        },
+        {
+          "id": "boxes",
+          "label": "Спросить про RB-14",
+          "text": "Нора подтверждает, что код встречался в заказах чаще обычного.",
+          "clueIds": ["clue_boxes"]
+        }
+      ]
+    },
+    "market_marcus_1": {
+      "id": "market_marcus_1",
+      "characterId": "marcus",
+      "title": "Маршрут Маркуса",
+      "eyebrow": "СЛУЧАЙНЫЙ СВИДЕТЕЛЬ",
+      "intro": "Маркус говорит без драматизации: для него это был обычный рабочий вечер, пока он не увидел знакомый рюкзак.",
+      "lines": [
+        "«Я просто ждал, пока выгрузят коробки. Фургон постоял совсем немного».",
+        "«Девушка не заходила в магазин. Она стояла в стороне, будто кого-то ждала»."
+      ],
+      "choices": [
+        {
+          "id": "timing",
+          "label": "Восстановить время по доставке",
+          "text": "Маркус сверяется с приложением курьера и даёт точный интервал.",
+          "clueIds": ["clue_marcus_delivery"]
+        },
+        {
+          "id": "van",
+          "label": "Спросить о машине",
+          "text": "Он подтверждает серый Ford Transit и белую наклейку.",
+          "clueIds": ["clue_van"]
+        }
+      ]
+    },
+    "garage_sam_1": {
+      "id": "garage_sam_1",
+      "characterId": "sam",
+      "title": "Просмотр камеры с Сэмом",
+      "eyebrow": "КАМЕРА",
+      "intro": "Сэм не любит делать выводы по мутной записи. Он предлагает увеличить отдельные кадры.",
+      "lines": [
+        "«Вот здесь. Смотрите не на человека, а на дверь фургона».",
+        "«Наклейку я видел раньше. Не знаю где, но она точно не заводская»."
+      ],
+      "choices": [
+        {
+          "id": "sticker",
+          "label": "Увеличить заднюю дверь",
+          "text": "После увеличения становится виден надлом на белой наклейке.",
+          "clueIds": ["clue_sam_sticker"]
+        },
+        {
+          "id": "route",
+          "label": "Сверить направление движения",
+          "text": "Сэм подтверждает направление к SODO и время около 20:27.",
+          "clueIds": ["clue_route"]
+        }
+      ]
+    },
+    "news_leah_1": {
+      "id": "news_leah_1",
+      "characterId": "leah",
+      "title": "Разговор с Лией",
+      "eyebrow": "ПОДОЗРЕВАЕМАЯ",
+      "intro": "Лия сразу замечает фотографию RB-14. Вместо удивления у неё на секунду появляется раздражение.",
+      "lines": [
+        "«Майя принесла мне материал, который нельзя публиковать без проверки».",
+        "«Да, я советовала ей никуда не ехать. Но это не значит, что я знала, где она окажется»."
+      ],
+      "choices": [
+        {
+          "id": "draft",
+          "label": "Попросить открыть черновик письма",
+          "text": "Лия нехотя открывает ноутбук. В черновике есть упоминание склада.",
+          "clueIds": ["clue_leah_contact"]
+        },
+        {
+          "id": "source",
+          "label": "Спросить о втором источнике",
+          "text": "Лия говорит, что проверяла документы Northline, но отказывается называть контакт."
+        }
+      ]
+    }
+  },
+  "solution": {
+    "culpritCharacterId": "leah",
+    "motiveKeywords": ["exposure", "подмена", "серийные номера"],
+    "methodKeywords": ["lured", "заманила", "сообщение"],
+    "keyLocationId": "northline_storage",
+    "minimumCluesRequired": 10
+  },
+  "keywordDefinitions": {
+    "противоречие": {
+      "description": "Игрок заметил противоречие в показаниях",
+      "triggersEvent": "contradiction_noticed",
+      "unlocksDialogue": ["elena_contradiction", "daniel_contradiction"]
+    },
+    "связь": {
+      "description": "Игрок установил связь между уликами",
+      "triggersEvent": "connection_made"
+    },
+    "склад": {
+      "description": "Игрок подозревает склад",
+      "unlocksLocations": ["northline_storage"]
+    }
+  }
+}
