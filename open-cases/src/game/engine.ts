@@ -37,7 +37,7 @@ export function createInitialState(scenario: ScenarioData): GameState {
     notes: '',
     selectedTab: 'case',
     selectedLocationId: initialLocations[0] || null,
-    mapMode: 'satellite',
+    mapMode: 'scheme',
     scenarioId: scenario.scenario.id,
     dialogueFlags: [],
     triggeredEvents: [],
