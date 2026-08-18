@@ -1,4 +1,4 @@
-export type Screen = 'title' | 'intro' | 'game' | 'ending';
+export type Screen = 'title' | 'selector' | 'intro' | 'game' | 'ending';
 export type MapMode = 'satellite' | 'scheme';
 export type Tab = 'case' | 'people' | 'clues' | 'notes' | 'timeline';
 export type Importance = 'critical' | 'important' | 'context';
@@ -9,4 +9,24 @@ export interface Location { id:string; title:string; subtitle:string; descriptio
 export interface TimelineEvent { id:string; time:string; title:string; text:string; source:string; }
 export interface DialogueChoice { id:string; label:string; text?:string; clueIds?:string[]; nextId?:string; note?:string; }
 export interface DialogueNode { id:string; characterId:string; title:string; eyebrow:string; intro:string; lines:string[]; choices:DialogueChoice[]; }
-export interface GameState { started:boolean; introRead:boolean; finished:boolean; won:boolean; discoveredLocationIds:string[]; foundClueIds:string[]; questionedCharacterIds:string[]; completedActionIds:string[]; timelineEventIds:string[]; notes:string; selectedTab:Tab; selectedLocationId:string|null; mapMode:MapMode; finalAnswers?:{person:string;motive:string;method:string;location:string}; score?:number; dialogueFlags?:string[]; }
+export interface GameState { 
+  started:boolean; 
+  introRead:boolean; 
+  finished:boolean; 
+  won:boolean; 
+  discoveredLocationIds:string[]; 
+  foundClueIds:string[]; 
+  questionedCharacterIds:string[]; 
+  completedActionIds:string[]; 
+  timelineEventIds:string[]; 
+  notes:string; 
+  selectedTab:Tab; 
+  selectedLocationId:string|null; 
+  mapMode:MapMode; 
+  scenarioId?: string;
+  finalAnswers?:{person:string;motive:string;method:string;location:string}; 
+  score?:number; 
+  dialogueFlags?:string[];
+  triggeredEvents?: string[];
+  unlockedKeywords?: string[];
+}

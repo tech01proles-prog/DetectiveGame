@@ -47,7 +47,7 @@ export function validateScenario(data: any): { valid: boolean; errors: string[] 
     const clueIds = new Set<string>();
     for (const c of data.clues) {
       if (!c.id) errors.push('Clue missing "id"');
-      if (charIds.has(c.id)) errors.push(`Duplicate clue ID: ${c.id}`);
+      if (clueIds.has(c.id)) errors.push(`Duplicate clue ID: ${c.id}`);
       clueIds.add(c.id);
     }
   }
