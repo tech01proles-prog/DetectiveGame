@@ -77,7 +77,7 @@ export default function MapView({locations,discovered,selectedId,mode,onSelect,m
   }
   
   // Render real Leaflet map when mode is 'satellite'
-  useEffect(()=>
+  useEffect(()=>{
     if(!ref.current||!window.L)return;
     const L=window.L;
     const map=L.map(ref.current,{zoomControl:false,attributionControl:true,maxBounds:MAP_BOUNDS,maxBoundsViscosity:1,minZoom:MIN_ZOOM,maxZoom:MAX_ZOOM,zoomSnap:.5,zoomDelta:.5,keyboard:true}).fitBounds(MAP_BOUNDS,{padding:[8,8],animate:false});
@@ -85,15 +85,15 @@ export default function MapView({locations,discovered,selectedId,mode,onSelect,m
     map.setView([47.6088,-122.313],14.2);
     mapRef.current=map;
     return()=>{map.remove();mapRef.current=null}
-  ,[]);
-  useEffect(()=>
+  },[]);
+  useEffect(()=>{
     const map=mapRef.current;if(!map||!window.L)return;const L=window.L;
     map.eachLayer((layer:any)=>{if(layer._url)map.removeLayer(layer)});
     const url=mode==='satellite'?'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}':'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
     L.tileLayer(url,{minZoom:MIN_ZOOM,maxZoom:MAX_ZOOM,attribution:mode==='satellite'?'Tiles © Esri':'© OpenStreetMap contributors',noWrap:true}).addTo(map);
     map.setMaxBounds(MAP_BOUNDS);
-  ,[mode]);
-  useEffect(()=>
+  },[mode]);
+  useEffect(()=>{
     const map=mapRef.current;if(!map||!window.L)return;const L=window.L;
     layers.current.forEach(l=>l.remove());layers.current=[];
     locations.forEach(loc=>{
@@ -107,6 +107,6 @@ export default function MapView({locations,discovered,selectedId,mode,onSelect,m
       layers.current.push(marker);
     });
     if(selectedId){const selected=locations.find(x=>x.id===selectedId);if(selected)map.panInside([selected.lat,selected.lng],{paddingTopLeft:[40,40],paddingBottomRight:[80,40],animate:true});}
-  ,[locations,discovered,selectedId,onSelect]);
+  },[locations,discovered,selectedId,onSelect]);
   return <div ref={ref} className="absolute inset-0"/>;
 }

@@ -1,53 +1,51 @@
 ```gitignore
-# Dependencies
-node_modules/
-
-# Build outputs
+# Compiled and build artifacts
+*.pyc
+__pycache__/
+*.o
+*.obj
 dist/
 build/
-target/
+*.class
+*.so
+*.dll
+*.exe
+*.a
+*.out
 
-# Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-env/
-venv/
+# Dependencies
 .venv/
-.ENV
-.ENV.*
-.venv.bak/
-pip-log.txt
-pip-selfcheck.json
-.pytest_cache/
+venv/
+node_modules/
+target/
+.gradle/
 .mypy_cache/
-.coverage
-coverage/
+.pytest_cache/
+julia-*/
+zig*/
 
-# Logs
+# Logs and temp files
 *.log
+*.tmp
+*.swp
+*.swo
+coverage/
+htmlcov/
+.coverage
 
-# Environment variables
+# Environment
 .env
 .env.local
-.env.*
+*.env.*
 
-# IDE files
+# Editors
 .vscode/
 .idea/
 *.swp
 *.swo
-*.tmp
 
-# OS generated files
+# System
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
 
 # Compressed files
@@ -73,36 +71,4 @@ Thumbs.db
 *.tar.bz2
 *.tar.xz
 *.tar.zst
-
-# Coverage reports
-coverage/
-htmlcov/
-
-# Distribution / packaging
-*.egg-info/
-.installed.cfg
-*.egg
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# Rust/Cargo (if applicable)
-Cargo.lock
-/target/
-
-# Go (if applicable)
-*.out
-
-# Java/Maven/Gradle (if applicable)
-.gradle/
-*.class
-*.jar
-*.war
-*.ear
-```
-
-Wait, let me reconsider the input. The changes only include TypeScript/JavaScript source files (.tsx, .json) and no build artifacts, dependencies, or temporary files. According to rule #6, I should output nothing.
-
-```gitignore
-
 ```
