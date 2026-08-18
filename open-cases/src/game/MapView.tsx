@@ -1,0 +1,44 @@
+import {useEffect,useRef} from 'react';
+import type {Location,MapMode} from './types';
+
+declare global{interface Window{L:any}}
+
+const MAP_BOUNDS:[[number,number],[number,number]]=[[47.589,-122.340],[47.623,-122.296]];
+const MIN_ZOOM=13;
+const MAX_ZOOM=16;
+
+export default function MapView({locations,discovered,selectedId,mode,onSelect}:{locations:Location[];discovered:string[];selectedId:string|null;mode:MapMode;onSelect:(id:string)=>void}){
+  const ref=useRef<HTMLDivElement>(null), mapRef=useRef<any>(null), layers=useRef<any[]>([]);
+  useEffect(()=>{
+    if(!ref.current||!window.L)return;
+    const L=window.L;
+    const map=L.map(ref.current,{zoomControl:false,attributionControl:true,maxBounds:MAP_BOUNDS,maxBoundsViscosity:1,minZoom:MIN_ZOOM,maxZoom:MAX_ZOOM,zoomSnap:.5,zoomDelta:.5,keyboard:true}).fitBounds(MAP_BOUNDS,{padding:[8,8],animate:false});
+    L.control.zoom({position:'bottomright'}).addTo(map);
+    map.setView([47.6088,-122.313],14.2);
+    mapRef.current=map;
+    return()=>{map.remove();mapRef.current=null}
+  },[]);
+  useEffect(()=>{
+    const map=mapRef.current;if(!map||!window.L)return;const L=window.L;
+    map.eachLayer((layer:any)=>{if(layer._url)map.removeLayer(layer)});
+    const url=mode==='satellite'?'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}':'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    L.tileLayer(url,{minZoom:MIN_ZOOM,maxZoom:MAX_ZOOM,attribution:mode==='satellite'?'Tiles © Esri':'© OpenStreetMap contributors',noWrap:true}).addTo(map);
+    map.setMaxBounds(MAP_BOUNDS);
+  },[mode]);
+  useEffect(()=>{
+    const map=mapRef.current;if(!map||!window.L)return;const L=window.L;
+    layers.current.forEach(l=>l.remove());layers.current=[];
+    locations.forEach(loc=>{
+      const open=discovered.includes(loc.id),selected=selectedId===loc.id;
+      const markerColor=selected?'#e7c776':open?'#edf0ed':'#707675';
+      const html=`<button aria-label="${loc.title}" class="leaflet-case-marker ${selected?'selected':''} ${open?'open':'locked'}" style="--marker:${markerColor}"><span class="marker-core">${open?'':'×'}</span><span class="marker-ring"></span></button>`;
+      const icon=L.divIcon({className:'case-marker-wrap',html,iconSize:[42,42],iconAnchor:[21,21]});
+      const marker=L.marker([loc.lat,loc.lng],{icon,opacity:open||selected?1:.48,keyboard:true,zIndexOffset:selected?500:open?100:0}).addTo(map);
+      marker.on('click',()=>onSelect(loc.id));
+      marker.bindTooltip(`<b>${loc.title}</b><br><span>${open?'Открыта для исследования':'Пока неизвестна'}</span>`,{direction:'top',offset:[0,-16],opacity:.96,sticky:true});
+      layers.current.push(marker);
+    });
+    if(selectedId){const selected=locations.find(x=>x.id===selectedId);if(selected)map.panInside([selected.lat,selected.lng],{paddingTopLeft:[40,40],paddingBottomRight:[80,40],animate:true});}
+  },[locations,discovered,selectedId,onSelect]);
+  return <div ref={ref} className="absolute inset-0"/>;
+}
