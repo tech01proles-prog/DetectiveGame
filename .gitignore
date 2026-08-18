@@ -1,8 +1,8 @@
-```
+```gitignore
 # Dependencies
 node_modules/
 
-# Build artifacts
+# Build outputs
 dist/
 build/
 target/
@@ -17,30 +17,40 @@ env/
 venv/
 .venv/
 .ENV
-.env
-.env.local
-.env.
-.python-version
+.ENV.*
+.venv.bak/
+pip-log.txt
+pip-selfcheck.json
 .pytest_cache/
 .mypy_cache/
 .coverage
-htmlcov/
+coverage/
 
 # Logs
 *.log
 
-# IDE
+# Environment variables
+.env
+.env.local
+.env.*
+
+# IDE files
 .vscode/
 .idea/
 *.swp
 *.swo
 *.tmp
 
-# OS
+# OS generated files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
 
-# Compressed
+# Compressed files
 *.zip
 *.gz
 *.tar
@@ -59,4 +69,40 @@ Thumbs.db
 *.Z
 *.lz
 *.lzo
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.tar.zst
+
+# Coverage reports
+coverage/
+htmlcov/
+
+# Distribution / packaging
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Rust/Cargo (if applicable)
+Cargo.lock
+/target/
+
+# Go (if applicable)
+*.out
+
+# Java/Maven/Gradle (if applicable)
+.gradle/
+*.class
+*.jar
+*.war
+*.ear
+```
+
+Wait, let me reconsider the input. The changes only include TypeScript/JavaScript source files (.tsx, .json) and no build artifacts, dependencies, or temporary files. According to rule #6, I should output nothing.
+
+```gitignore
+
 ```

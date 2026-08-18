@@ -2,6 +2,16 @@ export type Screen = 'title' | 'selector' | 'intro' | 'game' | 'ending';
 export type MapMode = 'satellite' | 'scheme';
 export type Tab = 'case' | 'people' | 'clues' | 'notes' | 'timeline';
 export type Importance = 'critical' | 'important' | 'context';
+
+// Map location for stylized map
+export interface MapLocation {
+  id: string;
+  name: string;
+  x: number; // X coordinate on stylized map (0-800)
+  y: number; // Y coordinate on stylized map (0-400)
+  icon?: string;
+}
+
 export interface Character { id:string; name:string; age:number; role:string; relation:string; summary:string; quote:string; portrait:string; locationId?:string; status:'missing'|'witness'|'suspect'|'cleared'; }
 export interface Clue { id:string; title:string; type:string; description:string; detail:string; locationId:string; importance:Importance; relatedCharacters:string[]; relatedClues:string[]; foundWhen:string; }
 export interface LocationAction { id:string; label:string; description:string; clueIds:string[]; characterId?:string; requiresClueIds?:string[]; once?:boolean; event?:string; }

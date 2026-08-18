@@ -5,6 +5,8 @@
  * Each template defines bounds, zoom levels, and center points.
  */
 
+export type GameMapTemplate = 'small_town' | 'city_district' | 'industrial_zone' | 'countryside';
+
 export interface MapTemplate {
   /** Template ID (e.g., "seattle_downtown", "small_town", "industrial_zone", "suburban") */
   id: string;
@@ -22,6 +24,8 @@ export interface MapTemplate {
   center: [number, number];
   /** Default zoom level */
   defaultZoom: number;
+  /** Stylized map template type */
+  stylizedType?: GameMapTemplate;
 }
 
 export const mapTemplates: MapTemplate[] = [
@@ -34,6 +38,7 @@ export const mapTemplates: MapTemplate[] = [
     bounds: [[47.589, -122.340], [47.623, -122.296]],
     center: [47.6088, -122.313],
     defaultZoom: 14.2,
+    stylizedType: 'city_district',
   },
   {
     id: 'small_town',
@@ -44,6 +49,7 @@ export const mapTemplates: MapTemplate[] = [
     bounds: [[45.500, -122.700], [45.550, -122.600]],
     center: [45.525, -122.650],
     defaultZoom: 13.5,
+    stylizedType: 'small_town',
   },
   {
     id: 'industrial_zone',
@@ -54,16 +60,18 @@ export const mapTemplates: MapTemplate[] = [
     bounds: [[47.570, -122.350], [47.600, -122.300]],
     center: [47.585, -122.325],
     defaultZoom: 14.5,
+    stylizedType: 'industrial_zone',
   },
   {
-    id: 'suburban',
-    name: 'Пригород',
-    description: 'Карта пригородного района с частными домами и торговыми центрами.',
-    minZoom: 12,
-    maxZoom: 16,
-    bounds: [[47.650, -122.400], [47.700, -122.320]],
-    center: [47.675, -122.360],
-    defaultZoom: 13.8,
+    id: 'countryside',
+    name: 'Загородная местность',
+    description: 'Карта сельской местности с полями, лесами и разбросанными поселениями.',
+    minZoom: 11,
+    maxZoom: 15,
+    bounds: [[45.400, -122.800], [45.600, -122.500]],
+    center: [45.500, -122.650],
+    defaultZoom: 12.5,
+    stylizedType: 'countryside',
   },
 ];
 
@@ -73,4 +81,9 @@ export function getMapTemplate(templateId: string): MapTemplate | undefined {
 
 export function getMapTemplateIds(): string[] {
   return mapTemplates.map(t => t.id);
+}
+
+export function getStylizedTemplate(templateId: string): GameMapTemplate {
+  const template = getMapTemplate(templateId);
+  return template?.stylizedType || 'small_town';
 }
