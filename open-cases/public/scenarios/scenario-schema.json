@@ -1,0 +1,176 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "OPEN CASES Scenario Schema",
+  "description": "JSON Schema for validating detective scenario files in OPEN CASES game",
+  "type": "object",
+  "required": ["scenario", "characters", "clues", "locations", "timeline", "dialogueNodes", "mapTemplateId", "solution"],
+  "properties": {
+    "scenario": {
+      "type": "object",
+      "required": ["id", "title", "city", "year", "duration", "players", "difficulty", "premise", "opening"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^case-[0-9]+$"},
+        "title": {"type": "string"},
+        "city": {"type": "string"},
+        "year": {"type": "integer"},
+        "duration": {"type": "string"},
+        "players": {"type": "string"},
+        "difficulty": {"type": "string", "enum": ["Лёгкая", "Средняя", "Сложная"]},
+        "premise": {"type": "string"},
+        "opening": {"type": "string"}
+      }
+    },
+    "mapTemplateId": {
+      "type": "string",
+      "enum": ["seattle_downtown", "small_town", "industrial_zone", "suburban"]
+    },
+    "characters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "age", "role", "relation", "summary", "quote", "portrait", "status"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z_]+$"},
+          "name": {"type": "string"},
+          "age": {"type": "integer", "minimum": 1, "maximum": 120},
+          "role": {"type": "string"},
+          "relation": {"type": "string"},
+          "summary": {"type": "string"},
+          "quote": {"type": "string"},
+          "portrait": {"type": "string"},
+          "locationId": {"type": "string"},
+          "status": {"type": "string", "enum": ["missing", "witness", "suspect", "cleared"]}
+        }
+      }
+    },
+    "clues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "type", "description", "detail", "locationId", "importance", "relatedCharacters", "relatedClues", "foundWhen"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^clue_[a-z_]+$"},
+          "title": {"type": "string"},
+          "type": {"type": "string"},
+          "description": {"type": "string"},
+          "detail": {"type": "string"},
+          "locationId": {"type": "string"},
+          "importance": {"type": "string", "enum": ["critical", "important", "context"]},
+          "relatedCharacters": {"type": "array", "items": {"type": "string"}},
+          "relatedClues": {"type": "array", "items": {"type": "string"}},
+          "foundWhen": {"type": "string"}
+        }
+      }
+    },
+    "locations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "subtitle", "description", "lat", "lng", "address", "image", "category", "initial", "discovered", "clueIds", "characterIds", "actions"],
+        "properties": {
+          "id": {"type": "string"},
+          "title": {"type": "string"},
+          "subtitle": {"type": "string"},
+          "description": {"type": "string"},
+          "lat": {"type": "number"},
+          "lng": {"type": "number"},
+          "address": {"type": "string"},
+          "image": {"type": "string"},
+          "category": {"type": "string"},
+          "initial": {"type": "boolean"},
+          "discovered": {"type": "boolean"},
+          "lockedReason": {"type": "string"},
+          "clueIds": {"type": "array", "items": {"type": "string"}},
+          "characterIds": {"type": "array", "items": {"type": "string"}},
+          "actions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["id", "label", "description", "clueIds"],
+              "properties": {
+                "id": {"type": "string"},
+                "label": {"type": "string"},
+                "description": {"type": "string"},
+                "clueIds": {"type": "array", "items": {"type": "string"}},
+                "characterId": {"type": "string"},
+                "requiresClueIds": {"type": "array", "items": {"type": "string"}},
+                "once": {"type": "boolean"},
+                "event": {"type": "string"},
+                "requiresKeywords": {"type": "array", "items": {"type": "string"}},
+                "alternateOutcome": {"type": "string"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "timeline": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "time", "title", "text", "source"],
+        "properties": {
+          "id": {"type": "string"},
+          "time": {"type": "string"},
+          "title": {"type": "string"},
+          "text": {"type": "string"},
+          "source": {"type": "string"}
+        }
+      }
+    },
+    "dialogueNodes": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["id", "characterId", "title", "eyebrow", "intro", "lines", "choices"],
+        "properties": {
+          "id": {"type": "string"},
+          "characterId": {"type": "string"},
+          "title": {"type": "string"},
+          "eyebrow": {"type": "string"},
+          "intro": {"type": "string"},
+          "lines": {"type": "array", "items": {"type": "string"}},
+          "choices": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["id", "label"],
+              "properties": {
+                "id": {"type": "string"},
+                "label": {"type": "string"},
+                "text": {"type": "string"},
+                "clueIds": {"type": "array", "items": {"type": "string"}},
+                "nextId": {"type": "string"},
+                "note": {"type": "string"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "solution": {
+      "type": "object",
+      "required": ["culpritCharacterId", "motiveKeywords", "methodKeywords", "keyLocationId", "minimumCluesRequired"],
+      "properties": {
+        "culpritCharacterId": {"type": "string"},
+        "motiveKeywords": {"type": "array", "items": {"type": "string"}},
+        "methodKeywords": {"type": "array", "items": {"type": "string"}},
+        "keyLocationId": {"type": "string"},
+        "minimumCluesRequired": {"type": "integer", "minimum": 5}
+      }
+    },
+    "keywordDefinitions": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["description"],
+        "properties": {
+          "description": {"type": "string"},
+          "triggersEvent": {"type": "string"},
+          "unlocksDialogue": {"type": "array", "items": {"type": "string"}},
+          "unlocksLocations": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    }
+  }
+}
