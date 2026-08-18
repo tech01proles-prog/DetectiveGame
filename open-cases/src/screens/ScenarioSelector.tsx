@@ -32,47 +32,83 @@ export default function ScenarioSelector({
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // In a real implementation, this would fetch a manifest file
-    // For now, we'll use a hardcoded list that can be extended
-    const scenarioList = [
-      { id: 'case-001', title: 'Тишина на Мэдисон' },
-      // Add more scenarios here as they are created
-    ];
+    // Загружаем список сценариев из public/scenarios/index.json
+    fetch('/scenarios/index.json')
+      .then((res) => {
+        if (!res.ok) throw new Error('Не удалось загрузить index.json');
+        return res.json();
+      })
+      .then((manifest) => {
+        const scenarioList = manifest.scenarios || [];
+        
+        // Try to load each scenario's metadata
+        async function loadScenarios() {
+          const loaded: ScenarioMeta[] = [];
+          const errors: string[] = [];
 
-    // Try to load each scenario's metadata
-    async function loadScenarios() {
-      const loaded: ScenarioMeta[] = [];
-      const errors: string[] = [];
-
-      for (const scenario of scenarioList) {
-        try {
-          const result = await fetchScenario(scenario.id);
-          if (result.success && result.data) {
-            loaded.push({
-              id: result.data.scenario.id,
-              title: result.data.scenario.title,
-              city: result.data.scenario.city,
-              duration: result.data.scenario.duration,
-              players: result.data.scenario.players,
-              difficulty: result.data.scenario.difficulty,
-              premise: result.data.scenario.premise,
-            });
-          } else {
-            errors.push(`Failed to load ${scenario.id}: ${result.errors?.join(', ')}`);
+          for (const scenario of scenarioList) {
+            try {
+              const result = await fetchScenario(scenario.id);
+              if (result.success && result.data) {
+                loaded.push({
+                  id: result.data.scenario.id,
+                  title: result.data.scenario.title,
+                  city: result.data.scenario.city,
+                  duration: result.data.scenario.duration,
+                  players: result.data.scenario.players,
+                  difficulty: result.data.scenario.difficulty,
+                  premise: result.data.scenario.premise,
+                });
+              } else {
+                errors.push(`Failed to load ${scenario.id}: ${result.errors?.join(', ')}`);
+              }
+            } catch (e) {
+              errors.push(`Error loading ${scenario.id}: ${(e as Error).message}`);
+            }
           }
-        } catch (e) {
-          errors.push(`Error loading ${scenario.id}: ${(e as Error).message}`);
+
+          setScenarios(loaded);
+          setLoading(false);
+          if (errors.length > 0 && loaded.length === 0) {
+            setError(errors.join('\n'));
+          }
         }
-      }
 
-      setScenarios(loaded);
-      setLoading(false);
-      if (errors.length > 0 && loaded.length === 0) {
-        setError(errors.join('\n'));
-      }
-    }
-
-    loadScenarios();
+        loadScenarios();
+      })
+      .catch((err) => {
+        console.error(err);
+        // Фоллбэк на хардкод, если index.json нет
+        const scenarioList = [
+          { id: 'case-001', title: 'Тишина на Мэдисон' },
+        ];
+        
+        async function loadScenarios() {
+          const loaded: ScenarioMeta[] = [];
+          for (const scenario of scenarioList) {
+            try {
+              const result = await fetchScenario(scenario.id);
+              if (result.success && result.data) {
+                loaded.push({
+                  id: result.data.scenario.id,
+                  title: result.data.scenario.title,
+                  city: result.data.scenario.city,
+                  duration: result.data.scenario.duration,
+                  players: result.data.scenario.players,
+                  difficulty: result.data.scenario.difficulty,
+                  premise: result.data.scenario.premise,
+                });
+              }
+            } catch (e) {
+              console.error(`Error loading ${scenario.id}:`, e);
+            }
+          }
+          setScenarios(loaded);
+          setLoading(false);
+        }
+        
+        loadScenarios();
+      });
   }, []);
 
   if (loading) {
