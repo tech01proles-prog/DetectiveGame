@@ -1,5 +1,8 @@
-import {useEffect,useRef} from 'react';
+import {useEffect,useRef,useState} from 'react';
 import type {Location,MapMode} from './types';
+import type {GameMapTemplate} from './maps/templates';
+import StylizedMap from './maps/components/StylizedMap';
+import {getStylizedTemplate} from './maps/templates';
 
 declare global{interface Window{L:any}}
 
@@ -7,9 +10,74 @@ const MAP_BOUNDS:[[number,number],[number,number]]=[[47.589,-122.340],[47.623,-1
 const MIN_ZOOM=13;
 const MAX_ZOOM=16;
 
-export default function MapView({locations,discovered,selectedId,mode,onSelect}:{locations:Location[];discovered:string[];selectedId:string|null;mode:MapMode;onSelect:(id:string)=>void}){
+export default function MapView({locations,discovered,selectedId,mode,onSelect,mapTemplateId}:{locations:Location[];discovered:string[];selectedId:string|null;mode:MapMode;onSelect:(id:string)=>void;mapTemplateId?:string}){
   const ref=useRef<HTMLDivElement>(null), mapRef=useRef<any>(null), layers=useRef<any[]>([]);
-  useEffect(()=>{
+  const [stylizedLocations, setStylizedLocations] = useState<Array<{id:string;name:string;x:number;y:number;icon?:string}>>([]);
+  
+  // Convert real locations to stylized map coordinates
+  useEffect(() => {
+    if (locations.length > 0) {
+      const template = getStylizedTemplate(mapTemplateId || 'small_town');
+      
+      // Generate stylized coordinates based on location index and template
+      const stylized = locations.map((loc, idx) => {
+        let x: number, y: number;
+        
+        switch (template) {
+          case 'small_town':
+            x = 200 + (idx % 3) * 200;
+            y = 200 + (Math.floor(idx / 3) % 2) * 150;
+            break;
+          case 'city_district':
+            x = 150 + (idx % 4) * 175;
+            y = 180 + (Math.floor(idx / 4) % 2) * 100;
+            break;
+          case 'industrial_zone':
+            x = 100 + (idx % 5) * 140;
+            y = 150 + (idx % 2) * 150;
+            break;
+          case 'countryside':
+            x = 150 + (idx % 4) * 180 + (idx % 2) * 30;
+            y = 150 + (Math.floor(idx / 4) % 2) * 180 + (idx % 3) * 40;
+            break;
+          default:
+            x = 200 + (idx % 3) * 200;
+            y = 200 + (Math.floor(idx / 3) % 2) * 150;
+        }
+        
+        return {
+          id: loc.id,
+          name: loc.title,
+          x: Math.max(50, Math.min(750, x)),
+          y: Math.max(50, Math.min(350, y)),
+          icon: loc.category === 'crime_scene' ? '🚨' : 
+                loc.category === 'residence' ? '🏠' : 
+                loc.category === 'business' ? '🏢' : 
+                loc.category === 'public' ? '🏛️' : '📍'
+        };
+      });
+      
+      setStylizedLocations(stylized);
+    }
+  }, [locations, mapTemplateId]);
+  
+  // Render stylized map when mode is 'scheme'
+  if (mode === 'scheme') {
+    return (
+      <div className="absolute inset-0">
+        <StylizedMap
+          template={getStylizedTemplate(mapTemplateId || 'small_town')}
+          locations={stylizedLocations}
+          activeLocationId={selectedId || undefined}
+          onLocationClick={(loc) => onSelect(loc.id)}
+          visitedLocationIds={discovered}
+        />
+      </div>
+    );
+  }
+  
+  // Render real Leaflet map when mode is 'satellite'
+  useEffect(()=>
     if(!ref.current||!window.L)return;
     const L=window.L;
     const map=L.map(ref.current,{zoomControl:false,attributionControl:true,maxBounds:MAP_BOUNDS,maxBoundsViscosity:1,minZoom:MIN_ZOOM,maxZoom:MAX_ZOOM,zoomSnap:.5,zoomDelta:.5,keyboard:true}).fitBounds(MAP_BOUNDS,{padding:[8,8],animate:false});
@@ -17,15 +85,15 @@ export default function MapView({locations,discovered,selectedId,mode,onSelect}:
     map.setView([47.6088,-122.313],14.2);
     mapRef.current=map;
     return()=>{map.remove();mapRef.current=null}
-  },[]);
-  useEffect(()=>{
+  ,[]);
+  useEffect(()=>
     const map=mapRef.current;if(!map||!window.L)return;const L=window.L;
     map.eachLayer((layer:any)=>{if(layer._url)map.removeLayer(layer)});
     const url=mode==='satellite'?'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}':'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
     L.tileLayer(url,{minZoom:MIN_ZOOM,maxZoom:MAX_ZOOM,attribution:mode==='satellite'?'Tiles © Esri':'© OpenStreetMap contributors',noWrap:true}).addTo(map);
     map.setMaxBounds(MAP_BOUNDS);
-  },[mode]);
-  useEffect(()=>{
+  ,[mode]);
+  useEffect(()=>
     const map=mapRef.current;if(!map||!window.L)return;const L=window.L;
     layers.current.forEach(l=>l.remove());layers.current=[];
     locations.forEach(loc=>{
@@ -39,6 +107,6 @@ export default function MapView({locations,discovered,selectedId,mode,onSelect}:
       layers.current.push(marker);
     });
     if(selectedId){const selected=locations.find(x=>x.id===selectedId);if(selected)map.panInside([selected.lat,selected.lng],{paddingTopLeft:[40,40],paddingBottomRight:[80,40],animate:true});}
-  },[locations,discovered,selectedId,onSelect]);
+  ,[locations,discovered,selectedId,onSelect]);
   return <div ref={ref} className="absolute inset-0"/>;
 }
