@@ -5,7 +5,24 @@
  * Each template defines bounds, zoom levels, and center points.
  */
 
-import type { MapTemplate } from './schema';
+export interface MapTemplate {
+  /** Template ID (e.g., "seattle_downtown", "small_town", "industrial_zone", "suburban") */
+  id: string;
+  /** Display name */
+  name: string;
+  /** Description of when to use this template */
+  description: string;
+  /** Minimum zoom level for the map */
+  minZoom: number;
+  /** Maximum zoom level for the map */
+  maxZoom: number;
+  /** Map bounds as [[southWestLat, southWestLng], [northEastLat, northEastLng]] */
+  bounds: [[number, number], [number, number]];
+  /** Center point [lat, lng] for initial view */
+  center: [number, number];
+  /** Default zoom level */
+  defaultZoom: number;
+}
 
 export const mapTemplates: MapTemplate[] = [
   {
