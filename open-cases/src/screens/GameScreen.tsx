@@ -10,18 +10,24 @@ const tabs:{id:Tab;label:string;icon:any}[]=[{id:'case',label:'Дело',icon:Bo
 const actionDialogue:Record<string,string>={home_mother:'home_mother_1',school_daniel:'school_daniel_1',school_june:'school_june_1',lab_nora:'lab_nora_1',market_marcus:'market_marcus_1',garage_camera:'garage_sam_1',news_leah:'news_leah_1'};
 const actionIcon:Record<string,any>={home_room:Eye,home_mother:MessageSquare,school_records:FileSearch,school_june:MessageSquare,school_daniel:MessageSquare,lab_archive:Camera,lab_nora:MessageSquare,market_marcus:MessageSquare,market_books:FileSearch,garage_camera:Camera,garage_route:MapPin,news_leah:MessageSquare,storage_access:Radio,storage_section:Eye,storage_records:FileSearch};
 
-export default function GameScreen({state,setState,onFinish,onRestart}:{state:GameState;setState:React.Dispatch<React.SetStateAction<GameState>>;onFinish:(won:boolean)=>void;onRestart:()=>void}){
+export default function GameScreen({state,setState,onFinish,onRestart,scenario}:{state:GameState;setState:React.Dispatch<React.SetStateAction<GameState>>;onFinish:(won:boolean)=>void;onRestart:()=>void;scenario:ScenarioData}){
   const [finalOpen,setFinalOpen]=useState(false);
   const [detailClue,setDetailClue]=useState<string|null>(null);
   const [sidebar,setSidebar]=useState(true);
   const [dialogue,setDialogue]=useState<DialogueNode|null>(null);
   const [eventNotice,setEventNotice]=useState<{title:string;text:string;clues:string[]}|null>(null);
   const [dialogueNodeId,setDialogueNodeId]=useState<string|null>(null);
-  const loc=getLocation(state.selectedLocationId||'bennett_home')!;
+  const locations = scenario.locations;
+  const characters = scenario.characters;
+  const clues = scenario.clues;
+  const timeline = scenario.timeline;
+  const dialogueNodes = scenario.dialogueNodes;
+  const loc = locations.find(l=>l.id===state.selectedLocationId)||locations[0];
   const discovered=state.discoveredLocationIds;
   const found=useMemo(()=>clues.filter(c=>state.foundClueIds.includes(c.id)),[state.foundClueIds]);
   const totalClues=clues.length;
   const progress=Math.round(Math.min(100,(found.length/totalClues)*100));
+  const mapTemplateId = scenario.mapTemplateId;
 
   const select=(id:string)=>setState(s=>({...s,selectedLocationId:id,selectedTab:'case'}));
   const action=(id:string)=>{
