@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import type { MapLocation, GameMapTemplate } from '../../types';
+import type { MapLocation } from '../../types';
 
 interface StylizedMapProps {
-  template: GameMapTemplate;
+  template: import('../../maps/templates').GameMapTemplate;
   locations: MapLocation[];
   activeLocationId?: string;
   onLocationClick: (location: MapLocation) => void;
@@ -172,7 +172,7 @@ const StylizedMap: React.FC<StylizedMapProps> = ({
 
   // Специальные объекты (кладбище, мосты и т.д.)
   const getSpecialObjects = () => {
-    const objects: JSX.Element[] = [];
+    const objects: React.JSX.Element[] = [];
     
     if (template === 'small_town' || template === 'countryside') {
       // Кладбище
@@ -230,6 +230,9 @@ const StylizedMap: React.FC<StylizedMapProps> = ({
   const parks = getParks();
   const specialObjects = getSpecialObjects();
 
+  // Если есть кастомное фоновое изображение, не рисуем процедурный фон (реки, дороги, парки)
+  const isCustomMap = !!backgroundImage;
+
   return (
     <div className="relative w-full h-full bg-[#f5f5f4] rounded-lg overflow-hidden shadow-inner">
       {/* Custom background image if provided */}
@@ -247,21 +250,8 @@ const StylizedMap: React.FC<StylizedMapProps> = ({
         className="w-full h-full relative"
         style={{ background: backgroundImage ? 'transparent' : '#f5f5f4', zIndex: 1 }}
       >
-        {/* Определение паттернов и градиентов */}
+        {/* Определение паттернов и градиентов (нужны для маркеров) */}
         <defs>
-          <pattern id="grassPattern" patternUnits="userSpaceOnUse" width="20" height="20">
-            <rect width="20" height="20" fill="#e8f5e9" />
-            <circle cx="5" cy="5" r="1.5" fill="#c8e6c9" />
-            <circle cx="15" cy="10" r="1" fill="#c8e6c9" />
-            <circle cx="8" cy="16" r="1.2" fill="#c8e6c9" />
-          </pattern>
-          
-          <pattern id="waterPattern" patternUnits="userSpaceOnUse" width="30" height="30">
-            <rect width="30" height="30" fill="#bbdefb" />
-            <path d="M0,10 Q7,5 15,10 T30,10" stroke="#90caf9" strokeWidth="1" fill="none" />
-            <path d="M0,20 Q7,15 15,20 T30,20" stroke="#90caf9" strokeWidth="1" fill="none" />
-          </pattern>
-          
           <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
             <feDropShadow dx="1" dy="2" stdDeviation="2" floodOpacity="0.3" />
           </filter>
@@ -275,66 +265,70 @@ const StylizedMap: React.FC<StylizedMapProps> = ({
           </filter>
         </defs>
 
-        {/* Фон с травой */}
-        <rect width="800" height="400" fill="url(#grassPattern)" />
-
-        {/* Реки */}
-        {riverPaths.map((river, idx) => (
-          <path
-            key={`river-${idx}`}
-            d={river.d}
-            stroke="url(#waterPattern)"
-            strokeWidth={river.width}
-            fill="none"
-            strokeLinecap="round"
-            opacity="0.8"
-          />
-        ))}
-
-        {/* Парки */}
-        {parks.map((park, idx) => (
-          <ellipse
-            key={`park-${idx}`}
-            cx={park.cx}
-            cy={park.cy}
-            rx={park.rx}
-            ry={park.ry}
-            fill="#c8e6c9"
-            opacity="0.6"
-            stroke="#81c784"
-            strokeWidth="2"
-            strokeDasharray="4,2"
-          />
-        ))}
-
-        {/* Дороги */}
-        {roadPaths.map((road, idx) => (
-          <g key={`road-${idx}`}>
-            {/* Основа дороги */}
-            <path
-              d={road.d}
-              stroke={road.type === 'main' ? '#9ca3af' : '#d1d5db'}
-              strokeWidth={road.type === 'main' ? 18 : 10}
-              fill="none"
-              strokeLinecap="round"
-            />
-            {/* Разметка */}
-            {road.type === 'main' && (
+        {/* Рисуем процедурный фон только если НЕТ кастомной карты */}
+        {!isCustomMap && (
+          <>
+            <rect width="800" height="400" fill="url(#grassPattern)" />
+            
+            {/* Реки */}
+            {riverPaths.map((river, idx) => (
               <path
-                d={road.d}
-                stroke="#fbbf24"
-                strokeWidth="2"
+                key={`river-${idx}`}
+                d={river.d}
+                stroke="url(#waterPattern)"
+                strokeWidth={river.width}
                 fill="none"
                 strokeLinecap="round"
-                strokeDasharray="15,10"
-                opacity="0.6"
+                opacity="0.8"
               />
-            )}
-          </g>
-        ))}
+            ))}
 
-        {/* Специальные объекты */}
-        {specialObjects}
+            {/* Парки */}
+            {parks.map((park, idx) => (
+              <ellipse
+                key={`park-${idx}`}
+                cx={park.cx}
+                cy={park.cy}
+                rx={park.rx}
+                ry={park.ry}
+                fill="#c8e6c9"
+                opacity="0.6"
+                stroke="#81c784"
+                strokeWidth="2"
+                strokeDasharray="4,2"
+              />
+            ))}
+
+            {/* Дороги */}
+            {roadPaths.map((road, idx) => (
+              <g key={`road-${idx}`}>
+                {/* Основа дороги */}
+                <path
+                  d={road.d}
+                  stroke={road.type === 'main' ? '#9ca3af' : '#d1d5db'}
+                  strokeWidth={road.type === 'main' ? 18 : 10}
+                  fill="none"
+                  strokeLinecap="round"
+                />
+                {/* Разметка */}
+                {road.type === 'main' && (
+                  <path
+                    d={road.d}
+                    stroke="#fbbf24"
+                    strokeWidth="2"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeDasharray="15,10"
+                    opacity="0.6"
+                  />
+                )}
+              </g>
+            ))}
+
+            {/* Специальные объекты */}
+            {specialObjects}
+          </>
+        )}
 
         {/* Локации */}
         {locations.map((location, idx) => {

@@ -102,6 +102,7 @@ export default function MapView({locations,discovered,selectedId,mode,onSelect,m
       });
       
       setStylizedLocations(stylized);
+      setLocationCoords(coords);
     }
   }, [locations, mapTemplateId]);
   
