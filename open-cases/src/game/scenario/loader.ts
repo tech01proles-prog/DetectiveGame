@@ -20,7 +20,11 @@ export function validateScenario(data: any): { valid: boolean; errors: string[] 
   if (!data.locations || !Array.isArray(data.locations)) errors.push('Missing "locations" array');
   if (!data.timeline || !Array.isArray(data.timeline)) errors.push('Missing "timeline" array');
   if (!data.dialogueNodes || typeof data.dialogueNodes !== 'object') errors.push('Missing "dialogueNodes" object');
-  if (!data.mapTemplateId) errors.push('Missing "mapTemplateId"');
+  
+  // Either mapTemplateId or customMap must be present (but mapTemplateId is now optional for backward compatibility)
+  if (!data.mapTemplateId && !data.customMap) {
+    errors.push('Missing "mapTemplateId" or "customMap" configuration');
+  }
 
   // Validate scenario fields
   if (data.scenario) {
@@ -62,9 +66,25 @@ export function validateScenario(data: any): { valid: boolean; errors: string[] 
     }
   }
 
-  // Validate map template exists
+  // Validate map template exists if mapTemplateId is provided
   if (data.mapTemplateId && !getMapTemplate(data.mapTemplateId)) {
     errors.push(`Unknown map template: ${data.mapTemplateId}`);
+  }
+
+  // Validate customMap configuration if provided
+  if (data.customMap) {
+    if (!data.customMap.backgroundImage) {
+      errors.push('customMap.backgroundImage is required');
+    }
+    if (!data.customMap.bounds || !Array.isArray(data.customMap.bounds)) {
+      errors.push('customMap.bounds is required');
+    }
+    if (!data.customMap.center || !Array.isArray(data.customMap.center)) {
+      errors.push('customMap.center is required');
+    }
+    if (data.customMap.defaultZoom === undefined) {
+      errors.push('customMap.defaultZoom is required');
+    }
   }
 
   return {

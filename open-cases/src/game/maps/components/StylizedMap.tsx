@@ -1,5 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
-import type { MapLocation, GameMapTemplate } from '../types';
+import type { GameMapTemplate } from '../../templates';
+
+interface MapLocation {
+  id: string;
+  name: string;
+  x: number;
+  y: number;
+  icon?: string;
+}
 
 interface StylizedMapProps {
   template: GameMapTemplate;

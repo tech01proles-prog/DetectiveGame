@@ -197,6 +197,25 @@ export interface MapTemplate {
 }
 
 /**
+ * Custom map configuration with background image
+ * Use this instead of mapTemplateId when you have a pre-rendered map image
+ */
+export interface CustomMapConfig {
+  /** Path to the background image relative to scenario folder (e.g., "map-bg.png") */
+  backgroundImage: string;
+  /** Map bounds as [[southWestLat, southWestLng], [northEastLat, northEastLng]] */
+  bounds: [[number, number], [number, number]];
+  /** Center point [lat, lng] for initial view */
+  center: [number, number];
+  /** Default zoom level */
+  defaultZoom: number;
+  /** Minimum zoom level */
+  minZoom?: number;
+  /** Maximum zoom level */
+  maxZoom?: number;
+}
+
+/**
  * Complete Scenario Data Structure
  * This is what gets loaded from the JSON file
  */
@@ -214,15 +233,9 @@ export interface ScenarioData {
   /** Dialogue nodes for character interactions */
   dialogueNodes: Record<string, DialogueNode>;
   /** Map template ID to use (references a predefined template) */
-  mapTemplateId: string;
-  /** Optional: Custom map overrides if not using a template */
-  customMap?: {
-    minZoom: number;
-    maxZoom: number;
-    bounds: [[number, number], [number, number]];
-    center: [number, number];
-    defaultZoom: number;
-  };
+  mapTemplateId?: string;
+  /** Optional: Custom map configuration with background image */
+  customMap?: CustomMapConfig;
   /** Optional: Solution/answers for scoring */
   solution: {
     /** ID of the main culprit/organizer */
