@@ -40,3 +40,5 @@ export interface GameState {
   triggeredEvents?: string[];
   unlockedKeywords?: string[];
 }
+
+export type GameStateWithNull = GameState | null;
