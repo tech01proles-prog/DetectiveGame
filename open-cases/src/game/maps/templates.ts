@@ -26,6 +26,10 @@ export interface MapTemplate {
   defaultZoom: number;
   /** Stylized map template type */
   stylizedType?: GameMapTemplate;
+  /** Optional: Path to custom background image for stylized map (relative to scenario folder) */
+  backgroundImage?: string;
+  /** Optional: Custom coordinates for locations on stylized map (x, y in pixels from top-left) */
+  locationCoordinates?: Record<string, { x: number; y: number }>;
 }
 
 export const mapTemplates: MapTemplate[] = [
@@ -73,6 +77,27 @@ export const mapTemplates: MapTemplate[] = [
     defaultZoom: 12.5,
     stylizedType: 'countryside',
   },
+  {
+    id: 'case_001_seattle',
+    name: 'Сиэтл (Дело case-001)',
+    description: 'Кастомная карта Сиэтла для дела \"Тишина на Мэдисон\". Использует заранее отрисованную карту.',
+    minZoom: 12,
+    maxZoom: 16,
+    bounds: [[47.590, -122.340], [47.625, -122.300]],
+    center: [47.608, -122.320],
+    defaultZoom: 13.5,
+    stylizedType: 'city_district',
+    backgroundImage: 'map-bg.png',
+    locationCoordinates: {
+      'bennett_home': { x: 280, y: 120 },
+      'lincoln_school': { x: 420, y: 80 },
+      'rainier_lab': { x: 260, y: 180 },
+      'madison_market': { x: 380, y: 150 },
+      'reed_garage': { x: 400, y: 200 },
+      'city_news': { x: 150, y: 220 },
+      'northline_storage': { x: 320, y: 320 },
+    },
+  },
 ];
 
 export function getMapTemplate(templateId: string): MapTemplate | undefined {
@@ -86,4 +111,14 @@ export function getMapTemplateIds(): string[] {
 export function getStylizedTemplate(templateId: string): GameMapTemplate {
   const template = getMapTemplate(templateId);
   return template?.stylizedType || 'small_town';
+}
+
+export function getMapBackgroundImage(templateId: string): string | undefined {
+  const template = getMapTemplate(templateId);
+  return template?.backgroundImage;
+}
+
+export function getLocationCoordinates(templateId: string, locationId: string): { x: number; y: number } | undefined {
+  const template = getMapTemplate(templateId);
+  return template?.locationCoordinates?.[locationId];
 }

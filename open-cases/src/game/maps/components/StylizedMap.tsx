@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import type { MapLocation, GameMapTemplate } from '../types';
+import type { MapLocation, GameMapTemplate } from '../../types';
 
 interface StylizedMapProps {
   template: GameMapTemplate;
@@ -7,6 +7,10 @@ interface StylizedMapProps {
   activeLocationId?: string;
   onLocationClick: (location: MapLocation) => void;
   visitedLocationIds?: string[];
+  /** Optional: Custom background image URL */
+  backgroundImage?: string;
+  /** Optional: Pre-calculated coordinates for locations */
+  locationCoordinates?: Record<string, { x: number; y: number }>;
 }
 
 interface Point {
@@ -30,9 +34,48 @@ const StylizedMap: React.FC<StylizedMapProps> = ({
   activeLocationId,
   onLocationClick,
   visitedLocationIds = [],
+  backgroundImage,
+  locationCoordinates,
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const [hoveredLocation, setHoveredLocation] = useState<string | null>(null);
+
+  // Get coordinates for a location - use provided coordinates or auto-generate
+  const getLocationCoords = (locationId: string, index: number): { x: number; y: number } => {
+    if (locationCoordinates?.[locationId]) {
+      return locationCoordinates[locationId];
+    }
+    
+    // Fallback to auto-generation based on template
+    let x: number, y: number;
+    
+    switch (template) {
+      case 'small_town':
+        x = 200 + (index % 3) * 200;
+        y = 200 + (Math.floor(index / 3) % 2) * 150;
+        break;
+      case 'city_district':
+        x = 150 + (index % 4) * 175;
+        y = 180 + (Math.floor(index / 4) % 2) * 100;
+        break;
+      case 'industrial_zone':
+        x = 100 + (index % 5) * 140;
+        y = 150 + (index % 2) * 150;
+        break;
+      case 'countryside':
+        x = 150 + (index % 4) * 180 + (index % 2) * 30;
+        y = 150 + (Math.floor(index / 4) % 2) * 180 + (index % 3) * 40;
+        break;
+      default:
+        x = 200 + (index % 3) * 200;
+        y = 200 + (Math.floor(index / 3) % 2) * 150;
+    }
+    
+    return {
+      x: Math.max(50, Math.min(750, x)),
+      y: Math.max(50, Math.min(350, y)),
+    };
+  };
 
   // Генерация путей рек в зависимости от шаблона
   const getRiverPaths = (): RiverPath[] => {
@@ -189,11 +232,20 @@ const StylizedMap: React.FC<StylizedMapProps> = ({
 
   return (
     <div className="relative w-full h-full bg-[#f5f5f4] rounded-lg overflow-hidden shadow-inner">
+      {/* Custom background image if provided */}
+      {backgroundImage && (
+        <img 
+          src={backgroundImage} 
+          alt="Map background" 
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ zIndex: 0 }}
+        />
+      )}
       <svg
         ref={svgRef}
         viewBox="0 0 800 400"
-        className="w-full h-full"
-        style={{ background: '#f5f5f4' }}
+        className="w-full h-full relative"
+        style={{ background: backgroundImage ? 'transparent' : '#f5f5f4', zIndex: 1 }}
       >
         {/* Определение паттернов и градиентов */}
         <defs>
@@ -285,15 +337,18 @@ const StylizedMap: React.FC<StylizedMapProps> = ({
         {specialObjects}
 
         {/* Локации */}
-        {locations.map((location) => {
+        {locations.map((location, idx) => {
           const isActive = location.id === activeLocationId;
           const isVisited = visitedLocationIds.includes(location.id);
           const isHovered = hoveredLocation === location.id;
+          
+          // Use provided coordinates or calculate from template
+          const coords = getLocationCoords(location.id, idx);
 
           return (
             <g
               key={location.id}
-              transform={`translate(${location.x}, ${location.y})`}
+              transform={`translate(${coords.x}, ${coords.y})`}
               onClick={() => onLocationClick(location)}
               onMouseEnter={() => setHoveredLocation(location.id)}
               onMouseLeave={() => setHoveredLocation(null)}

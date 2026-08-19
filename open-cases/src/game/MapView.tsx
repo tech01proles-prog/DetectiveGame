@@ -2,7 +2,7 @@ import {useEffect,useRef,useState} from 'react';
 import type {Location,MapMode} from './types';
 import type {GameMapTemplate} from './maps/templates';
 import StylizedMap from './maps/components/StylizedMap';
-import {getStylizedTemplate} from './maps/templates';
+import {getStylizedTemplate, getMapBackgroundImage, getLocationCoordinates} from './maps/templates';
 
 declare global{interface Window{L:any}}
 
@@ -13,14 +13,53 @@ const MAX_ZOOM=16;
 export default function MapView({locations,discovered,selectedId,mode,onSelect,mapTemplateId}:{locations:Location[];discovered:string[];selectedId:string|null;mode:MapMode;onSelect:(id:string)=>void;mapTemplateId?:string}){
   const ref=useRef<HTMLDivElement>(null), mapRef=useRef<any>(null), layers=useRef<any[]>([]);
   const [stylizedLocations, setStylizedLocations] = useState<Array<{id:string;name:string;x:number;y:number;icon?:string}>>([]);
+  const [backgroundImage, setBackgroundImage] = useState<string | undefined>(undefined);
+  const [locationCoords, setLocationCoords] = useState<Record<string, { x: number; y: number }> | undefined>(undefined);
   
   // Convert real locations to stylized map coordinates
   useEffect(() => {
-    if (locations.length > 0) {
+    if (locations.length > 0 && mapTemplateId) {
+      // Get background image for custom maps
+      const bgImg = getMapBackgroundImage(mapTemplateId);
+      if (bgImg) {
+        setBackgroundImage(`/scenarios/case-001/${bgImg}`);
+      }
+      
+      // Get location coordinates for custom maps
+      const coords: Record<string, { x: number; y: number }> = {};
+      let hasCustomCoords = false;
+      
+      locations.forEach((loc, idx) => {
+        const customCoords = getLocationCoordinates(mapTemplateId, loc.id);
+        if (customCoords) {
+          coords[loc.id] = customCoords;
+          hasCustomCoords = true;
+        }
+      });
+      
+      if (hasCustomCoords) {
+        setLocationCoords(coords);
+      }
+      
       const template = getStylizedTemplate(mapTemplateId || 'small_town');
       
       // Generate stylized coordinates based on location index and template
       const stylized = locations.map((loc, idx) => {
+        // Check if we have custom coordinates first
+        const customCoord = locationCoords?.[loc.id];
+        if (customCoord) {
+          return {
+            id: loc.id,
+            name: loc.title,
+            x: customCoord.x,
+            y: customCoord.y,
+            icon: loc.category === 'crime_scene' ? '🚨' : 
+                  loc.category === 'residence' ? '🏠' : 
+                  loc.category === 'business' ? '🏢' : 
+                  loc.category === 'public' ? '🏛️' : '📍'
+          };
+        }
+        
         let x: number, y: number;
         
         switch (template) {
@@ -59,7 +98,7 @@ export default function MapView({locations,discovered,selectedId,mode,onSelect,m
       
       setStylizedLocations(stylized);
     }
-  }, [locations, mapTemplateId]);
+  }, [locations, mapTemplateId, locationCoords]);
   
   // Render stylized map when mode is 'scheme'
   if (mode === 'scheme') {
@@ -71,6 +110,8 @@ export default function MapView({locations,discovered,selectedId,mode,onSelect,m
           activeLocationId={selectedId || undefined}
           onLocationClick={(loc) => onSelect(loc.id)}
           visitedLocationIds={discovered}
+          backgroundImage={backgroundImage}
+          locationCoordinates={locationCoords}
         />
       </div>
     );
