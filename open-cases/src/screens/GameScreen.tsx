@@ -1,14 +1,45 @@
 import {useMemo,useState} from 'react';
 import {BookOpen,ChevronRight,FileText,MessageSquare,NotebookPen,Search,Users,Clock3,Lock,Check,PanelRightClose,PanelRightOpen,Send,MapPin,Radio,Eye,Camera,FileSearch,CircleAlert} from 'lucide-react';
 import MapView from '@/game/MapView';
-import {characters,clues,getCharacter,getLocation,locations,timeline,dialogueNodes} from '@/game/data';
 import {calculateScore,discoverFromClues,performAction} from '@/game/engine';
-import type {DialogueNode,GameState,Tab} from '@/game/types';
+import type {DialogueNode,GameState,Tab,Location,Character,Clue,TimelineEvent,DialogueChoice} from '@/game/types';
+import type {ScenarioData} from '@/game/scenario/schema';
 
 const tabs:{id:Tab;label:string;icon:any}[]=[{id:'case',label:'Дело',icon:BookOpen},{id:'people',label:'Люди',icon:Users},{id:'clues',label:'Улики',icon:Search},{id:'notes',label:'Заметки',icon:NotebookPen},{id:'timeline',label:'Хронология',icon:Clock3}];
 
-const actionDialogue:Record<string,string>={home_mother:'home_mother_1',school_daniel:'school_daniel_1',school_june:'school_june_1',lab_nora:'lab_nora_1',market_marcus:'market_marcus_1',garage_camera:'garage_sam_1',news_leah:'news_leah_1'};
-const actionIcon:Record<string,any>={home_room:Eye,home_mother:MessageSquare,school_records:FileSearch,school_june:MessageSquare,school_daniel:MessageSquare,lab_archive:Camera,lab_nora:MessageSquare,market_marcus:MessageSquare,market_books:FileSearch,garage_camera:Camera,garage_route:MapPin,news_leah:MessageSquare,storage_access:Radio,storage_section:Eye,storage_records:FileSearch};
+// Helper to get dialogue node ID for an action
+const getActionDialogueId = (actionId: string, scenario: ScenarioData): string | undefined => {
+  // Check if action ID maps to a dialogue node by convention (e.g., "home_mother" -> "home_mother_1")
+  const potentialId = `${actionId}_1`;
+  if (scenario.dialogueNodes[potentialId]) {
+    return potentialId;
+  }
+  // Check character-based mapping
+  for (const loc of scenario.locations) {
+    for (const action of loc.actions) {
+      if (action.id === actionId && action.characterId) {
+        // Look for dialogue nodes matching pattern: {locationId}_{characterId}_1
+        const nodeId = `${loc.id}_${action.characterId}_1`;
+        if (scenario.dialogueNodes[nodeId]) {
+          return nodeId;
+        }
+      }
+    }
+  }
+  return undefined;
+};
+
+// Helper to get icon for an action
+const getActionIcon = (actionId: string, action: any): any => {
+  if (action.characterId) return MessageSquare;
+  if (action.clueIds?.length > 0) {
+    const clueType = action.clueIds[0].includes('photo') ? Camera : 
+                     action.clueIds[0].includes('record') || action.clueIds[0].includes('log') ? FileSearch :
+                     action.clueIds[0].includes('video') ? Camera : Eye;
+    return clueType;
+  }
+  return Search;
+};
 
 export default function GameScreen({state,setState,onFinish,onRestart,scenario}:{state:GameState;setState:React.Dispatch<React.SetStateAction<GameState>>;onFinish:(won:boolean)=>void;onRestart:()=>void;scenario:ScenarioData}){
   const [finalOpen,setFinalOpen]=useState(false);
@@ -35,8 +66,9 @@ export default function GameScreen({state,setState,onFinish,onRestart,scenario}:
     const next=performAction(state,loc.id,id);
     setState(next);
     const added=next.foundClueIds.filter(x=>!before.has(x));
-    const dialogueId=actionDialogue[id];
-    if(dialogueId){setDialogue(dialogueNodes[dialogueId]);setDialogueNodeId(dialogueId);return;}
+    // Get dialogue ID dynamically from scenario
+    const dialogueId=getActionDialogueId(id, scenario);
+    if(dialogueId){setDialogue(scenario.dialogueNodes[dialogueId]);setDialogueNodeId(dialogueId);return;}
     const actionDef=loc.actions.find(a=>a.id===id);
     if(actionDef){
       const clueNames=added.map(x=>clues.find(c=>c.id===x)?.title||'').filter(Boolean);
@@ -70,7 +102,7 @@ export default function GameScreen({state,setState,onFinish,onRestart,scenario}:
   </div>
 }
 
-function CaseTab({loc,state,action,setFinalOpen,canFinal}:{loc:any;state:GameState;action:(id:string)=>void;setFinalOpen:(v:boolean)=>void;canFinal:boolean}){const open=state.discoveredLocationIds.includes(loc.id);return <><div className="panel-title selected-location-heading"><span className="eyebrow"><MapPin size={12}/> ВЫБРАННАЯ ТОЧКА</span><h2>{loc.title}</h2><p>{loc.address}</p></div><div className="location-hero"><img src={loc.image}/><span>{loc.category}</span><div className="hero-badge">{open?'ДОСТУПНО':'НЕ ИССЛЕДОВАНО'}</div></div><div className="panel-copy"><p>{loc.description}</p></div>{!open?<div className="locked-card"><Lock size={18}/><b>Локация пока закрыта</b><span>{loc.lockedReason}</span></div>:<div className="actions"><span className="section-label">Доступные действия</span>{loc.actions.map((a:any)=>{const done=state.completedActionIds.includes(a.id),blocked=a.requiresClueIds?.some((id:string)=>!state.foundClueIds.includes(id));const Icon=actionIcon[a.id]||Search;return <button key={a.id} disabled={done||blocked} onClick={()=>action(a.id)} className="action-card"><div className="action-icon">{done?<Check size={17}/>:<Icon size={17}/>}</div><div><b>{a.label}</b><span>{done?'Завершено':blocked?'Сначала найдите нужную зацепку.':a.description}</span></div><ChevronRight size={17}/></button>})}</div>}<div className="location-people">{loc.characterIds.length>0&&<><span className="section-label">Персонажи в точке</span>{loc.characterIds.map((id:string)=>{const c=getCharacter(id)!;return <div className="mini-person" key={id}><img src={c.portrait}/><div><b>{c.name}</b><span>{c.relation}</span></div></div>})}</>}</div><button className={`final-btn ${canFinal?'ready':''}`} disabled={!canFinal} onClick={()=>setFinalOpen(true)}><FileText size={18}/>{canFinal?'Сформировать версию расследования':'Соберите минимум 10 улик'}</button></>}
+function CaseTab({loc,state,action,setFinalOpen,canFinal}:{loc:any;state:GameState;action:(id:string)=>void;setFinalOpen:(v:boolean)=>void;canFinal:boolean}){const open=state.discoveredLocationIds.includes(loc.id);return <><div className="panel-title selected-location-heading"><span className="eyebrow"><MapPin size={12}/> ВЫБРАННАЯ ТОЧКА</span><h2>{loc.title}</h2><p>{loc.address}</p></div><div className="location-hero"><img src={loc.image}/><span>{loc.category}</span><div className="hero-badge">{open?'ДОСТУПНО':'НЕ ИССЛЕДОВАНО'}</div></div><div className="panel-copy"><p>{loc.description}</p></div>{!open?<div className="locked-card"><Lock size={18}/><b>Локация пока закрыта</b><span>{loc.lockedReason}</span></div>:<div className="actions"><span className="section-label">Доступные действия</span>{loc.actions.map((a:any)=>{const done=state.completedActionIds.includes(a.id),blocked=a.requiresClueIds?.some((id:string)=>!state.foundClueIds.includes(id));const Icon=getActionIcon(a.id,a);return <button key={a.id} disabled={done||blocked} onClick={()=>action(a.id)} className="action-card"><div className="action-icon">{done?<Check size={17}/>:<Icon size={17}/>}</div><div><b>{a.label}</b><span>{done?'Завершено':blocked?'Сначала найдите нужную зацепку.':a.description}</span></div><ChevronRight size={17}/></button>})}</div>}<div className="location-people">{loc.characterIds.length>0&&<><span className="section-label">Персонажи в точке</span>{loc.characterIds.map((id:string)=>{const c=getCharacter(id)!;return <div className="mini-person" key={id}><img src={c.portrait}/><div><b>{c.name}</b><span>{c.relation}</span></div></div>})}</>}</div><button className={`final-btn ${canFinal?'ready':''}`} disabled={!canFinal} onClick={()=>setFinalOpen(true)}><FileText size={18}/>{canFinal?'Сформировать версию расследования':'Соберите минимум 10 улик'}</button></>}
 function PeopleTab({state,select}:{state:GameState;select:(id:string)=>void}){return <><div className="panel-title"><span className="eyebrow">ДОСЬЕ</span><h2>Люди</h2><p>{characters.length} фигур в деле</p></div><div className="people-list">{characters.map(c=><button key={c.id} className="person-card" onClick={()=>c.locationId&&select(c.locationId)}><img src={c.portrait}/><div><b>{c.name}</b><span>{c.age} · {c.role}</span><small>{state.questionedCharacterIds.includes(c.id)?'Опрошен':'Не опрошен'}</small></div><ChevronRight size={16}/></button>)}</div></>}
 function CluesTab({found,onOpen}:{found:any[];onOpen:(id:string)=>void}){return <><div className="panel-title"><span className="eyebrow">ДОКАЗАТЕЛЬСТВА</span><h2>Улики <em>{found.length}</em></h2><p>Нажимайте на материалы и сопоставляйте детали.</p></div><div className="clue-list">{found.map(c=><button className={`clue-card ${c.importance}`} key={c.id} onClick={()=>onOpen(c.id)}><div className="clue-type">{c.type}</div><b>{c.title}</b><span>{c.description}</span><small>{c.foundWhen}</small></button>)}{found.length===0&&<div className="empty">Пока ничего. Начните с дома Беннеттов и школы.</div>}</div></>}
 function NotesTab({value,onChange}:{value:string;onChange:(v:string)=>void}){return <><div className="panel-title"><span className="eyebrow">РАБОЧИЙ БЛОКНОТ</span><h2>Заметки</h2><p>Пишите собственные версии. Игра не проверяет текст заметок.</p></div><textarea className="notes" value={value} onChange={e=>onChange(e.target.value)} placeholder={'Например:\n20:07 — Майя официально покинула школу.\n20:19 — фургон у мастерской.\nПочему Дэниел говорит 20:14?'} /><div className="note-tip"><NotebookPen size={16}/><span>Хорошая привычка: рядом с каждой гипотезой записывайте, какая улика её подтверждает.</span></div></>}
