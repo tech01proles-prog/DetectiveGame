@@ -1,0 +1,6 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="600" fill="#2d3748"/>
+  <text x="400" y="280" font-family="Arial" font-size="24" fill="#a0aec0" text-anchor="middle">Location Image</text>
+  <text x="400" y="320" font-family="Arial" font-size="16" fill="#718096" text-anchor="middle">800x600</text>
+  <rect x="50" y="50" width="700" height="500" fill="none" stroke="#4a5568" stroke-width="2" stroke-dasharray="10,5"/>
+</svg>

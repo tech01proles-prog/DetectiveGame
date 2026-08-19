@@ -29,16 +29,17 @@ export default function MapView({locations,discovered,selectedId,mode,onSelect,m
       const coords: Record<string, { x: number; y: number }> = {};
       
       locations.forEach((loc) => {
-        // First check if location has coordinates in scenario data (as percentages)
+        // First check if location has coordinates in scenario data (as percentages 0-100)
         if ((loc as any).coordinates) {
           const pctCoords = (loc as any).coordinates as { x: number; y: number };
           // Convert percentages to pixels (assuming 800x400 base SVG size)
+          // Coordinates in scenario are percentages (0-100), so we convert to pixels
           coords[loc.id] = {
             x: (pctCoords.x / 100) * 800,
             y: (pctCoords.y / 100) * 400
           };
         } else {
-          // Fall back to template-defined coordinates
+          // Fall back to template-defined coordinates (already in pixels)
           const customCoords = getLocationCoordinates(mapTemplateId, loc.id);
           if (customCoords) {
             coords[loc.id] = customCoords;
