@@ -234,7 +234,7 @@ const StylizedMap: React.FC<StylizedMapProps> = ({
   const isCustomMap = !!backgroundImage;
 
   return (
-    <div className="relative w-full h-full bg-[#f5f5f4] rounded-lg overflow-hidden shadow-inner">
+    <div className="relative w-full h-full bg-[#f5f5f4] rounded-lg overflow-hidden shadow-inner" style={{ aspectRatio: '2/1' }}>
       {/* Custom background image if provided */}
       {backgroundImage && (
         <img 
@@ -247,6 +247,7 @@ const StylizedMap: React.FC<StylizedMapProps> = ({
       <svg
         ref={svgRef}
         viewBox="0 0 800 400"
+        preserveAspectRatio="xMidYMid meet"
         className="w-full h-full relative"
         style={{ background: backgroundImage ? 'transparent' : '#f5f5f4', zIndex: 1 }}
       >
