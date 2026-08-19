@@ -130,6 +130,9 @@ export interface Location {
   characterIds: string[];
   /** Array of actions available at this location */
   actions: LocationAction[];
+  /** Optional: Custom coordinates for stylized map (x, y as percentages 0-100 from top-left). 
+   * Used when scenario has a custom background image. If not provided, auto-generated based on template. */
+  coordinates?: { x: number; y: number };
 }
 
 export interface TimelineEvent {

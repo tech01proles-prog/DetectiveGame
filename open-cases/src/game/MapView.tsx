@@ -25,34 +25,39 @@ export default function MapView({locations,discovered,selectedId,mode,onSelect,m
         setBackgroundImage(`/scenarios/case-001/${bgImg}`);
       }
       
-      // Get location coordinates for custom maps
+      // Get location coordinates - prioritize from scenario data, then from template
       const coords: Record<string, { x: number; y: number }> = {};
-      let hasCustomCoords = false;
       
-      locations.forEach((loc, idx) => {
-        const customCoords = getLocationCoordinates(mapTemplateId, loc.id);
-        if (customCoords) {
-          coords[loc.id] = customCoords;
-          hasCustomCoords = true;
+      locations.forEach((loc) => {
+        // First check if location has coordinates in scenario data (as percentages)
+        if ((loc as any).coordinates) {
+          const pctCoords = (loc as any).coordinates as { x: number; y: number };
+          // Convert percentages to pixels (assuming 800x400 base SVG size)
+          coords[loc.id] = {
+            x: (pctCoords.x / 100) * 800,
+            y: (pctCoords.y / 100) * 400
+          };
+        } else {
+          // Fall back to template-defined coordinates
+          const customCoords = getLocationCoordinates(mapTemplateId, loc.id);
+          if (customCoords) {
+            coords[loc.id] = customCoords;
+          }
         }
       });
-      
-      if (hasCustomCoords) {
-        setLocationCoords(coords);
-      }
       
       const template = getStylizedTemplate(mapTemplateId || 'small_town');
       
       // Generate stylized coordinates based on location index and template
       const stylized = locations.map((loc, idx) => {
-        // Check if we have custom coordinates first
-        const customCoord = locationCoords?.[loc.id];
-        if (customCoord) {
+        // Check if we have coordinates (from scenario or template)
+        const coord = coords[loc.id];
+        if (coord) {
           return {
             id: loc.id,
             name: loc.title,
-            x: customCoord.x,
-            y: customCoord.y,
+            x: coord.x,
+            y: coord.y,
             icon: loc.category === 'crime_scene' ? '🚨' : 
                   loc.category === 'residence' ? '🏠' : 
                   loc.category === 'business' ? '🏢' : 
@@ -98,7 +103,7 @@ export default function MapView({locations,discovered,selectedId,mode,onSelect,m
       
       setStylizedLocations(stylized);
     }
-  }, [locations, mapTemplateId, locationCoords]);
+  }, [locations, mapTemplateId]);
   
   // Render stylized map when mode is 'scheme'
   if (mode === 'scheme') {
