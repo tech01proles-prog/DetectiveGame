@@ -34,7 +34,7 @@ export default function App() {
     }
   }, []);
 
-  // Auto-save when state changes
+  // Auto-save when state changes (debounced in engine)
   useEffect(() => {
     if (state?.started) {
       saveGame(state);
@@ -74,7 +74,13 @@ export default function App() {
   };
 
   const finishGame = (won: boolean) => {
-    setState(s => s ? ({ ...s, finished: true, won }) : null);
+    setState(s => {
+      if (!s) return null;
+      const newState = { ...s, finished: true, won };
+      // Save immediately on game finish
+      saveGame(newState, true);
+      return newState;
+    });
     setScreen('ending');
   };
 

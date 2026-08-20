@@ -1,12 +1,12 @@
-import {useMemo,useState} from 'react';
-import {BookOpen,ChevronRight,FileText,MessageSquare,NotebookPen,Search,Users,Clock3,Lock,Check,PanelRightClose,PanelRightOpen,Send,MapPin,Radio,Eye,Camera,FileSearch,CircleAlert,Repeat} from 'lucide-react';
+import {useMemo,useState,useEffect} from 'react';
+import {BookOpen,ChevronRight,FileText,MessageSquare,NotebookPen,Search,Users,Clock3,Lock,Check,PanelRightClose,PanelRightOpen,Send,MapPin,Radio,Eye,Camera,FileSearch,CircleAlert,Repeat,StickyNote} from 'lucide-react';
 import MapView from '@/game/MapView';
-import {calculateScore,discoverFromClues,performAction,getDynamicDialogueNode} from '@/game/engine';
+import {calculateScore,discoverFromClues,performAction,getDynamicDialogueNode,saveGame} from '@/game/engine';
 import {resolveImageUrl} from '@/game/scenario/loader';
-import type {DialogueNode,GameState,Tab,Location,Character,Clue,TimelineEvent,DialogueChoice} from '@/game/types';
+import type {DialogueNode,GameState,Tab,Location,Character,Clue,TimelineEvent,DialogueChoice,BoardNode,BoardConnection} from '@/game/types';
 import type {ScenarioData} from '@/game/scenario/schema';
 
-const tabs:{id:Tab;label:string;icon:any}[]=[{id:'case',label:'Дело',icon:BookOpen},{id:'people',label:'Люди',icon:Users},{id:'clues',label:'Улики',icon:Search},{id:'notes',label:'Заметки',icon:NotebookPen},{id:'timeline',label:'Хронология',icon:Clock3}];
+const tabs:{id:Tab|'board';label:string;icon:any}[]=[{id:'case',label:'Дело',icon:BookOpen},{id:'people',label:'Люди',icon:Users},{id:'board',label:'Доска',icon:StickyNote},{id:'clues',label:'Улики',icon:Search},{id:'notes',label:'Заметки',icon:NotebookPen},{id:'timeline',label:'Хронология',icon:Clock3}];
 
 // Helper to get dialogue node ID for an action
 const getActionDialogueId = (actionId: string, scenario: ScenarioData): string | undefined => {
@@ -118,12 +118,18 @@ export default function GameScreen({state,setState,onFinish,onRestart,scenario}:
   };
 
   const canFinal=state.foundClueIds.length>=10;
+  
+  // Auto-save game state periodically
+  useEffect(() => {
+    saveGame(state);
+  }, [state]);
+  
   return <div className="game-shell">
     <header className="game-top"><div className="brand"><span className="brand-mark">OC</span><div><b>OPEN CASES</b><small>Дело №001 · Тишина на Мэдисон</small></div></div><div className="top-status"><span><span className="live-dot"/> СИСТЕМА АКТИВНА</span><span>{found.length} / {totalClues} улик</span><button onClick={onRestart} className="top-link">Сбросить</button></div></header>
     <div className="game-body">
-      <aside className={`left-rail ${sidebar?'':'collapsed'}`}>{sidebar&&<><div className="rail-head"><div><span className="eyebrow">РАССЛЕДОВАНИЕ</span><strong>Тишина на Мэдисон</strong></div><button onClick={()=>setSidebar(false)} aria-label="Свернуть панель"><PanelRightClose size={17}/></button></div><nav>{tabs.map(t=>{const Icon=t.icon;return <button key={t.id} className={state.selectedTab===t.id?'active':''} onClick={()=>setTab(t.id)}><Icon size={17}/><span>{t.label}</span>{t.id==='clues'&&found.length>0&&<em>{found.length}</em>}</button>})}</nav><div className="rail-progress"><div><span>Материалы дела</span><b>{progress}%</b></div><div className="progress"><i style={{width:`${progress}%`}}/></div><small>Открыто {discovered.length} из {locations.length} точек</small></div></>}{!sidebar&&<button className="expand-rail" onClick={()=>setSidebar(true)} aria-label="Развернуть панель"><PanelRightOpen size={18}/></button>}</aside>
+      <aside className={`left-rail ${sidebar?'':'collapsed'}`}>{sidebar&&<><div className="rail-head"><div><span className="eyebrow">РАССЛЕДОВАНИЕ</span><strong>Тишина на Мэдисон</strong></div><button onClick={()=>setSidebar(false)} aria-label="Свернуть панель"><PanelRightClose size={17}/></button></div><nav>{tabs.map(t=>{const Icon=t.icon;return <button key={t.id} className={state.selectedTab===t.id?'active':''} onClick={()=>setState(s=>s?({...s,selectedTab:t.id as Tab}):null)}><Icon size={17}/><span>{t.label}</span>{t.id==='clues'&&found.length>0&&<em>{found.length}</em>}</button>})}</nav><div className="rail-progress"><div><span>Материалы дела</span><b>{progress}%</b></div><div className="progress"><i style={{width:`${progress}%`}}/></div><small>Открыто {discovered.length} из {locations.length} точек</small></div></>}{!sidebar&&<button className="expand-rail" onClick={()=>setSidebar(true)} aria-label="Развернуть панель"><PanelRightOpen size={18}/></button>}</aside>
       <section className="map-panel"><MapView locations={locations} discovered={discovered} selectedId={state.selectedLocationId} mode={state.mapMode} onSelect={select} mapTemplateId={mapTemplateId}/><div className="map-hint"><MapPin size={13}/><span>Выберите точку на карте</span></div><div className="map-legend"><span><i className="legend-dot open"/> открыта</span><span><i className="legend-dot new"/> выбрана</span><span><i className="legend-dot locked"/> неизвестна</span></div><div className="case-stamp">SEATTLE<br/><b>CASE 001</b></div></section>
-      <aside className="right-panel"><div className="panel-scroll">{state.selectedTab==='case'&&<CaseTab loc={loc} state={state} action={action} setFinalOpen={setFinalOpen} canFinal={canFinal} scenario={scenario}/>} {state.selectedTab==='people'&&<PeopleTab state={state} select={select} scenario={scenario}/>} {state.selectedTab==='clues'&&<CluesTab found={found} onOpen={setDetailClue}/>} {state.selectedTab==='notes'&&<NotesTab value={state.notes} onChange={note}/>} {state.selectedTab==='timeline'&&<TimelineTab state={state} scenario={scenario}/>}</div></aside>
+      <aside className="right-panel"><div className="panel-scroll">{state.selectedTab==='case'&&<CaseTab loc={loc} state={state} action={action} setFinalOpen={setFinalOpen} canFinal={canFinal} scenario={scenario}/>} {state.selectedTab==='people'&&<PeopleTab state={state} select={select} scenario={scenario}/>} {state.selectedTab==='board'&&<BoardTab state={state} setState={setState} scenario={scenario}/>} {state.selectedTab==='clues'&&<CluesTab found={found} onOpen={setDetailClue}/>} {state.selectedTab==='notes'&&<NotesTab value={state.notes} onChange={note}/>} {state.selectedTab==='timeline'&&<TimelineTab state={state} scenario={scenario}/>}</div></aside>
     </div>
     {detailClue&&<ClueModal clue={clues.find(c=>c.id===detailClue)!} onClose={()=>setDetailClue(null)}/>} 
     {eventNotice&&<EventModal notice={eventNotice} onClose={()=>setEventNotice(null)}/>} 
@@ -207,4 +213,224 @@ function DialogueModal({node,scenario,onClose,onChoose}:{node:DialogueNode;scena
   </div>
 }
 function FinalModal({state,scenario,onClose,onSubmit}:{state:GameState;scenario:ScenarioData;onClose:()=>void;onSubmit:(a:any)=>void}){const [person,setPerson]=useState('');const [motive,setMotive]=useState('');const [method,setMethod]=useState('');const [location,setLocation]=useState('');return <div className="modal-backdrop"><div className="modal final-modal"><div className="modal-head"><div><span className="eyebrow">ФИНАЛЬНАЯ ВЕРСИЯ</span><h2>Что произошло?</h2></div><button onClick={onClose}>×</button></div><p>Сформируйте свою версию только из того, что удалось подтвердить. Ошибка не закрывает дело автоматически.</p><Select label="Кто организовал исчезновение?" value={person} set={setPerson} opts={[['leah','Лия Моррис'],['daniel','Дэниел Кроу'],['nora','Нора Вэйл'],['sam','Сэмюэл Рид']]}/><Select label="Какой был мотив?" value={motive} set={setMotive} opts={[['exposure','Скрыть схему подмены серийных номеров'],['money','Получить выкуп'],['revenge','Личная месть'],['escape','Помочь Майе скрыться']]}/><Select label="Как Майю заманили?" value={method} set={setMethod} opts={[['lured','Сообщением о встрече и фотографиях'],['force','Сразу силой у школы'],['fake','Поддельным звонком от матери'],['random','Случайно возле магазина']]}/><Select label="Где ключевая точка?" value={location} set={setLocation} opts={[['northline_storage','Northline Storage'],['lincoln_school','Lincoln High School'],['reed_garage','Reed Auto'],['city_news','Seattle Ledger']]}/><button className="btn primary full" disabled={!person||!motive||!method||!location} onClick={()=>onSubmit({person,motive,method,location})}>Закрыть дело <Send size={17}/></button></div></div>}
+
+// Investigation Board Tab Component - Interactive clues board with drag-and-drop nodes and connections
+function BoardTab({state,setState,scenario}:{state:GameState;setState:React.Dispatch<React.SetStateAction<GameState|null>>;scenario:ScenarioData}){
+  const board = state.investigationBoard || { nodes: [], connections: [], selectedTool: 'select' };
+  const foundClues = scenario.clues.filter(c => state.foundClueIds.includes(c.id));
+  const questionedChars = scenario.characters.filter(c => state.questionedCharacterIds.includes(c.id));
+  
+  // Add clue to board
+  const addClueToBoard = (clueId: string) => {
+    const clue = foundClues.find(c => c.id === clueId);
+    if (!clue || board.nodes.some(n => n.id === `clue-${clue.id}`)) return;
+    
+    const newNode: BoardNode = {
+      id: `clue-${clue.id}`,
+      type: 'clue',
+      title: clue.title,
+      content: clue.description,
+      x: 50 + Math.random() * 200,
+      y: 50 + Math.random() * 150,
+      color: clue.importance === 'critical' ? '#ef4444' : clue.importance === 'important' ? '#f59e0b' : '#3b82f6',
+      relatedIds: [...clue.relatedClues, ...clue.relatedCharacters]
+    };
+    
+    setState(s => s ? ({
+      ...s,
+      investigationBoard: {
+        ...board,
+        nodes: [...board.nodes, newNode]
+      }
+    }) : null);
+  };
+  
+  // Update node position
+  const updateNodePosition = (nodeId: string, x: number, y: number) => {
+    setState(s => s ? ({
+      ...s,
+      investigationBoard: {
+        ...board,
+        nodes: board.nodes.map(n => n.id === nodeId ? { ...n, x, y } : n)
+      }
+    }) : null);
+  };
+  
+  // Add connection between nodes
+  const addConnection = (fromId: string, toId: string) => {
+    if (fromId === toId) return;
+    const existing = board.connections.find(c => 
+      (c.fromNodeId === fromId && c.toNodeId === toId) ||
+      (c.fromNodeId === toId && c.toNodeId === fromId)
+    );
+    if (existing) return;
+    
+    const newConn: BoardConnection = {
+      id: `conn-${fromId}-${toId}`,
+      fromNodeId: fromId,
+      toNodeId: toId,
+      color: '#dc2626'
+    };
+    
+    setState(s => s ? ({
+      ...s,
+      investigationBoard: {
+        ...board,
+        connections: [...board.connections, newConn]
+      }
+    }) : null);
+  };
+  
+  const [draggingNodeId, setDraggingNodeId] = useState<string | null>(null);
+  const [connectingFrom, setConnectingFrom] = useState<string | null>(null);
+  
+  return (
+    <>
+      <div className="panel-title">
+        <span className="eyebrow">РАССЛЕДОВАНИЕ</span>
+        <h2>Доска улик</h2>
+        <p>Перетаскивайте стикеры и связывайте их красной нитью</p>
+      </div>
+      
+      <div className="board-toolbar">
+        <button 
+          className={`tool-btn ${board.selectedTool === 'select' ? 'active' : ''}`}
+          onClick={() => setState(s => s ? ({...s, investigationBoard: {...board, selectedTool: 'select'}}) : null)}
+        >
+          <MessageSquare size={16}/> Выбор
+        </button>
+        <button 
+          className={`tool-btn ${board.selectedTool === 'connect' ? 'active' : ''}`}
+          onClick={() => setState(s => s ? ({...s, investigationBoard: {...board, selectedTool: 'connect'}}) : null)}
+        >
+          <Repeat size={16}/> Связать
+        </button>
+      </div>
+      
+      <div className="board-clue-palette">
+        <span className="section-label">Добавить на доску</span>
+        <div className="palette-list">
+          {foundClues.map(clue => (
+            <button 
+              key={clue.id} 
+              className={`palette-item ${board.nodes.some(n => n.id === `clue-${clue.id}`) ? 'added' : ''}`}
+              onClick={() => addClueToBoard(clue.id)}
+            >
+              {clue.title}
+            </button>
+          ))}
+          {questionedChars.map(char => (
+            <button 
+              key={char.id} 
+              className={`palette-item ${board.nodes.some(n => n.id === `char-${char.id}`) ? 'added' : ''}`}
+              onClick={() => {
+                if (board.nodes.some(n => n.id === `char-${char.id}`)) return;
+                const newNode: BoardNode = {
+                  id: `char-${char.id}`,
+                  type: 'character',
+                  title: char.name,
+                  content: char.role,
+                  x: 300 + Math.random() * 200,
+                  y: 100 + Math.random() * 150,
+                  color: '#8b5cf6'
+                };
+                setState(s => s ? ({
+                  ...s,
+                  investigationBoard: {
+                    ...board,
+                    nodes: [...board.nodes, newNode]
+                  }
+                }) : null);
+              }}
+            >
+              {char.name}
+            </button>
+          ))}
+        </div>
+      </div>
+      
+      <div className="investigation-board" style={{position: 'relative', height: '400px', overflow: 'hidden', background: '#fef3c7', borderRadius: '8px', border: '2px solid #d4a574'}}>
+        {/* SVG layer for connections */}
+        <svg style={{position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none'}}>
+          {board.connections.map(conn => {
+            const fromNode = board.nodes.find(n => n.id === conn.fromNodeId);
+            const toNode = board.nodes.find(n => n.id === conn.toNodeId);
+            if (!fromNode || !toNode) return null;
+            return (
+              <line
+                key={conn.id}
+                x1={fromNode.x + 60}
+                y1={fromNode.y + 40}
+                x2={toNode.x + 60}
+                y2={toNode.y + 40}
+                stroke={conn.color || '#dc2626'}
+                strokeWidth="2"
+                strokeDasharray="5,5"
+              />
+            );
+          })}
+        </svg>
+        
+        {/* Nodes */}
+        {board.nodes.map(node => (
+          <div
+            key={node.id}
+            className="board-node"
+            style={{
+              position: 'absolute',
+              left: `${node.x}px`,
+              top: `${node.y}px`,
+              width: '120px',
+              minHeight: '80px',
+              background: node.color || '#fff',
+              borderRadius: '8px',
+              padding: '8px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+              cursor: board.selectedTool === 'select' ? 'move' : 'pointer',
+              border: connectingFrom === node.id ? '3px solid #dc2626' : '2px solid transparent'
+            }}
+            onMouseDown={(e) => {
+              if (board.selectedTool === 'connect') {
+                if (connectingFrom) {
+                  addConnection(connectingFrom, node.id);
+                  setConnectingFrom(null);
+                } else {
+                  setConnectingFrom(node.id);
+                }
+                e.stopPropagation();
+              } else {
+                setDraggingNodeId(node.id);
+              }
+            }}
+            onMouseMove={(e) => {
+              if (draggingNodeId === node.id) {
+                const rect = (e.target as HTMLElement).parentElement?.getBoundingClientRect();
+                if (rect) {
+                  updateNodePosition(node.id, e.clientX - rect.left - 60, e.clientY - rect.top - 40);
+                }
+              }
+            }}
+            onMouseUp={() => setDraggingNodeId(null)}
+            onMouseLeave={() => setDraggingNodeId(null)}
+          >
+            <div style={{fontWeight: 'bold', fontSize: '12px', marginBottom: '4px'}}>{node.title}</div>
+            <div style={{fontSize: '10px', opacity: 0.8}}>{node.content}</div>
+          </div>
+        ))}
+        
+        {board.nodes.length === 0 && (
+          <div style={{position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center', color: '#92400e'}}>
+            <StickyNote size={48} style={{margin: '0 auto 16px', opacity: 0.5}}/>
+            <p>Добавьте улики из панели слева</p>
+          </div>
+        )}
+      </div>
+      
+      <div className="board-hint">
+        <small>💡 Совет: Используйте инструмент "Связать" чтобы протянуть красную нить между связанными уликами</small>
+      </div>
+    </>
+  );
+}
+
 function Select({label,value,set,opts}:{label:string;value:string;set:(v:string)=>void;opts:string[][]}){return <label className="select-wrap"><span>{label}</span><select value={value} onChange={e=>set(e.target.value)}><option value="">Выберите ответ…</option>{opts.map(([v,t])=><option value={v} key={v}>{t}</option>)}</select></label>}
