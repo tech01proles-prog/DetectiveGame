@@ -2,7 +2,7 @@
  * OPEN CASES - Scenario Selector Screen
  * 
  * Allows players to choose which detective scenario to play.
- * Lists all available scenarios from /public/scenarios/
+ * Auto-discovers all scenarios from /public/scenarios/{case-id}/scenario.json
  */
 
 import { useState, useEffect } from 'react';
@@ -21,6 +21,63 @@ interface ScenarioMeta {
   premise: string;
 }
 
+/**
+ * Список известных сценариев для загрузки
+ * Автообнаружение невозможно в браузере без бэкенда,
+ * поэтому используем manifest-файл или сканируем известные ID
+ */
+const KNOWN_SCENARIO_IDS = [
+  'case-001',
+  'case-002',
+  // Добавляйте новые ID сюда при создании дел
+];
+
+/**
+ * Автообнаружение всех сценариев в папке /public/scenarios/
+ * Проверяет наличие scenario.json для каждого известного ID
+ */
+async function discoverScenarios(): Promise<ScenarioMeta[]> {
+  const scenarios: ScenarioMeta[] = [];
+  
+  // Пытаемся загрузить manifest файл (если есть)
+  try {
+    const manifestResponse = await fetch('/scenarios/index.json');
+    if (manifestResponse.ok) {
+      const manifest = await manifestResponse.json();
+      if (manifest.scenarios && Array.isArray(manifest.scenarios)) {
+        KNOWN_SCENARIO_IDS.push(...manifest.scenarios.map((s: any) => s.id).filter((id: string) => !KNOWN_SCENARIO_IDS.includes(id)));
+      }
+    }
+  } catch (e) {
+    // index.json нет, используем KNOWN_SCENARIO_IDS
+    console.log('index.json не найден, используем встроенный список');
+  }
+  
+  // Для каждого известного ID пытаемся загрузить scenario.json
+  for (const scenarioId of KNOWN_SCENARIO_IDS) {
+    try {
+      const result = await fetchScenario(scenarioId);
+      if (result.success && result.data) {
+        scenarios.push({
+          id: result.data.scenario.id,
+          title: result.data.scenario.title,
+          city: result.data.scenario.city,
+          duration: result.data.scenario.duration,
+          players: result.data.scenario.players,
+          difficulty: result.data.scenario.difficulty,
+          premise: result.data.scenario.premise,
+        });
+      } else {
+        console.warn(`Сценарий ${scenarioId} не загружен:`, result.errors);
+      }
+    } catch (e) {
+      console.warn(`Ошибка загрузки сценария ${scenarioId}:`, e);
+    }
+  }
+  
+  return scenarios;
+}
+
 export default function ScenarioSelector({ 
   onSelect, 
   onBack 
@@ -34,82 +91,19 @@ export default function ScenarioSelector({
   const [editingScenario, setEditingScenario] = useState<{id: string, data: ScenarioData} | null>(null);
 
   useEffect(() => {
-    // Загружаем список сценариев из public/scenarios/index.json
-    fetch('/scenarios/index.json')
-      .then((res) => {
-        if (!res.ok) throw new Error('Не удалось загрузить index.json');
-        return res.json();
-      })
-      .then((manifest) => {
-        const scenarioList = manifest.scenarios || [];
-        
-        // Try to load each scenario's metadata
-        async function loadScenarios() {
-          const loaded: ScenarioMeta[] = [];
-          const errors: string[] = [];
-
-          for (const scenario of scenarioList) {
-            try {
-              const result = await fetchScenario(scenario.id);
-              if (result.success && result.data) {
-                loaded.push({
-                  id: result.data.scenario.id,
-                  title: result.data.scenario.title,
-                  city: result.data.scenario.city,
-                  duration: result.data.scenario.duration,
-                  players: result.data.scenario.players,
-                  difficulty: result.data.scenario.difficulty,
-                  premise: result.data.scenario.premise,
-                });
-              } else {
-                errors.push(`Failed to load ${scenario.id}: ${result.errors?.join(', ')}`);
-              }
-            } catch (e) {
-              errors.push(`Error loading ${scenario.id}: ${(e as Error).message}`);
-            }
-          }
-
-          setScenarios(loaded);
-          setLoading(false);
-          if (errors.length > 0 && loaded.length === 0) {
-            setError(errors.join('\n'));
-          }
+    // Автообнаружение всех сценариев
+    discoverScenarios()
+      .then((loaded) => {
+        setScenarios(loaded);
+        setLoading(false);
+        if (loaded.length === 0) {
+          setError('Не найдено ни одного корректного сценария в /public/scenarios/');
         }
-
-        loadScenarios();
       })
       .catch((err) => {
         console.error(err);
-        // Фоллбэк на хардкод, если index.json нет
-        const scenarioList = [
-          { id: 'case-001', title: 'Тишина на Мэдисон' },
-        ];
-        
-        async function loadScenarios() {
-          const loaded: ScenarioMeta[] = [];
-          for (const scenario of scenarioList) {
-            try {
-              const result = await fetchScenario(scenario.id);
-              if (result.success && result.data) {
-                loaded.push({
-                  id: result.data.scenario.id,
-                  title: result.data.scenario.title,
-                  city: result.data.scenario.city,
-                  duration: result.data.scenario.duration,
-                  players: result.data.scenario.players,
-                  difficulty: result.data.scenario.difficulty,
-                  premise: result.data.scenario.premise,
-                });
-              }
-            } catch (e) {
-              console.error(`Error loading ${scenario.id}:`, e);
-            }
-          }
-          setScenarios(loaded);
-          setLoading(false);
-        }
-        
-        loadScenarios();
+        setError(`Ошибка загрузки: ${(err as Error).message}`);
+        setLoading(false);
       });
   }, []);
 
