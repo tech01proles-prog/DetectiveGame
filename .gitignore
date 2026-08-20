@@ -1,6 +1,19 @@
-```gitignore
+```
 # Dependencies
 node_modules/
+
+# Logs and temp files
+*.log
+*.tmp
+
+# Environment
+.env
+.env.local
+*.env.*
+
+# Editors
+.vscode/
+.idea/
 
 # Build artifacts
 dist/
@@ -12,42 +25,21 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
-.Python
-env/
-venv/
-.venv/
-.ENV
-.env
-.env.local
-.env.*
-.env.local.*
-.env.prod.*
 
-# Logs
-*.log
+# Compiled
+*.o
+*.obj
+*.so
+*.a
+*.dll
+*.exe
 
-# Coverage reports
+# Coverage
 coverage/
 htmlcov/
 .coverage
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Testing
-.mypy_cache/
-.pytest_cache/
-.nyc_output/
-coverage/
-
-# Compressed files
+# Compressed
 *.zip
 *.gz
 *.tar
