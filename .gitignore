@@ -2,6 +2,19 @@
 # Dependencies
 node_modules/
 
+# Logs and temp files
+*.log
+*.tmp
+
+# Environment
+.env
+.env.local
+*.env.*
+
+# Editors
+.vscode/
+.idea/
+
 # Build artifacts
 dist/
 build/
@@ -85,4 +98,24 @@ Thumbs.db
 *.tar.bz2
 *.tar.xz
 *.tar.zst
+
+# Coverage
+coverage/
+htmlcov/
+.coverage
+
+# Gradle
+.gradle/
+
+# MyPy
+.mypy_cache/
+
+# PyTest
+.pytest_cache/
+
+# Temporary files
+*.tmp
+*~
+.DS_Store
+Thumbs.db
 ```
