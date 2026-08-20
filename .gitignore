@@ -1,4 +1,4 @@
-```gitignore
+```
 # Dependencies
 node_modules/
 
@@ -7,45 +7,45 @@ dist/
 build/
 target/
 
+# Logs and temp files
+*.log
+*.tmp
+
+# Environment
+.env
+.env.local
+*.env.*
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
 # Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-.Python
-env/
-venv/
-.venv/
-.ENV
-.env
-.env.local
-.env.*
-.env.local.*
-.env.prod.*
 
-# Logs
-*.log
+# Java
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+*.hprof
+hs_err_pid*
 
-# Coverage reports
-coverage/
-htmlcov/
-.coverage
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Testing
-.mypy_cache/
-.pytest_cache/
-.nyc_output/
-coverage/
+# C/C++
+*.o
+*.obj
+*.so
+*.a
+*.lib
+*.dll
+*.dylib
+*.exe
+*.out
 
 # Compressed files
 *.zip
@@ -70,4 +70,24 @@ coverage/
 *.tar.bz2
 *.tar.xz
 *.tar.zst
+
+# Coverage
+coverage/
+htmlcov/
+.coverage
+
+# Gradle
+.gradle/
+
+# MyPy
+.mypy_cache/
+
+# PyTest
+.pytest_cache/
+
+# Temporary files
+*.tmp
+*~
+.DS_Store
+Thumbs.db
 ```
