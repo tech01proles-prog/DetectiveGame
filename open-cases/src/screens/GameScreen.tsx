@@ -83,15 +83,15 @@ export default function GameScreen({state,setState,onFinish,onRestart,scenario}:
       if (dynamicNode) {
         setDialogue(dynamicNode);
         setDialogueNodeId(dynamicNode.id);
-        // Mark this dialogue as viewed for future filtering
-        setState(s => s ? ({...s, dialogueFlags: [...(s.dialogueFlags||[]), `viewed_${dynamicNode.id}`]}): null);
+        // Mark this dialogue node as viewed for future filtering
+        setState(s => s ? ({...s, dialogueFlags: [...(s.dialogueFlags||[]), `viewed_${dynamicNode.id}`], viewedDialogueNodeIds: [...(s.viewedDialogueNodeIds||[]), dynamicNode.id]}): null);
         return;
       }
     }
     
     // Legacy fallback: try to get static dialogue ID
     const dialogueId=getActionDialogueId(id, scenario);
-    if(dialogueId){setDialogue(scenario.dialogueNodes[dialogueId]);setDialogueNodeId(dialogueId);return;}
+    if(dialogueId){setDialogue(scenario.dialogueNodes[dialogueId]);setDialogueNodeId(dialogueId);setState(s => s ? ({...s, viewedDialogueNodeIds: [...(s.viewedDialogueNodeIds||[]), dialogueId]}): null);return;}
     
     // Non-dialogue action: show event notice
     if(actionDef){
@@ -105,7 +105,13 @@ export default function GameScreen({state,setState,onFinish,onRestart,scenario}:
   const chooseDialogue=(choice:{id:string;clueIds?:string[];nextId?:string;text?:string;note?:string})=>{
     const nextState=discoverFromClues({...state,foundClueIds:[...new Set([...state.foundClueIds,...(choice.clueIds||[])])],dialogueFlags:[...(state.dialogueFlags||[]),choice.id]}, scenario);
     setState(nextState);
-    if(choice.nextId&&dialogueNodes[choice.nextId]){setDialogue(dialogueNodes[choice.nextId]);setDialogueNodeId(choice.nextId);return}
+    if(choice.nextId&&dialogueNodes[choice.nextId]){
+      setDialogue(dialogueNodes[choice.nextId]);
+      setDialogueNodeId(choice.nextId);
+      // Mark the next dialogue node as viewed
+      setState(s => s ? ({...s, viewedDialogueNodeIds: [...(s.viewedDialogueNodeIds||[]), choice.nextId!]}): null);
+      return
+    }
     const added=(choice.clueIds||[]).map(id=>clues.find(c=>c.id===id)?.title).filter(Boolean) as string[];
     setDialogue(null);setDialogueNodeId(null);
     if(added.length||choice.text){setEventNotice({title:'Разговор записан',text:choice.text||'Показание добавлено в материалы дела.',clues:added});}
@@ -152,9 +158,12 @@ function CaseTab({loc,state,action,setFinalOpen,canFinal,scenario}:{loc:any;stat
 function PeopleTab({state,select,scenario}:{state:GameState;select:(id:string)=>void;scenario:ScenarioData}){
   const characters = scenario.characters;
   const scenarioId = scenario.scenario.id;
-  return <><div className="panel-title"><span className="eyebrow">ДОСЬЕ</span><h2>Люди</h2><p>{characters.length} фигур в деле</p></div>
+  // Only show characters the player has interacted with (questioned)
+  const interactedCharacters = characters.filter(c => state.questionedCharacterIds.includes(c.id));
+  
+  return <><div className="panel-title"><span className="eyebrow">ДОСЬЕ</span><h2>Люди</h2><p>{interactedCharacters.length} фигур в деле</p></div>
   <div className="people-list">
-    {characters.map((c:any)=>{
+    {interactedCharacters.map((c:any)=>{
       const portraitUrl = resolveImageUrl(scenarioId, c.portrait);
       return <button key={c.id} className="person-card" onClick={()=>c.locationId&&select(c.locationId)}>
         {portraitUrl ? <img src={portraitUrl} alt={c.name}/> : <div className="avatar-placeholder"><Users size={32}/></div>}
@@ -162,6 +171,7 @@ function PeopleTab({state,select,scenario}:{state:GameState;select:(id:string)=>
         <ChevronRight size={16}/>
       </button>
     })}
+    {interactedCharacters.length === 0 && <div className="empty">Пока нет данных о персонажах. Начните расследование и опрашивайте свидетелей.</div>}
   </div></>
 }
 function CluesTab({found,onOpen}:{found:any[];onOpen:(id:string)=>void}){return <><div className="panel-title"><span className="eyebrow">ДОКАЗАТЕЛЬСТВА</span><h2>Улики <em>{found.length}</em></h2><p>Нажимайте на материалы и сопоставляйте детали.</p></div><div className="clue-list">{found.map(c=><button className={`clue-card ${c.importance}`} key={c.id} onClick={()=>onOpen(c.id)}><div className="clue-type">{c.type}</div><b>{c.title}</b><span>{c.description}</span><small>{c.foundWhen}</small></button>)}{found.length===0&&<div className="empty">Пока ничего. Начните с дома Беннеттов и школы.</div>}</div></>}
