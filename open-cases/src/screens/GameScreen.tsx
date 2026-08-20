@@ -1,7 +1,7 @@
 import {useMemo,useState} from 'react';
-import {BookOpen,ChevronRight,FileText,MessageSquare,NotebookPen,Search,Users,Clock3,Lock,Check,PanelRightClose,PanelRightOpen,Send,MapPin,Radio,Eye,Camera,FileSearch,CircleAlert} from 'lucide-react';
+import {BookOpen,ChevronRight,FileText,MessageSquare,NotebookPen,Search,Users,Clock3,Lock,Check,PanelRightClose,PanelRightOpen,Send,MapPin,Radio,Eye,Camera,FileSearch,CircleAlert,Repeat} from 'lucide-react';
 import MapView from '@/game/MapView';
-import {calculateScore,discoverFromClues,performAction} from '@/game/engine';
+import {calculateScore,discoverFromClues,performAction,getDynamicDialogueNode} from '@/game/engine';
 import {resolveImageUrl} from '@/game/scenario/loader';
 import type {DialogueNode,GameState,Tab,Location,Character,Clue,TimelineEvent,DialogueChoice} from '@/game/types';
 import type {ScenarioData} from '@/game/scenario/schema';
@@ -65,23 +65,41 @@ export default function GameScreen({state,setState,onFinish,onRestart,scenario}:
   // Helper to get character by ID
   const getCharacter = (id: string) => characters.find(c => c.id === id);
 
-  const select=(id:string)=>setState(s=>({...s,selectedLocationId:id,selectedTab:'case'}));
+  const select=(id:string)=>setState(s=>s?({...s,selectedLocationId:id,selectedTab:'case'}):null);
   const action=(id:string)=>{
+    if(!state) return;
     const before=new Set(state.foundClueIds);
     const next=performAction(state, scenario, loc.id,id);
     setState(next);
     const added=next.foundClueIds.filter(x=>!before.has(x));
-    // Get dialogue ID dynamically from scenario
+    
+    // Get the action definition to check if it's a dialogue action
+    const actionDef=loc.actions.find(a=>a.id===id);
+    
+    // For dialogue actions: use dynamic dialogue based on game state
+    if (actionDef?.characterId) {
+      const dynamicNode = getDynamicDialogueNode(state, scenario, actionDef.characterId, loc.id, id);
+      if (dynamicNode) {
+        setDialogue(dynamicNode);
+        setDialogueNodeId(dynamicNode.id);
+        // Mark this dialogue as viewed for future filtering
+        setState(s => s ? ({...s, dialogueFlags: [...(s.dialogueFlags||[]), `viewed_${dynamicNode.id}`]}): null);
+        return;
+      }
+    }
+    
+    // Legacy fallback: try to get static dialogue ID
     const dialogueId=getActionDialogueId(id, scenario);
     if(dialogueId){setDialogue(scenario.dialogueNodes[dialogueId]);setDialogueNodeId(dialogueId);return;}
-    const actionDef=loc.actions.find(a=>a.id===id);
+    
+    // Non-dialogue action: show event notice
     if(actionDef){
       const clueNames=added.map(x=>clues.find(c=>c.id===x)?.title||'').filter(Boolean);
       setEventNotice({title:actionDef.label,text:actionDef.description,clues:clueNames});
     }
   };
-  const setTab=(tab:Tab)=>setState(s=>({...s,selectedTab:tab}));
-  const note=(v:string)=>setState(s=>({...s,notes:v}));
+  const setTab=(tab:Tab)=>setState(s=>s?({...s,selectedTab:tab}):null);
+  const note=(v:string)=>setState(s=>s?({...s,notes:v}):null);
 
   const chooseDialogue=(choice:{id:string;clueIds?:string[];nextId?:string;text?:string;note?:string})=>{
     const nextState=discoverFromClues({...state,foundClueIds:[...new Set([...state.foundClueIds,...(choice.clueIds||[])])],dialogueFlags:[...(state.dialogueFlags||[]),choice.id]}, scenario);
@@ -97,7 +115,7 @@ export default function GameScreen({state,setState,onFinish,onRestart,scenario}:
     <header className="game-top"><div className="brand"><span className="brand-mark">OC</span><div><b>OPEN CASES</b><small>Дело №001 · Тишина на Мэдисон</small></div></div><div className="top-status"><span><span className="live-dot"/> СИСТЕМА АКТИВНА</span><span>{found.length} / {totalClues} улик</span><button onClick={onRestart} className="top-link">Сбросить</button></div></header>
     <div className="game-body">
       <aside className={`left-rail ${sidebar?'':'collapsed'}`}>{sidebar&&<><div className="rail-head"><div><span className="eyebrow">РАССЛЕДОВАНИЕ</span><strong>Тишина на Мэдисон</strong></div><button onClick={()=>setSidebar(false)} aria-label="Свернуть панель"><PanelRightClose size={17}/></button></div><nav>{tabs.map(t=>{const Icon=t.icon;return <button key={t.id} className={state.selectedTab===t.id?'active':''} onClick={()=>setTab(t.id)}><Icon size={17}/><span>{t.label}</span>{t.id==='clues'&&found.length>0&&<em>{found.length}</em>}</button>})}</nav><div className="rail-progress"><div><span>Материалы дела</span><b>{progress}%</b></div><div className="progress"><i style={{width:`${progress}%`}}/></div><small>Открыто {discovered.length} из {locations.length} точек</small></div></>}{!sidebar&&<button className="expand-rail" onClick={()=>setSidebar(true)} aria-label="Развернуть панель"><PanelRightOpen size={18}/></button>}</aside>
-      <section className="map-panel"><MapView locations={locations} discovered={discovered} selectedId={state.selectedLocationId} mode={state.mapMode} onSelect={select} mapTemplateId={mapTemplateId}/><div className="map-toolbar"><button className={state.mapMode==='scheme'?'active':''} onClick={()=>setState(s=>({...s,mapMode:'scheme'}))}>СХЕМА</button><button className={state.mapMode==='satellite'?'active':''} onClick={()=>setState(s=>({...s,mapMode:'satellite'}))}>СПУТНИК</button></div><div className="map-hint"><MapPin size={13}/><span>Выберите точку на карте</span></div><div className="map-legend"><span><i className="legend-dot open"/> открыта</span><span><i className="legend-dot new"/> выбрана</span><span><i className="legend-dot locked"/> неизвестна</span></div><div className="case-stamp">SEATTLE<br/><b>CASE 001</b></div></section>
+      <section className="map-panel"><MapView locations={locations} discovered={discovered} selectedId={state.selectedLocationId} mode={state.mapMode} onSelect={select} mapTemplateId={mapTemplateId}/><div className="map-toolbar"><button className={state.mapMode==='scheme'?'active':''} onClick={()=>setState(s=>s?({...s,mapMode:'scheme'}):null)}>СХЕМА</button><button className={state.mapMode==='satellite'?'active':''} onClick={()=>setState(s=>s?({...s,mapMode:'satellite'}):null)}>СПУТНИК</button></div><div className="map-hint"><MapPin size={13}/><span>Выберите точку на карте</span></div><div className="map-legend"><span><i className="legend-dot open"/> открыта</span><span><i className="legend-dot new"/> выбрана</span><span><i className="legend-dot locked"/> неизвестна</span></div><div className="case-stamp">SEATTLE<br/><b>CASE 001</b></div></section>
       <aside className="right-panel"><div className="panel-scroll">{state.selectedTab==='case'&&<CaseTab loc={loc} state={state} action={action} setFinalOpen={setFinalOpen} canFinal={canFinal} scenario={scenario}/>} {state.selectedTab==='people'&&<PeopleTab state={state} select={select} scenario={scenario}/>} {state.selectedTab==='clues'&&<CluesTab found={found} onOpen={setDetailClue}/>} {state.selectedTab==='notes'&&<NotesTab value={state.notes} onChange={note}/>} {state.selectedTab==='timeline'&&<TimelineTab state={state} scenario={scenario}/>}</div></aside>
     </div>
     {detailClue&&<ClueModal clue={clues.find(c=>c.id===detailClue)!} onClose={()=>setDetailClue(null)}/>} 

@@ -1,6 +1,13 @@
 <svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
-  <rect width="800" height="600" fill="#2d3748"/>
-  <text x="400" y="280" font-family="Arial" font-size="24" fill="#a0aec0" text-anchor="middle">Location Image</text>
-  <text x="400" y="320" font-family="Arial" font-size="16" fill="#718096" text-anchor="middle">800x600</text>
-  <rect x="50" y="50" width="700" height="500" fill="none" stroke="#4a5568" stroke-width="2" stroke-dasharray="10,5"/>
+  <defs>
+    <linearGradient id="schoolLocGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a202c"/>
+      <stop offset="100%" style="stop-color:#0d1117"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#schoolLocGrad)"/>
+  <rect x="150" y="150" width="500" height="300" fill="#2d3748" opacity="0.4" rx="8"/>
+  <rect x="180" y="180" width="440" height="240" fill="#1a202c" rx="4"/>
+  <text x="400" y="520" font-family="Georgia, serif" font-size="28" fill="#d4af60" text-anchor="middle">school</text>
+  <text x="400" y="555" font-family="monospace" font-size="12" fill="#718096" text-anchor="middle">LOCATION • SEATTLE</text>
 </svg>
