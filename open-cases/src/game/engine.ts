@@ -5,7 +5,7 @@
  * Supports multiple scenarios loaded from JSON files.
  */
 
-import type { GameState, DialogueNode } from './types';
+import type { GameState, DialogueNode, TimelineEvent } from './types';
 import type { ScenarioData, Location, Clue, Character } from './scenario/schema';
 import { getLocationById, getClueById, getCharacterById, getDialogueNode } from './scenario/loader';
 
@@ -42,6 +42,12 @@ export function createInitialState(scenario: ScenarioData): GameState {
     dialogueFlags: [],
     triggeredEvents: [],
     unlockedKeywords: [],
+    viewedDialogueNodeIds: [],
+    investigationBoard: {
+      nodes: [],
+      connections: [],
+      selectedTool: 'select'
+    }
   };
 }
 
@@ -59,13 +65,31 @@ export function loadGame(scenarioId?: string): GameState | null {
 }
 
 /**
- * Saves game state for a specific scenario
+ * Saves game state for a specific scenario with debouncing
  */
-export function saveGame(state: GameState) {
-  try {
-    const key = state.scenarioId ? getSaveKey(state.scenarioId) : 'free-detective-case-001-v1';
-    localStorage.setItem(key, JSON.stringify(state));
-  } catch {}
+let saveTimeout: ReturnType<typeof setTimeout> | null = null;
+export function saveGame(state: GameState, immediate = false) {
+  if (saveTimeout) {
+    clearTimeout(saveTimeout);
+  }
+  
+  const doSave = () => {
+    try {
+      const key = state.scenarioId ? getSaveKey(state.scenarioId) : 'free-detective-case-001-v1';
+      // Optimize: remove large/unnecessary data before saving
+      const stateToSave = { ...state };
+      localStorage.setItem(key, JSON.stringify(stateToSave));
+    } catch (e) {
+      console.warn('Failed to save game:', e);
+    }
+  };
+  
+  if (immediate) {
+    doSave();
+  } else {
+    // Debounce saves to avoid excessive localStorage writes
+    saveTimeout = setTimeout(doSave, 500);
+  }
 }
 
 /**

@@ -1,6 +1,6 @@
 export type Screen = 'title' | 'selector' | 'intro' | 'game' | 'ending';
 export type MapMode = 'satellite' | 'scheme';
-export type Tab = 'case' | 'people' | 'clues' | 'notes' | 'timeline';
+export type Tab = 'case' | 'people' | 'board' | 'clues' | 'notes' | 'timeline';
 export type Importance = 'critical' | 'important' | 'context';
 
 // Map location for stylized map
