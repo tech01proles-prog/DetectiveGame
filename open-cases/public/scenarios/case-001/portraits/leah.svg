@@ -1,6 +1,13 @@
 <svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
-  <rect width="800" height="600" fill="#2d3748"/>
-  <text x="400" y="280" font-family="Arial" font-size="24" fill="#a0aec0" text-anchor="middle">Location Image</text>
-  <text x="400" y="320" font-family="Arial" font-size="16" fill="#718096" text-anchor="middle">800x600</text>
-  <rect x="50" y="50" width="700" height="500" fill="none" stroke="#4a5568" stroke-width="2" stroke-dasharray="10,5"/>
+  <defs>
+    <linearGradient id="leahGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2d3748"/>
+      <stop offset="100%" style="stop-color:#1a202c"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#leahGrad)"/>
+  <circle cx="400" cy="220" r="120" fill="#4a5568" opacity="0.3"/>
+  <ellipse cx="400" cy="480" rx="180" ry="140" fill="#4a5568" opacity="0.3"/>
+  <text x="400" y="560" font-family="Georgia, serif" font-size="32" fill="#d4af60" text-anchor="middle" font-style="italic">LEAH</text>
+  <text x="400" y="590" font-family="monospace" font-size="14" fill="#718096" text-anchor="middle">CHARACTER</text>
 </svg>

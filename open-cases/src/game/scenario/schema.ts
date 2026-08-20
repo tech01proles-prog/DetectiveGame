@@ -161,6 +161,10 @@ export interface DialogueChoice {
   nextId?: string;
   /** Optional: Additional note or context */
   note?: string;
+  /** Optional: Keywords that must be present in player notes to show this choice */
+  requiresKeywords?: string[];
+  /** Optional: If true, this choice is only available if the keyword is NOT in notes */
+  hideIfHasKeyword?: boolean;
 }
 
 export interface DialogueNode {
@@ -178,6 +182,12 @@ export interface DialogueNode {
   lines: string[];
   /** Array of choices available to the player */
   choices: DialogueChoice[];
+  /** Optional: Keywords that must be present in player notes to unlock this dialogue node */
+  requiresKeywords?: string[];
+  /** Optional: If true, this dialogue node is hidden after being viewed once */
+  hideAfterViewed?: boolean;
+  /** Optional: Event flag triggered when this dialogue is viewed */
+  triggersEvent?: string;
 }
 
 export interface MapTemplate {

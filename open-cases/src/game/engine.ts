@@ -112,14 +112,18 @@ export function performAction(
   const action = location?.actions.find(a => a.id === actionId);
   
   if (!location || !action) return state;
-  // Allow re-interrogation but only grant clues once
+  
+  // Block if required clues are not found
   if (action.requiresClueIds?.some(id => !state.foundClueIds.includes(id))) return state;
+  
+  // For dialogue actions: always allow re-interrogation, but only add character to questioned list once
+  const isDialogueAction = action.characterId !== undefined;
   
   const next: GameState = {
     ...state,
     foundClueIds: [...new Set([...state.foundClueIds, ...action.clueIds])],
-    // Only mark as completed if action.once is true
-    completedActionIds: action.once 
+    // Only mark as completed if action.once is true AND it's not a dialogue action
+    completedActionIds: (action.once && !isDialogueAction)
       ? [...new Set([...state.completedActionIds, actionId])] 
       : state.completedActionIds,
     questionedCharacterIds: action.characterId && !state.questionedCharacterIds.includes(action.characterId)
@@ -192,15 +196,68 @@ export function isActionAvailable(
 
 /**
  * Gets dialogue node based on game state and character interaction history
- * Supports dynamic dialogue that changes based on progress
+ * Supports dynamic dialogue that changes based on progress, keywords, and previous interactions
  */
 export function getDynamicDialogueNode(
   state: GameState,
   scenario: ScenarioData,
   characterId: string,
-  locationId: string
+  locationId: string,
+  actionId?: string
 ): DialogueNode | null {
-  // Find all dialogue nodes for this character at this location
+  // First try to find a specific dialogue node for this action
+  if (actionId) {
+    const pattern = `${locationId}_${characterId}_`;
+    const allNodesForChar = Object.entries(scenario.dialogueNodes)
+      .filter(([, node]) => node.characterId === characterId)
+      .map(([, node]) => node);
+    
+    // Find nodes that match the action pattern
+    let matchingNodes = allNodesForChar.filter(node => {
+      const nodeId = node.id;
+      return nodeId.startsWith(pattern) || nodeId === actionId || nodeId.startsWith(`${actionId}_`);
+    });
+    
+    // If no exact match, find any node for this character at this location
+    if (matchingNodes.length === 0) {
+      matchingNodes = allNodesForChar.filter(node => {
+        const nodeId = node.id;
+        return nodeId.startsWith(`${locationId}_${characterId}_`);
+      });
+    }
+    
+    if (matchingNodes.length === 0) return null;
+    
+    // Sort by node number (e.g., _1, _2, _3)
+    matchingNodes.sort((a, b) => {
+      const aNum = parseInt(a.id.split('_').pop() || '0');
+      const bNum = parseInt(b.id.split('_').pop() || '0');
+      return aNum - bNum;
+    });
+    
+    // Filter by keyword requirements
+    const playerNotes = state.notes || '';
+    const availableNodes = matchingNodes.filter((node: DialogueNode) => {
+      if (!node.requiresKeywords || node.requiresKeywords.length === 0) return true;
+      return node.requiresKeywords.every((kw: string) => 
+        playerNotes.toLowerCase().includes(kw.toLowerCase())
+      );
+    });
+    
+    // Filter out nodes already viewed if hideAfterViewed is set
+    const viewedNodeIds = state.dialogueFlags?.filter(f => f.startsWith('viewed_')) || [];
+    const notYetViewed = availableNodes.filter(node => {
+      if (node.hideAfterViewed && viewedNodeIds.includes(`viewed_${node.id}`)) {
+        return false;
+      }
+      return true;
+    });
+    
+    // Return the first available node, or fall back to the last one
+    return (notYetViewed.length > 0 ? notYetViewed : availableNodes)[0] || matchingNodes[matchingNodes.length - 1];
+  }
+  
+  // Legacy behavior: find by location and character
   const pattern = `${locationId}_${characterId}_`;
   const matchingNodes = Object.entries(scenario.dialogueNodes)
     .filter(([id]) => id.startsWith(pattern))
@@ -208,7 +265,7 @@ export function getDynamicDialogueNode(
   
   if (matchingNodes.length === 0) return null;
   
-  // Sort by node number (e.g., _1, _2, _3)
+  // Sort by node number
   matchingNodes.sort((a, b) => {
     const aNum = parseInt(a.id.split('_').pop() || '0');
     const bNum = parseInt(b.id.split('_').pop() || '0');
@@ -218,10 +275,13 @@ export function getDynamicDialogueNode(
   // Check if player has asked about specific topics (via dialogueFlags)
   const askedTopics = state.dialogueFlags || [];
   
-  // Filter out nodes whose prerequisites haven't been met
+  // Filter by keyword requirements
+  const playerNotes = state.notes || '';
   const availableNodes = matchingNodes.filter((node: DialogueNode) => {
-    if (!node.requiredFlags) return true;
-    return node.requiredFlags.every((flag: string) => askedTopics.includes(flag));
+    if (!node.requiresKeywords || node.requiresKeywords.length === 0) return true;
+    return node.requiresKeywords.every((kw: string) => 
+      playerNotes.toLowerCase().includes(kw.toLowerCase())
+    );
   });
   
   // Return the first unasked node, or the last one if all have been asked

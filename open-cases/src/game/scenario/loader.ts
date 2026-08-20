@@ -165,7 +165,9 @@ export function resolveImageUrl(scenarioId: string, imageId: string): string {
   if (imageId.startsWith('http')) {
     return imageId;
   }
-  return `/scenarios/${scenarioId}/${imageId}`;
+  // Ensure imageId doesn't start with a slash to avoid double slashes
+  const cleanImageId = imageId.replace(/^\//, '');
+  return `/scenarios/${scenarioId}/${cleanImageId}`;
 }
 
 /**
