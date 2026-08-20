@@ -7,7 +7,7 @@
 
 import type { GameState, DialogueNode } from './types';
 import type { ScenarioData, Location, Clue, Character } from './scenario/schema';
-import { getLocationById, getClueById, getCharacterById } from './scenario/loader';
+import { getLocationById, getClueById, getCharacterById, getDialogueNode } from './scenario/loader';
 
 const SAVE_KEY_PREFIX = 'open-cases-scenario-';
 
@@ -112,17 +112,18 @@ export function performAction(
   const action = location?.actions.find(a => a.id === actionId);
   
   if (!location || !action) return state;
-  if (action.once && state.completedActionIds.includes(actionId)) return state;
+  // Allow re-interrogation but only grant clues once
   if (action.requiresClueIds?.some(id => !state.foundClueIds.includes(id))) return state;
   
   const next: GameState = {
     ...state,
     foundClueIds: [...new Set([...state.foundClueIds, ...action.clueIds])],
+    // Only mark as completed if action.once is true
     completedActionIds: action.once 
-      ? [...state.completedActionIds, actionId] 
+      ? [...new Set([...state.completedActionIds, actionId])] 
       : state.completedActionIds,
     questionedCharacterIds: action.characterId && !state.questionedCharacterIds.includes(action.characterId)
-      ? [...state.questionedCharacterIds, action.characterId]
+      ? [...new Set([...state.questionedCharacterIds, action.characterId])]
       : state.questionedCharacterIds,
   };
   
@@ -169,7 +170,7 @@ export function calculateScore(state: GameState, answers: any, scenario: Scenari
 }
 
 /**
- * Checks if an action is available
+ * Checks if an action is available (allowing re-interrogation)
  */
 export function isActionAvailable(
   state: GameState,
@@ -181,10 +182,55 @@ export function isActionAvailable(
   const action = location?.actions.find(a => a.id === actionId);
   
   if (!action) return false;
+  // Only block if action.once is true AND already completed
   if (action.once && state.completedActionIds.includes(actionId)) return false;
+  // Block if required clues are not found
   if (action.requiresClueIds?.some(id => !state.foundClueIds.includes(id))) return false;
   
   return true;
+}
+
+/**
+ * Gets dialogue node based on game state and character interaction history
+ * Supports dynamic dialogue that changes based on progress
+ */
+export function getDynamicDialogueNode(
+  state: GameState,
+  scenario: ScenarioData,
+  characterId: string,
+  locationId: string
+): DialogueNode | null {
+  // Find all dialogue nodes for this character at this location
+  const pattern = `${locationId}_${characterId}_`;
+  const matchingNodes = Object.entries(scenario.dialogueNodes)
+    .filter(([id]) => id.startsWith(pattern))
+    .map(([, node]) => node);
+  
+  if (matchingNodes.length === 0) return null;
+  
+  // Sort by node number (e.g., _1, _2, _3)
+  matchingNodes.sort((a, b) => {
+    const aNum = parseInt(a.id.split('_').pop() || '0');
+    const bNum = parseInt(b.id.split('_').pop() || '0');
+    return aNum - bNum;
+  });
+  
+  // Check if player has asked about specific topics (via dialogueFlags)
+  const askedTopics = state.dialogueFlags || [];
+  
+  // Filter out nodes whose prerequisites haven't been met
+  const availableNodes = matchingNodes.filter((node: DialogueNode) => {
+    if (!node.requiredFlags) return true;
+    return node.requiredFlags.every((flag: string) => askedTopics.includes(flag));
+  });
+  
+  // Return the first unasked node, or the last one if all have been asked
+  const nextNode = availableNodes.find(node => {
+    const nodeId = node.id;
+    return !askedTopics.some(flag => flag.includes(nodeId));
+  });
+  
+  return nextNode || matchingNodes[matchingNodes.length - 1];
 }
 
 /**

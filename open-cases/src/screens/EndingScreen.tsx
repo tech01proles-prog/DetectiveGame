@@ -21,8 +21,8 @@ export default function EndingScreen({
     : null;
   
   const correctPerson = state.finalAnswers?.person === scenario?.solution?.culpritCharacterId;
-  const correctMotive = scenario?.solution.motiveKeywords.includes(state.finalAnswers?.motive);
-  const correctMethod = scenario?.solution.methodKeywords.includes(state.finalAnswers?.method);
+  const correctMotive = state.finalAnswers?.motive && scenario?.solution.motiveKeywords.includes(state.finalAnswers.motive);
+  const correctMethod = state.finalAnswers?.method && scenario?.solution.methodKeywords.includes(state.finalAnswers.method);
   const correctLocation = state.finalAnswers?.location === scenario?.solution.keyLocationId;
 
   return (
