@@ -121,7 +121,7 @@ export default function GameScreen({state,setState,onFinish,onRestart,scenario}:
     {detailClue&&<ClueModal clue={clues.find(c=>c.id===detailClue)!} onClose={()=>setDetailClue(null)}/>} 
     {eventNotice&&<EventModal notice={eventNotice} onClose={()=>setEventNotice(null)}/>} 
     {dialogue&&<DialogueModal node={dialogue} scenario={scenario} onClose={()=>{setDialogue(null);setDialogueNodeId(null)}} onChoose={chooseDialogue}/>}
-    {finalOpen&&<FinalModal state={state} scenario={scenario} onClose={()=>setFinalOpen(false)} onSubmit={(answers)=>{const score=calculateScore(state,answers,scenario);setState(s=>({...s,finalAnswers:answers,score,finished:true,won:score>=70}));setFinalOpen(false);onFinish(score>=70)}}/>}
+    {finalOpen&&<FinalModal state={state} scenario={scenario} onClose={()=>setFinalOpen(false)} onSubmit={(answers)=>{const score=calculateScore(state,answers,scenario);setState(s=>s?({...s,finalAnswers:answers,score,finished:true,won:score>=70,started:s.started}):null);setFinalOpen(false);onFinish(score>=70)}}/>}
   </div>
 }
 

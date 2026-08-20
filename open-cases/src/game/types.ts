@@ -20,8 +20,8 @@ export interface Clue { id:string; title:string; type:string; description:string
 export interface LocationAction { id:string; label:string; description:string; clueIds:string[]; characterId?:string; requiresClueIds?:string[]; once?:boolean; event?:string; }
 export interface Location { id:string; title:string; subtitle:string; description:string; lat:number; lng:number; address:string; image:string; category:string; initial:boolean; discovered:boolean; lockedReason?:string; clueIds:string[]; characterIds:string[]; actions:LocationAction[]; coordinates?:{x:number;y:number}; }
 export interface TimelineEvent { id:string; time:string; title:string; text:string; source:string; }
-export interface DialogueChoice { id:string; label:string; text?:string; clueIds?:string[]; nextId?:string; note?:string; requiresKeywords?:string[]; hideIfHasKeyword?:boolean; }
-export interface DialogueNode { id:string; characterId:string; title:string; eyebrow:string; intro:string; lines:string[]; choices:DialogueChoice[]; requiredFlags?:string[]; requiresKeywords?:string[]; hideAfterViewed?:boolean; triggersEvent?:string; }
+export interface DialogueChoice { id:string; label:string; text?:string; clueIds?:string[]; nextId?:string|null; note?:string; requiresKeywords?:string[]; hideIfHasKeyword?:string|null; }
+export interface DialogueNode { id:string; characterId:string; title:string; eyebrow:string; intro:string; lines:string[]; choices:DialogueChoice[]; requiredFlags?:string[]; requiresKeywords?:string[]; hideAfterViewed?:boolean; triggersEvent?:string; hideIfHasKeyword?:string|null; }
 export interface GameState { 
   started:boolean;
   introRead:boolean;
