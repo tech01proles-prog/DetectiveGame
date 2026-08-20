@@ -62,15 +62,27 @@ export function validateScenario(data: any): { valid: boolean; errors: string[] 
     }
   }
 
-  // Validate map template exists
+  // Validate map template exists (optional now)
   if (data.mapTemplateId && !getMapTemplate(data.mapTemplateId)) {
-    errors.push(`Unknown map template: ${data.mapTemplateId}`);
+    console.warn(`Unknown map template: ${data.mapTemplateId}, using default`);
   }
 
   return {
     valid: errors.length === 0,
     errors,
   };
+}
+
+/**
+ * Проверяет наличие scenario.json в папке сценария
+ */
+export async function checkScenarioExists(scenarioId: string): Promise<boolean> {
+  try {
+    const response = await fetch(`/scenarios/${scenarioId}/scenario.json`);
+    return response.ok;
+  } catch {
+    return false;
+  }
 }
 
 /**

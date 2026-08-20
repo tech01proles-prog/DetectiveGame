@@ -1,0 +1,41 @@
+{
+  "scenario": {
+    "id": "case-002",
+    "title": "Тестовое дело",
+    "city": "Бостон",
+    "year": 1985,
+    "duration": "60-90 мин",
+    "players": "1-4",
+    "difficulty": "Medium",
+    "premise": "Простое тестовое дело для проверки автообнаружения сценариев.",
+    "opening": "Детектив, у нас есть простое дело. Проверьте работу системы."
+  },
+  "characters": [
+    {
+      "id": "witness",
+      "name": "Свидетель",
+      "role": "Свидетель",
+      "description": "Человек, который видел что-то важное"
+    }
+  ],
+  "clues": [],
+  "locations": [
+    {
+      "id": "office",
+      "name": "Офис",
+      "description": "Место начала расследования",
+      "initial": true,
+      "imageId": ""
+    }
+  ],
+  "timeline": [],
+  "dialogueNodes": {
+    "witness-start": {
+      "id": "witness-start",
+      "characterId": "witness",
+      "text": "Я видел что-то странное той ночью...",
+      "nextId": null
+    }
+  },
+  "mapTemplateId": "boston-districts"
+}
