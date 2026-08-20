@@ -9,7 +9,7 @@ import { useState, useEffect } from 'react';
 import { FolderOpen, Plus, Users, Clock, MapPin, Shield, ChevronRight, Edit3 } from 'lucide-react';
 import type { ScenarioData } from '@/game/scenario/schema';
 import { fetchScenario } from '@/game/scenario/loader';
-import ScenarioEditor from './ScenarioEditor';
+import ScenarioEditor from './ScenarioEditor.tsx';
 
 interface ScenarioMeta {
   id: string;
