@@ -2,11 +2,6 @@
 # Dependencies
 node_modules/
 
-# Build artifacts
-dist/
-build/
-target/
-
 # Logs and temp files
 *.log
 *.tmp
@@ -19,7 +14,11 @@ target/
 # Editors
 .vscode/
 .idea/
-*.swp
+
+# Build artifacts
+dist/
+build/
+target/
 
 # Python
 __pycache__/
@@ -27,27 +26,20 @@ __pycache__/
 *.pyo
 *.pyd
 
-# Java
-*.class
-*.jar
-*.war
-*.ear
-*.nar
-*.hprof
-hs_err_pid*
-
-# C/C++
+# Compiled
 *.o
 *.obj
 *.so
 *.a
-*.lib
 *.dll
-*.dylib
 *.exe
-*.out
 
-# Compressed files
+# Coverage
+coverage/
+htmlcov/
+.coverage
+
+# Compressed
 *.zip
 *.gz
 *.tar
