@@ -322,3 +322,44 @@ h1, h2, h3, h4 {
 /* v0.4 — investigation UX */
 .map-panel:before{content:'';position:absolute;inset:0;z-index:450;pointer-events:none;background:radial-gradient(circle at 45% 48%,transparent 0 43%,rgba(8,10,11,.18) 78%,rgba(8,10,11,.42) 100%);mix-blend-mode:multiply}.map-hint{position:absolute;top:16px;right:16px;z-index:500;display:flex;align-items:center;gap:7px;padding:8px 10px;border:1px solid rgba(255,255,255,.1);background:rgba(10,13,14,.78);color:#a9afac;font:9px 'DM Mono';text-transform:uppercase;letter-spacing:.08em}.selected-location-heading{padding-bottom:4px}.selected-location-heading .eyebrow svg{color:#d9b96f}.hero-badge{position:absolute;right:9px;bottom:9px;z-index:2;background:rgba(10,12,13,.82);border:1px solid rgba(225,190,103,.35);color:#dcc077;padding:5px 7px;font:8px 'DM Mono';letter-spacing:.1em}.action-card{position:relative;overflow:hidden}.action-card:after{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:#7a6537;opacity:0;transition:.2s}.action-card:hover:not(:disabled):after{opacity:1}.location-people{margin-top:4px}.event-layer{position:fixed;inset:0;z-index:2200;display:grid;place-items:center;pointer-events:none;background:linear-gradient(180deg,rgba(5,7,8,.32),rgba(5,7,8,.7))}.event-card{width:min(560px,calc(100vw - 32px));background:#111617;border:1px solid #4a4438;box-shadow:0 28px 100px rgba(0,0,0,.65);padding:26px 28px 24px;pointer-events:auto;position:relative}.event-accent{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#6e5831,#d2b36a,#6e5831)}.event-kicker{display:flex;align-items:center;gap:7px;color:#cbb16f;font:10px 'DM Mono';letter-spacing:.14em}.event-card h3{font:600 31px 'Playfair Display';margin:10px 0 9px}.event-card p{color:#a6aca9;font-size:13px;line-height:1.7;margin:0 0 18px}.event-discoveries{display:grid;gap:6px;padding:13px 14px;background:#171b1c;border:1px solid #2a3031;margin-bottom:18px}.event-discoveries span{color:#676f6d;font:9px 'DM Mono';text-transform:uppercase;letter-spacing:.1em}.event-discoveries b{font-size:11px;color:#d8cfbb}.dialogue-backdrop{background:rgba(4,6,7,.78)}.dialogue-modal{width:min(720px,100%);padding:0;overflow:hidden}.dialogue-top{display:flex;justify-content:space-between;gap:20px;padding:22px 24px 18px;border-bottom:1px solid #2b3031;background:linear-gradient(180deg,#151a1b,#101415)}.dialogue-top h2{font:600 29px 'Playfair Display';margin:8px 0 0}.dialogue-top button{background:none;border:0;color:#818885;font-size:26px}.speaker{display:flex;align-items:center;gap:13px;padding:16px 24px;background:#0d1112;border-bottom:1px solid #262c2d}.speaker img{width:52px;height:62px;object-fit:cover;filter:saturate(.55) contrast(1.05);border:1px solid #3b403f}.speaker div{display:grid;gap:4px}.speaker b{font-size:13px}.speaker span{font-size:9px;color:#777f7c}.dialogue-lines{padding:22px 24px 8px}.dialogue-lines p{margin:0 0 14px;color:#dddcd4;font-size:14px;line-height:1.7}.choice-list{padding:0 24px 18px}.dialogue-choice{width:100%;display:grid;grid-template-columns:1fr 18px;gap:12px;text-align:left;align-items:center;background:#14191a;border:1px solid #2f3536;color:#dddcd4;padding:13px 14px;margin-top:7px;transition:.16s}.dialogue-choice:hover{border-color:#766238;background:#191e1f;transform:translateY(-1px)}.dialogue-choice div{display:grid;gap:5px}.dialogue-choice b{font-size:11px}.dialogue-choice span{font-size:10px;color:#777f7d;line-height:1.4}.dialogue-foot{padding:13px 24px;border-top:1px solid #262c2d;color:#666e6b;background:#0d1112;font-size:10px;line-height:1.5}.leaflet-container{cursor:grab}.leaflet-container:active{cursor:grabbing}.leaflet-control-zoom{border:1px solid rgba(255,255,255,.14)!important;box-shadow:none!important}.leaflet-control-zoom a{background:#101415!important;color:#d4d2ca!important;border-color:#2e3334!important}.leaflet-case-marker{position:relative;width:34px;height:34px;border-radius:50%;border:1px solid var(--marker);background:rgba(8,11,12,.84);display:grid;place-items:center;box-shadow:0 0 0 5px rgba(0,0,0,.15),0 5px 15px rgba(0,0,0,.38);transition:transform .18s,box-shadow .18s}.leaflet-case-marker .marker-core{font:500 13px 'DM Mono';color:var(--marker);line-height:1}.leaflet-case-marker .marker-ring{position:absolute;inset:-5px;border:1px solid color-mix(in srgb,var(--marker) 42%,transparent);border-radius:50%;opacity:.35}.leaflet-case-marker.open:hover{transform:scale(1.08)}.leaflet-case-marker.selected{transform:scale(1.18);box-shadow:0 0 0 7px rgba(232,199,118,.15),0 8px 18px rgba(0,0,0,.5)}.leaflet-case-marker.selected .marker-ring{animation:markerPulse 1.8s ease-out infinite}.leaflet-case-marker.locked{border-style:dashed;filter:grayscale(.15)}.leaflet-case-marker.locked .marker-core{font-size:14px}.leaflet-tooltip{padding:7px 9px!important}.leaflet-tooltip b{font-size:10px}.leaflet-tooltip span{font-size:8px;color:#7c8582}@keyframes markerPulse{0%{transform:scale(.95);opacity:.28}70%{transform:scale(1.32);opacity:0}100%{transform:scale(1.32);opacity:0}}.leaflet-top,.leaflet-bottom{z-index:700!important}
 @media(max-width:1000px){.game-body{grid-template-columns:190px minmax(0,1fr) 330px}.panel-scroll{padding-left:18px;padding-right:18px}}@media(max-width:800px){.map-hint{display:none}.event-card{padding:22px}.dialogue-modal{max-height:92vh}.dialogue-lines{max-height:30vh;overflow:auto}.choice-list{padding-bottom:14px}}
+
+/* Placeholder styles for missing images */
+.hero-placeholder, .avatar-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px dashed rgba(212, 175, 96, 0.3);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.4);
+  padding: 2rem;
+  gap: 0.5rem;
+}
+
+.hero-placeholder {
+  width: 100%;
+  height: 200px;
+}
+
+.avatar-placeholder {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  padding: 0;
+}
+
+.mini-person .avatar-placeholder {
+  width: 36px;
+  height: 36px;
+}
+
+.person-card .avatar-placeholder {
+  width: 56px;
+  height: 56px;
+}
+
+.dialogue-modal .avatar-placeholder {
+  width: 64px;
+  height: 64px;
+}

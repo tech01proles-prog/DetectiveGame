@@ -174,17 +174,17 @@ export function findKeywords(notes: string, keywords: string[]): string[] {
 /**
  * Resolves image URL for a scenario asset
  */
-export function resolveImageUrl(scenarioId: string, imageId?: string): string {
+export function resolveImageUrl(scenarioId: string, imageId?: string | null): string {
   // If no image ID provided, return empty string or default placeholder
-  if (!imageId) {
+  if (!imageId || imageId === '') {
     return '';
   }
   // Image ID can be either a full URL or a relative path
-  if (imageId.startsWith('http')) {
+  if (typeof imageId === 'string' && imageId.startsWith('http')) {
     return imageId;
   }
   // Ensure imageId doesn't start with a slash to avoid double slashes
-  const cleanImageId = imageId.replace(/^\//, '');
+  const cleanImageId = String(imageId).replace(/^\//, '');
   return `/scenarios/${scenarioId}/${cleanImageId}`;
 }
 
