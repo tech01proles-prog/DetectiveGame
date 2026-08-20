@@ -16,13 +16,15 @@ interface ScenarioEditorProps {
   scenarioId: string;
   onSave: (newScenarioId: string, newData: ScenarioData) => void;
   onCancel: () => void;
+  basePath?: string; // Base path for loading images
 }
 
 export default function ScenarioEditor({ 
   scenarioData, 
   scenarioId, 
   onSave, 
-  onCancel 
+  onCancel,
+  basePath = `/scenarios/${scenarioId}`
 }: ScenarioEditorProps) {
   const [editedData, setEditedData] = useState<ScenarioData>(JSON.parse(JSON.stringify(scenarioData)));
   const [activeTab, setActiveTab] = useState<'map' | 'scenario' | 'characters' | 'clues' | 'locations' | 'dialogue'>('map');
@@ -30,6 +32,7 @@ export default function ScenarioEditor({
   const [isDragging, setIsDragging] = useState(false);
   const [draggedLocationId, setDraggedLocationId] = useState<string | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
+  const [selectedDialogueNode, setSelectedDialogueNode] = useState<string | null>(null);
   
   // Generate timestamped scenario ID
   const generateNewScenarioId = () => {
@@ -213,25 +216,34 @@ export default function ScenarioEditor({
                 className="relative bg-[#0a0f1c] rounded-lg overflow-hidden"
                 style={{ aspectRatio: '2/1' }}
               >
+                {/* Map background image */}
+                <img 
+                  src={`${basePath}/map-bg.png`}
+                  alt="Map background"
+                  className="absolute inset-0 w-full h-full object-cover"
+                  style={{ opacity: 0.6 }}
+                  onError={(e) => {
+                    // Fallback to grid if image not found
+                    (e.target as HTMLImageElement).style.display = 'none';
+                  }}
+                />
+                
                 <svg
                   ref={svgRef}
                   viewBox="0 0 800 400"
                   preserveAspectRatio="xMidYMid meet"
-                  className="w-full h-full"
+                  className="w-full h-full relative z-10"
                   onMouseMove={handleMouseMove}
                   onMouseUp={handleMouseUp}
                   onMouseLeave={handleMouseUp}
                 >
-                  {/* Background */}
-                  <rect width="800" height="400" fill="#1a2332" />
-                  
-                  {/* Grid lines for reference */}
+                  {/* Grid lines for reference (visible when no background) */}
                   <defs>
                     <pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse">
                       <path d="M 100 0 L 0 0 0 100" fill="none" stroke="#2d3748" strokeWidth="0.5"/>
                     </pattern>
                   </defs>
-                  <rect width="800" height="400" fill="url(#grid)" />
+                  <rect width="800" height="400" fill="url(#grid)" fillOpacity="0.3" />
                   
                   {/* Location markers */}
                   {editedData.locations.map((location, idx) => {
@@ -454,12 +466,37 @@ export default function ScenarioEditor({
                   
                   <div>
                     <label className="block text-xs text-gray-400 mb-1">Изображение</label>
-                    <input
-                      type="text"
-                      value={location.image}
-                      onChange={(e) => updateField('locations', idx, 'image', e.target.value)}
-                      className="w-full bg-[#0a0f1c] border border-[#2d3748] rounded px-2 py-1 text-sm"
-                    />
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={location.image}
+                        onChange={(e) => updateField('locations', idx, 'image', e.target.value)}
+                        className="flex-1 bg-[#0a0f1c] border border-[#2d3748] rounded px-2 py-1 text-sm"
+                        placeholder="Например: locations/home.svg"
+                      />
+                      {location.image && (
+                        <button
+                          onClick={() => window.open(`${basePath}/${location.image}`, '_blank')}
+                          className="text-blue-400 hover:text-blue-300 p-1"
+                          title="Просмотреть изображение"
+                        >
+                          <MapPin size={16} />
+                        </button>
+                      )}
+                    </div>
+                    {/* Preview */}
+                    {location.image && (
+                      <div className="mt-2">
+                        <img 
+                          src={`${basePath}/${location.image}`}
+                          alt={location.title}
+                          className="h-20 w-auto rounded object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).style.display = 'none';
+                          }}
+                        />
+                      </div>
+                    )}
                   </div>
                   
                   <div className="flex items-center gap-4">
@@ -600,12 +637,37 @@ export default function ScenarioEditor({
                   
                   <div>
                     <label className="block text-xs text-gray-400 mb-1">Портрет</label>
-                    <input
-                      type="text"
-                      value={character.portrait}
-                      onChange={(e) => updateField('characters', idx, 'portrait', e.target.value)}
-                      className="w-full bg-[#0a0f1c] border border-[#2d3748] rounded px-2 py-1 text-sm"
-                    />
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={character.portrait}
+                        onChange={(e) => updateField('characters', idx, 'portrait', e.target.value)}
+                        className="flex-1 bg-[#0a0f1c] border border-[#2d3748] rounded px-2 py-1 text-sm"
+                        placeholder="Например: portraits/maya.svg"
+                      />
+                      {character.portrait && (
+                        <button
+                          onClick={() => window.open(`${basePath}/${character.portrait}`, '_blank')}
+                          className="text-blue-400 hover:text-blue-300 p-1"
+                          title="Просмотреть портрет"
+                        >
+                          <MapPin size={16} />
+                        </button>
+                      )}
+                    </div>
+                    {/* Preview */}
+                    {character.portrait && (
+                      <div className="mt-2">
+                        <img 
+                          src={`${basePath}/${character.portrait}`}
+                          alt={character.name}
+                          className="h-20 w-auto rounded object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).style.display = 'none';
+                          }}
+                        />
+                      </div>
+                    )}
                   </div>
                   
                   <div>
@@ -755,36 +817,250 @@ export default function ScenarioEditor({
         {/* Dialogue Editor */}
         {activeTab === 'dialogue' && (
           <div className="space-y-4">
-            <div className="bg-[#1e293b] rounded-lg p-4">
-              <h2 className="text-lg font-semibold mb-4">Диалоги</h2>
-              <p className="text-sm text-gray-400 mb-4">
-                Для редактирования диалогов выберите узел из списка ниже.
-              </p>
-              
-              <div className="space-y-2 max-h-96 overflow-y-auto">
-                {Object.entries(editedData.dialogueNodes).map(([nodeId, node]) => (
-                  <div key={nodeId} className="p-3 bg-[#0a0f1c] rounded-md">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h4 className="font-medium text-sm">{node.title}</h4>
-                        <p className="text-xs text-gray-400">ID: {nodeId}</p>
-                        <p className="text-xs text-gray-400 mt-1">Персонаж: {node.characterId}</p>
+            {!selectedDialogueNode ? (
+              // List of dialogue nodes
+              <div className="bg-[#1e293b] rounded-lg p-4">
+                <h2 className="text-lg font-semibold mb-4">Диалоги</h2>
+                <p className="text-sm text-gray-400 mb-4">
+                  Выберите узел диалога для редактирования.
+                </p>
+                
+                <div className="space-y-2 max-h-[60vh] overflow-y-auto">
+                  {Object.entries(editedData.dialogueNodes).map(([nodeId, node]) => (
+                    <button
+                      key={nodeId}
+                      onClick={() => setSelectedDialogueNode(nodeId)}
+                      className="w-full p-3 bg-[#0a0f1c] rounded-md hover:bg-[#162032] transition-colors text-left"
+                    >
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h4 className="font-medium text-sm">{node.title}</h4>
+                          <p className="text-xs text-gray-400">ID: {nodeId}</p>
+                          <p className="text-xs text-gray-400 mt-1">Персонаж: {node.characterId}</p>
+                        </div>
+                        <Edit3 size={16} className="text-blue-400" />
                       </div>
-                      <button 
-                        className="text-blue-400 hover:text-blue-300 text-xs"
-                        onClick={() => setActiveTab('dialogue')}
-                      >
-                        <Edit3 size={14} />
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                    </button>
+                  ))}
+                </div>
+                
+                <button
+                  className="btn primary w-full mt-4"
+                  onClick={() => {
+                    const newId = `dialogue_${Object.keys(editedData.dialogueNodes).length}`;
+                    const newNode: DialogueNode = {
+                      id: newId,
+                      characterId: editedData.characters[0]?.id || '',
+                      title: 'Новый диалог',
+                      eyebrow: '',
+                      intro: '',
+                      lines: [''],
+                      choices: [{ id: 'choice_1', label: 'Продолжить', nextId: undefined }]
+                    };
+                    setEditedData(prev => ({
+                      ...prev,
+                      dialogueNodes: { ...prev.dialogueNodes, [newId]: newNode }
+                    }));
+                    setSelectedDialogueNode(newId);
+                  }}
+                >
+                  <Plus size={16} /> Добавить диалог
+                </button>
               </div>
-              
-              <p className="text-xs text-gray-500 mt-4">
-                Полное редактирование диалогов будет доступно в следующей версии редактора.
-              </p>
-            </div>
+            ) : (
+              // Edit selected dialogue node
+              <div className="bg-[#1e293b] rounded-lg p-4">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-lg font-semibold">Редактирование диалога</h2>
+                  <button
+                    className="text-gray-400 hover:text-gray-200"
+                    onClick={() => setSelectedDialogueNode(null)}
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+                
+                {(() => {
+                  const node = editedData.dialogueNodes[selectedDialogueNode];
+                  if (!node) return null;
+                  
+                  return (
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm text-gray-400 mb-1">ID узла</label>
+                          <input
+                            type="text"
+                            value={selectedDialogueNode}
+                            disabled
+                            className="w-full bg-[#0a0f1c] border border-[#2d3748] rounded px-3 py-2 text-gray-500"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm text-gray-400 mb-1">Персонаж</label>
+                          <select
+                            value={node.characterId}
+                            onChange={(e) => updateField('dialogueNodes', selectedDialogueNode, 'characterId', e.target.value)}
+                            className="w-full bg-[#0a0f1c] border border-[#2d3748] rounded px-3 py-2"
+                          >
+                            {editedData.characters.map(char => (
+                              <option key={char.id} value={char.id}>{char.name}</option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm text-gray-400 mb-1">Заголовок</label>
+                        <input
+                          type="text"
+                          value={node.title}
+                          onChange={(e) => updateField('dialogueNodes', selectedDialogueNode, 'title', e.target.value)}
+                          className="w-full bg-[#0a0f1c] border border-[#2d3748] rounded px-3 py-2"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm text-gray-400 mb-1">Надпись (eyebrow)</label>
+                        <input
+                          type="text"
+                          value={node.eyebrow}
+                          onChange={(e) => updateField('dialogueNodes', selectedDialogueNode, 'eyebrow', e.target.value)}
+                          className="w-full bg-[#0a0f1c] border border-[#2d3748] rounded px-3 py-2"
+                          placeholder="например: ПЕРВИЧНОЕ ПОКАЗАНИЕ"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm text-gray-400 mb-1">Вступление</label>
+                        <textarea
+                          value={node.intro}
+                          onChange={(e) => updateField('dialogueNodes', selectedDialogueNode, 'intro', e.target.value)}
+                          className="w-full bg-[#0a0f1c] border border-[#2d3748] rounded px-3 py-2 h-20"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm text-gray-400 mb-2">Реплики</label>
+                        <div className="space-y-2">
+                          {node.lines.map((line, lineIdx) => (
+                            <div key={lineIdx} className="flex gap-2">
+                              <input
+                                type="text"
+                                value={line}
+                                onChange={(e) => {
+                                  const newLines = [...node.lines];
+                                  newLines[lineIdx] = e.target.value;
+                                  updateField('dialogueNodes', selectedDialogueNode, 'lines', newLines);
+                                }}
+                                className="flex-1 bg-[#0a0f1c] border border-[#2d3748] rounded px-3 py-2"
+                              />
+                              <button
+                                className="text-red-400 hover:text-red-300 p-2"
+                                onClick={() => {
+                                  const newLines = node.lines.filter((_, i) => i !== lineIdx);
+                                  updateField('dialogueNodes', selectedDialogueNode, 'lines', newLines);
+                                }}
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
+                          ))}
+                          <button
+                            className="btn ghost text-sm w-full"
+                            onClick={() => updateField('dialogueNodes', selectedDialogueNode, 'lines', [...node.lines, ''])}
+                          >
+                            <Plus size={16} /> Добавить реплику
+                          </button>
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm text-gray-400 mb-2">Выборы</label>
+                        <div className="space-y-3">
+                          {node.choices.map((choice, choiceIdx) => (
+                            <div key={choice.id} className="p-3 bg-[#0a0f1c] rounded-md space-y-2">
+                              <div className="flex justify-between items-center">
+                                <span className="text-xs text-gray-400">Выбор #{choiceIdx + 1}</span>
+                                <button
+                                  className="text-red-400 hover:text-red-300"
+                                  onClick={() => {
+                                    const newChoices = node.choices.filter((_, i) => i !== choiceIdx);
+                                    updateField('dialogueNodes', selectedDialogueNode, 'choices', newChoices);
+                                  }}
+                                >
+                                  <Trash2 size={14} />
+                                </button>
+                              </div>
+                              
+                              <div>
+                                <label className="block text-xs text-gray-400 mb-1">Текст выбора</label>
+                                <input
+                                  type="text"
+                                  value={choice.label}
+                                  onChange={(e) => {
+                                    const newChoices = [...node.choices];
+                                    newChoices[choiceIdx] = { ...newChoices[choiceIdx], label: e.target.value };
+                                    updateField('dialogueNodes', selectedDialogueNode, 'choices', newChoices);
+                                  }}
+                                  className="w-full bg-[#0a0f1c] border border-[#2d3748] rounded px-2 py-1 text-sm"
+                                />
+                              </div>
+                              
+                              <div>
+                                <label className="block text-xs text-gray-400 mb-1">Следующий узел (опционально)</label>
+                                <select
+                                  value={choice.nextId || ''}
+                                  onChange={(e) => {
+                                    const newChoices = [...node.choices];
+                                    newChoices[choiceIdx] = { ...newChoices[choiceIdx], nextId: e.target.value || undefined };
+                                    updateField('dialogueNodes', selectedDialogueNode, 'choices', newChoices);
+                                  }}
+                                  className="w-full bg-[#0a0f1c] border border-[#2d3748] rounded px-2 py-1 text-sm"
+                                >
+                                  <option value="">-- Нет --</option>
+                                  {Object.keys(editedData.dialogueNodes).filter(id => id !== selectedDialogueNode).map(id => (
+                                    <option key={id} value={id}>{id}</option>
+                                  ))}
+                                </select>
+                              </div>
+                              
+                              <div>
+                                <label className="block text-xs text-gray-400 mb-1">Результат (опционально)</label>
+                                <input
+                                  type="text"
+                                  value={choice.text || ''}
+                                  onChange={(e) => {
+                                    const newChoices = [...node.choices];
+                                    newChoices[choiceIdx] = { ...newChoices[choiceIdx], text: e.target.value };
+                                    updateField('dialogueNodes', selectedDialogueNode, 'choices', newChoices);
+                                  }}
+                                  className="w-full bg-[#0a0f1c] border border-[#2d3748] rounded px-2 py-1 text-sm"
+                                />
+                              </div>
+                            </div>
+                          ))}
+                          <button
+                            className="btn ghost text-sm w-full"
+                            onClick={() => {
+                              const newChoice = {
+                                id: `choice_${node.choices.length + 1}`,
+                                label: 'Новый выбор',
+                                nextId: undefined
+                              };
+                              updateField('dialogueNodes', selectedDialogueNode, 'choices', [...node.choices, newChoice]);
+                            }}
+                          >
+                            <Plus size={16} /> Добавить выбор
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+            )}
           </div>
         )}
       </div>
