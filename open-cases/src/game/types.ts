@@ -42,6 +42,34 @@ export interface GameState {
   dialogueFlags?:string[];
   triggeredEvents?: string[];
   unlockedKeywords?: string[];
+  viewedDialogueNodeIds?: string[]; // Track viewed dialogue nodes to mark them as inactive
+  investigationBoard?: InvestigationBoard; // Board state for clues board tab
+}
+
+// Investigation board types for interactive clues board
+export interface BoardNode {
+  id: string;
+  type: 'clue' | 'photo' | 'note' | 'character';
+  title: string;
+  content: string;
+  x: number;
+  y: number;
+  color?: string;
+  relatedIds?: string[];
+}
+
+export interface BoardConnection {
+  id: string;
+  fromNodeId: string;
+  toNodeId: string;
+  label?: string;
+  color?: string;
+}
+
+export interface InvestigationBoard {
+  nodes: BoardNode[];
+  connections: BoardConnection[];
+  selectedTool: 'select' | 'connect' | 'add';
 }
 
 export type GameStateWithNull = GameState | null;
