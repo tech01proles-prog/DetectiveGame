@@ -140,7 +140,7 @@ function CaseTab({loc,state,action,setFinalOpen,canFinal,scenario}:{loc:any;stat
   <div className="panel-copy"><p>{loc.description}</p></div>
   {!open?<div className="locked-card"><Lock size={18}/><b>Локация пока закрыта</b><span>{loc.lockedReason}</span></div>:<div className="actions"><span className="section-label">Доступные действия</span>{loc.actions.map((a:any)=>{const done=state.completedActionIds.includes(a.id),blocked=a.requiresClueIds?.some((id:string)=>!state.foundClueIds.includes(id));const Icon=getActionIcon(a.id,a);return <button key={a.id} disabled={done||blocked} onClick={()=>action(a.id)} className="action-card"><div className="action-icon">{done?<Check size={17}/>:<Icon size={17}/>}</div><div><b>{a.label}</b><span>{done?'Завершено':blocked?'Сначала найдите нужную зацепку.':a.description}</span></div><ChevronRight size={17}/></button>})}</div>}
   <div className="location-people">
-    {loc.characterIds.length>0&&<><span className="section-label">Персонажи в точке</span>
+    {(loc.characterIds && loc.characterIds.length > 0) && <><span className="section-label">Персонажи в точке</span>
     {loc.characterIds.map((id:string)=>{const c=getCharacter(id)!;const portraitUrl=resolveImageUrl(scenarioId, c.portrait);return <div className="mini-person" key={id}>
       {portraitUrl ? <img src={portraitUrl} alt={c.name}/> : <div className="avatar-placeholder"><Users size={24}/></div>}
       <div><b>{c.name}</b><span>{c.relation}</span></div>
