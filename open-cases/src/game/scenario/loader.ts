@@ -65,6 +65,8 @@ export function validateScenario(data: any): { valid: boolean; errors: string[] 
   // Validate map template exists (optional now)
   if (data.mapTemplateId && !getMapTemplate(data.mapTemplateId)) {
     console.warn(`Unknown map template: ${data.mapTemplateId}, using default`);
+    // Clear the invalid template ID so default is used
+    data.mapTemplateId = undefined;
   }
 
   return {
@@ -172,7 +174,11 @@ export function findKeywords(notes: string, keywords: string[]): string[] {
 /**
  * Resolves image URL for a scenario asset
  */
-export function resolveImageUrl(scenarioId: string, imageId: string): string {
+export function resolveImageUrl(scenarioId: string, imageId?: string): string {
+  // If no image ID provided, return empty string or default placeholder
+  if (!imageId) {
+    return '';
+  }
   // Image ID can be either a full URL or a relative path
   if (imageId.startsWith('http')) {
     return imageId;
