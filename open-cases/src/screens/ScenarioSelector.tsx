@@ -6,7 +6,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { FolderOpen, Plus, Users, Clock, MapPin, Shield, ChevronRight, Edit3 } from 'lucide-react';
+import { FolderOpen, Plus, Users, Clock, MapPin, Shield, ChevronRight, Edit3, Play, FileText } from 'lucide-react';
 import type { ScenarioData } from '@/game/scenario/schema';
 import { fetchScenario } from '@/game/scenario/loader';
 import ScenarioEditor from './ScenarioEditor.tsx';
@@ -20,6 +20,113 @@ interface ScenarioMeta {
   difficulty: string;
   premise: string;
 }
+
+interface CaseFolderProps {
+  scenario: ScenarioMeta;
+  onSelect: (scenarioId: string, data: ScenarioData) => void;
+}
+
+/**
+ * Компонент папки с делом - анимированное открытие досье
+ */
+const CaseFolder: React.FC<CaseFolderProps> = ({ scenario, onSelect }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [scenarioData, setScenarioData] = useState<ScenarioData | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  const handleOpen = () => {
+    if (!isOpen && !isLoaded) {
+      setIsOpen(true);
+      // Загружаем данные сценария при открытии
+      fetchScenario(scenario.id).then(result => {
+        if (result.success && result.data) {
+          setScenarioData(result.data);
+          setIsLoaded(true);
+        }
+      });
+    }
+  };
+
+  const handleStart = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (scenarioData) {
+      onSelect(scenario.id, scenarioData);
+    }
+  };
+
+  return (
+    <div 
+      className="case-folder-wrapper"
+      onClick={handleOpen}
+    >
+      <div className={`case-folder ${isOpen ? 'open' : ''}`}>
+        {/* Задняя часть папки */}
+        <div className="folder-back">
+          <div className="folder-tab"></div>
+        </div>
+
+        {/* Внутреннее содержание (досье) */}
+        <div className="folder-content">
+          <div className="dossier-paper">
+            <div className="dossier-header">
+              <h2 className="dossier-title">{scenario.title}</h2>
+              <div className="stamp-classified">СЕКРЕТНО</div>
+            </div>
+            
+            <div className="dossier-grid">
+              <div className="dossier-field">
+                <FileText size={16} className="dossier-icon" />
+                <span>Дело № {scenario.id.toUpperCase()}</span>
+              </div>
+              <div className="dossier-field">
+                <Users size={16} className="dossier-icon" />
+                <span>{scenario.players}</span>
+              </div>
+              <div className="dossier-field">
+                <Clock size={16} className="dossier-icon" />
+                <span>{scenario.duration}</span>
+              </div>
+              <div className="dossier-field">
+                <MapPin size={16} className="dossier-icon" />
+                <span>{scenario.city}</span>
+              </div>
+            </div>
+
+            <div className="dossier-description">
+              <h3>ОПИСАНИЕ ПРЕСТУПЛЕНИЯ:</h3>
+              <p>{scenario.premise}</p>
+            </div>
+
+            {isLoaded && scenarioData && (
+              <div className="dossier-footer">
+                <button className="btn-start-case" onClick={handleStart}>
+                  <Play size={18} />
+                  НАЧАТЬ РАССЛЕДОВАНИЕ
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Передняя обложка папки */}
+        <div className="folder-front">
+          <div className="folder-label">
+            <span className="label-text">ДЕЛО № {scenario.id.toUpperCase()}</span>
+          </div>
+          <div className="folder-overlay">
+            <h3 className="folder-title">{scenario.title}</h3>
+            <div className="folder-status">
+              {scenario.difficulty === 'hard' ? '★ ОСОБО ВАЖНОЕ' : 'Стандартное расследование'}
+            </div>
+            <div className="folder-preview">
+              <p className="folder-premise">{scenario.premise.substring(0, 100)}...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 /**
  * Список известных сценариев для загрузки
@@ -159,54 +266,11 @@ export default function ScenarioSelector({
         
         <div className="scenario-list">
           {scenarios.map(scenario => (
-            <div key={scenario.id} className="relative">
-              <button 
-                className="scenario-card w-full text-left"
-                onClick={() => {
-                  fetchScenario(scenario.id).then(result => {
-                    if (result.success && result.data) {
-                      onSelect(scenario.id, result.data);
-                    }
-                  });
-                }}
-              >
-                <div className="scenario-header">
-                  <Shield size={16} />
-                  <span>CASE FILE / {scenario.id.toUpperCase()}</span>
-                </div>
-                <h3>{scenario.title}</h3>
-                <div className="scenario-meta">
-                  <span><MapPin size={14} /> {scenario.city}</span>
-                  <span><Clock size={14} /> {scenario.duration}</span>
-                  <span><Users size={14} /> {scenario.players}</span>
-                </div>
-                <div className="scenario-difficulty">
-                  <span className={`difficulty-badge difficulty-${scenario.difficulty.toLowerCase()}`}>
-                    {scenario.difficulty}
-                  </span>
-                </div>
-                <p className="scenario-premise">{scenario.premise}</p>
-                <div className="scenario-action">
-                  Начать расследование <ChevronRight size={18} />
-                </div>
-              </button>
-              
-              {/* Edit button */}
-              <button
-                className="absolute top-2 right-2 p-2 bg-[#1e293b] hover:bg-[#2d3748] rounded-md transition-colors"
-                title="Редактировать сценарий"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  fetchScenario(scenario.id).then(result => {
-                    if (result.success && result.data) {
-                      setEditingScenario({ id: scenario.id, data: result.data });
-                    }
-                  });
-                }}
-              >
-                <Edit3 size={16} className="text-gray-400 hover:text-[#e7c776]" />
-              </button>
-            </div>
+            <CaseFolder 
+              key={scenario.id} 
+              scenario={scenario} 
+              onSelect={onSelect} 
+            />
           ))}
           
           {scenarios.length === 0 && (
