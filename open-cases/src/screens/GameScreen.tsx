@@ -343,7 +343,7 @@ function DialogueModal({node,scenario,onClose,onChoose,state}:{node:DialogueNode
               </span>
               <b>{c.label}</b>
             </div>
-            <span>{isViewed?'Уже известно':(c.text||'Продолжить разговор и проверить показания.')}</span>
+            <span>{isViewed?'Уже известно':''}</span>
             {isViewed?<Check size={17}/>:<ChevronRight size={17}/>}
           </button>
         })}
