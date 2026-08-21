@@ -133,7 +133,7 @@ export default function GameScreen({state,setState,onFinish,onRestart,scenario}:
     </div>
     {detailClue&&<ClueModal clue={clues.find(c=>c.id===detailClue)!} onClose={()=>setDetailClue(null)}/>} 
     {eventNotice&&<EventModal notice={eventNotice} onClose={()=>setEventNotice(null)}/>} 
-    {dialogue&&<DialogueModal node={dialogue} scenario={scenario} onClose={()=>{setDialogue(null);setDialogueNodeId(null)}} onChoose={chooseDialogue}/>}
+    {dialogue&&<DialogueModal node={dialogue} scenario={scenario} state={state} onClose={()=>{setDialogue(null);setDialogueNodeId(null)}} onChoose={chooseDialogue}/>}
     {finalOpen&&<FinalModal state={state} scenario={scenario} onClose={()=>setFinalOpen(false)} onSubmit={(answers)=>{const score=calculateScore(state,answers,scenario);setState(s=>s?({...s,finalAnswers:answers,score,finished:true,won:score>=70,started:s.started}):null);setFinalOpen(false);onFinish(score>=70)}}/>}
   </div>
 }
@@ -185,7 +185,7 @@ function NotesTab({value,onChange}:{value:string;onChange:(v:string)=>void}){ret
 function TimelineTab({state,scenario}:{state:GameState;scenario:ScenarioData}){const events=scenario.timeline.filter(t=>!t.id||state.timelineEventIds.length===0||state.timelineEventIds.includes(t.id)||['t1','t2','t3'].includes(t.id));return <><div className="panel-title"><span className="eyebrow">ВРЕМЕННАЯ ЛИНИЯ</span><h2>Хронология</h2><p>Факты, подтверждённые в ходе расследования.</p></div><div className="timeline">{events.map(t=><div className="timeline-row" key={t.id}><time>{t.time}</time><div><b>{t.title}</b><span>{t.text}</span><small>{t.source}</small></div></div>)}</div></>}
 function ClueModal({clue,onClose}:{clue:any;onClose:()=>void}){return <div className="modal-backdrop" onClick={onClose}><div className="modal clue-modal" onClick={e=>e.stopPropagation()}><div className="modal-head"><div><span className="eyebrow">{clue.type} · {clue.importance==='critical'?'КЛЮЧЕВАЯ':clue.importance==='important'?'ВАЖНАЯ':'КОНТЕКСТ'}</span><h2>{clue.title}</h2></div><button onClick={onClose}>×</button></div><p>{clue.description}</p><div className="evidence-detail"><MessageSquare size={18}/><span>{clue.detail}</span></div><div className="related"><b>Связи</b><span>{clue.relatedClues.length} связанных улик · {clue.relatedCharacters.length} персонажей</span></div></div></div>}
 function EventModal({notice,onClose}:{notice:{title:string;text:string;clues:string[]};onClose:()=>void}){return <div className="event-layer"><div className="event-card"><div className="event-accent"/><div className="event-kicker"><CircleAlert size={14}/> ОПЕРАТИВНАЯ ЗАПИСЬ</div><h3>{notice.title}</h3><p>{notice.text}</p>{notice.clues.length>0&&<div className="event-discoveries"><span>Добавлено в дело</span>{notice.clues.map(c=><b key={c}>+ {c}</b>)}</div>}<button className="btn primary full" onClick={onClose}>Продолжить</button></div></div>}
-function DialogueModal({node,scenario,onClose,onChoose}:{node:DialogueNode;scenario:ScenarioData;onClose:()=>void;onChoose:(c:any)=>void}){
+function DialogueModal({node,scenario,onClose,onChoose,state}:{node:DialogueNode;scenario:ScenarioData;onClose:()=>void;onChoose:(c:any)=>void;state:GameState}){
   const character = scenario.characters.find(c => c.id === node.characterId);
   const scenarioId = scenario.scenario.id;
   const portraitUrl = character ? resolveImageUrl(scenarioId, character.portrait) : '';
@@ -203,10 +203,13 @@ function DialogueModal({node,scenario,onClose,onChoose}:{node:DialogueNode;scena
       <div className="dialogue-lines">{node.lines.map((line,i)=><p key={i}>{line}</p>)}</div>
       <div className="choice-list">
         <span className="section-label">Что спросить дальше</span>
-        {node.choices.map(c=><button className="dialogue-choice" key={c.id} onClick={()=>onChoose(c)}>
-          <div><b>{c.label}</b><span>{c.text||'Продолжить разговор и проверить показания.'}</span></div>
-          <ChevronRight size={17}/>
-        </button>)}
+        {node.choices.map(c=>{
+          const isViewed = state.dialogueFlags?.includes(c.id);
+          return <button className="dialogue-choice" key={c.id} disabled={isViewed} onClick={()=>onChoose(c)} style={{opacity:isViewed?0.5:1,cursor:isViewed?'not-allowed':'pointer'}}>
+            <div><b>{c.label}</b><span>{isViewed?'Уже известно':(c.text||'Продолжить разговор и проверить показания.')}</span></div>
+            {isViewed?<Check size={17}/>:<ChevronRight size={17}/>}
+          </button>
+        })}
       </div>
       <div className="dialogue-foot">{node.intro}</div>
     </div>
