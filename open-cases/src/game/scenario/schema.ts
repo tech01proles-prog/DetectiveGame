@@ -146,6 +146,13 @@ export interface TimelineEvent {
   text: string;
   /** Source of this information (e.g., "Журнал доступа", "Камера Reed Auto") */
   source: string;
+  // New fields for interactive timeline
+  /** Whether this event has been revealed to the player */
+  revealed?: boolean;
+  /** Whether this event contradicts other evidence */
+  contradictory?: boolean;
+  /** Related timeline event IDs */
+  relatedEventIds?: string[];
 }
 
 export interface DialogueChoice {

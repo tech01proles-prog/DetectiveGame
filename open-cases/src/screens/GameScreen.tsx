@@ -198,9 +198,26 @@ function PeopleTab({state,select,scenario}:{state:GameState;select:(id:string)=>
   <div className="people-list">
     {interactedCharacters.map((c:any)=>{
       const portraitUrl = resolveImageUrl(scenarioId, c.portrait);
+      // Get suspect level from character data or default to 0
+      const suspectLevel = c.suspectLevel || 0;
+      
       return <button key={c.id} className="person-card" onClick={()=>c.locationId&&select(c.locationId)}>
         {portraitUrl ? <img src={portraitUrl} alt={c.name}/> : <div className="avatar-placeholder"><Users size={32}/></div>}
-        <div><b>{c.name}</b><span>{c.age} · {c.role}</span><small>{state.questionedCharacterIds.includes(c.id)?'Опрошен':'Не опрошен'}</small></div>
+        <div className="person-info">
+          <b>{c.name}</b>
+          <span>{c.age} · {c.role}</span>
+          {c.alibi && <small className="alibi-text">📍 {c.alibi}</small>}
+          {c.motive && <small className="motive-text">💡 Мотив: {c.motive}</small>}
+          {c.secret && <small className="secret-text">🔒 Секрет</small>}
+          {/* Suspect level indicator */}
+          <div className="suspect-meter">
+            <span className="meter-label">Подозрительность</span>
+            <div className="meter-bar">
+              <div className="meter-fill" style={{width: `${suspectLevel}%`, background: suspectLevel < 30 ? '#4ade80' : suspectLevel < 70 ? '#fbbf24' : '#f87171'}}/>
+            </div>
+            <span className="meter-value">{suspectLevel}%</span>
+          </div>
+        </div>
         <ChevronRight size={16}/>
       </button>
     })}
@@ -209,7 +226,43 @@ function PeopleTab({state,select,scenario}:{state:GameState;select:(id:string)=>
 }
 function CluesTab({found,onOpen}:{found:any[];onOpen:(id:string)=>void}){return <><div className="panel-title"><span className="eyebrow">ДОКАЗАТЕЛЬСТВА</span><h2>Улики <em>{found.length}</em></h2><p>Нажимайте на материалы и сопоставляйте детали.</p></div><div className="clue-list">{found.map(c=><button className={`clue-card ${c.importance}`} key={c.id} onClick={()=>onOpen(c.id)}><div className="clue-type">{c.type}</div><b>{c.title}</b><span>{c.description}</span><small>{c.foundWhen}</small></button>)}{found.length===0&&<div className="empty">Пока ничего. Начните с дома Беннеттов и школы.</div>}</div></>}
 function NotesTab({value,onChange}:{value:string;onChange:(v:string)=>void}){return <><div className="panel-title"><span className="eyebrow">РАБОЧИЙ БЛОКНОТ</span><h2>Заметки</h2><p>Пишите собственные версии. Игра не проверяет текст заметок.</p></div><textarea className="notes" value={value} onChange={e=>onChange(e.target.value)} placeholder={'Например:\n20:07 — Майя официально покинула школу.\n20:19 — фургон у мастерской.\nПочему Дэниел говорит 20:14?'} /><div className="note-tip"><NotebookPen size={16}/><span>Хорошая привычка: рядом с каждой гипотезой записывайте, какая улика её подтверждает.</span></div></>}
-function TimelineTab({state,scenario}:{state:GameState;scenario:ScenarioData}){const events=scenario.timeline.filter(t=>!t.id||state.timelineEventIds.length===0||state.timelineEventIds.includes(t.id)||['t1','t2','t3'].includes(t.id));return <><div className="panel-title"><span className="eyebrow">ВРЕМЕННАЯ ЛИНИЯ</span><h2>Хронология</h2><p>Факты, подтверждённые в ходе расследования.</p></div><div className="timeline">{events.map(t=><div className="timeline-row" key={t.id}><time>{t.time}</time><div><b>{t.title}</b><span>{t.text}</span><small>{t.source}</small></div></div>)}</div></>}
+function TimelineTab({state,scenario}:{state:GameState;scenario:ScenarioData}){
+  // Filter events to only show those that have been revealed/discovered
+  const events = scenario.timeline.filter(t => {
+    // If no timelineEventIds tracked yet, show initial events
+    if (!state.timelineEventIds || state.timelineEventIds.length === 0) {
+      return ['t1','t2','t3'].includes(t.id);
+    }
+    // Show events that have been discovered
+    return state.timelineEventIds.includes(t.id);
+  });
+  
+  // Sort events by time
+  const sortedEvents = [...events].sort((a, b) => a.time.localeCompare(b.time));
+  
+  return <><div className="panel-title"><span className="eyebrow">ВРЕМЕННАЯ ЛИНИЯ</span><h2>Хронология</h2><p>Факты, подтверждённые в ходе расследования.</p></div>
+  <div className="timeline-interactive">
+    {sortedEvents.map(t => {
+      const isContradictory = t.contradictory || false;
+      return <div className={`timeline-row ${isContradictory ? 'contradictory' : ''}`} key={t.id}>
+        <time>{t.time}</time>
+        <div className="timeline-content">
+          <b>{t.title}</b>
+          <span>{t.text}</span>
+          <small>{t.source}</small>
+          {isContradictory && <span className="contradiction-badge">⚠️ Противоречие</span>}
+        </div>
+        {/* Show related events if available */}
+        {t.relatedEventIds && t.relatedEventIds.length > 0 && (
+          <div className="related-events">
+            <small>Связанные события: {t.relatedEventIds.join(', ')}</small>
+          </div>
+        )}
+      </div>
+    })}
+    {sortedEvents.length === 0 && <div className="empty">Хронология пуста. Продолжайте расследование, чтобы открыть события.</div>}
+  </div></>
+}
 function ClueModal({clue,onClose}:{clue:any;onClose:()=>void}){return <div className="modal-backdrop" onClick={onClose}><div className="modal clue-modal" onClick={e=>e.stopPropagation()}><div className="modal-head"><div><span className="eyebrow">{clue.type} · {clue.importance==='critical'?'КЛЮЧЕВАЯ':clue.importance==='important'?'ВАЖНАЯ':'КОНТЕКСТ'}</span><h2>{clue.title}</h2></div><button onClick={onClose}>×</button></div><p>{clue.description}</p><div className="evidence-detail"><MessageSquare size={18}/><span>{clue.detail}</span></div><div className="related"><b>Связи</b><span>{clue.relatedClues.length} связанных улик · {clue.relatedCharacters.length} персонажей</span></div></div></div>}
 function EventModal({notice,onClose}:{notice:{title:string;text:string;clues:string[]};onClose:()=>void}){return <div className="event-layer"><div className="event-card"><div className="event-accent"/><div className="event-kicker"><CircleAlert size={14}/> ОПЕРАТИВНАЯ ЗАПИСЬ</div><h3>{notice.title}</h3><p>{notice.text}</p>{notice.clues.length>0&&<div className="event-discoveries"><span>Добавлено в дело</span>{notice.clues.map(c=><b key={c}>+ {c}</b>)}</div>}<button className="btn primary full" onClick={onClose}>Продолжить</button></div></div>}
 function DialogueModal({node,scenario,onClose,onChoose,state}:{node:DialogueNode;scenario:ScenarioData;onClose:()=>void;onChoose:(c:any)=>void;state:GameState}){
