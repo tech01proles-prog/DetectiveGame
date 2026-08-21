@@ -675,6 +675,24 @@ h1, h2, h3, h4 {
   box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
 }
 
+.color-btn {
+  padding: 0;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.color-btn:hover {
+  transform: scale(1.1);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.color-btn.active {
+  border-color: #fff;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+}
+
 .zoom-level {
   font: 600 11px 'DM Mono', monospace;
   color: #5d544b;
