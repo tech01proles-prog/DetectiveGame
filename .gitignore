@@ -1,29 +1,32 @@
-```
+```gitignore
 # Dependencies
 node_modules/
 
 # Build outputs
 dist/
 build/
-*.js
-*.ts
-*.tsx
-*.css
+*.js.map
+*.ts.map
 
-# Environment variables
+# Environment
 .env
 .env.local
 .env.*
 
-# IDE files
+# Editors
 .vscode/
 .idea/
 *.swp
 *.swo
+
+# Logs and temp files
+*.log
 *.tmp
 
-# Logs
-*.log
+# Coverage
+coverage/
+htmlcov/
+.coverage
 
 # Python
 __pycache__/
@@ -31,82 +34,225 @@ __pycache__/
 *.pyo
 *.pyd
 .Python
-*.so
-
-# Coverage reports
-coverage/
-htmlcov/
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
 .coverage
+.nox/
+$py.class
+.spyderproject
+.spyproject
+.ropeproject
+/site-packages/
+.pytest_cache/
+.hypothesis/
+.mypy_cache/
 
-# OS generated files
-.DS_Store
-Thumbs.db
-
-# Testing
-.nyc_output/
-coverage.xml
-*.gcda
-*.gcno
-
-# Compiled JavaScript
-lib/
-temp/
-out/
-
-# Runtime data
-pids/
-*.pid
-*.seed
-*.pid.lock
-
-# Debug log
-debug.log
-
-# System Files
-*.sln
-*.csproj
-*.user
-*.userosscache
-*.suo
-
-# Package manager
+# Node.js
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-# Ember
-tmp/
-.ember-cli
-.ember/
-dist/
 node_modules/
-
-# React Native
-node_modules/
-ios/Pods/
-android/build/
-.expo/
-.webpack/
-
-# Next.js
-.next/
-out/
-
-# Nuxt.js
-.nuxt/
-dist/
-
-# Vue.js
-dist/
-.vuepress/dist/
-
-# Gatsby
-public/
-.cache/
-
-# Webpack
-webpack-stats.json
-
-# TypeScript
+jspm_packages/
+web_modules/
 *.tsbuildinfo
+.next/
+.nuxt/
+.vuepress/dist
+.static
+.nyc_output
+coverage/
+.nyc_output/
+.coverage/
+lib-cov/
+cypress/videos/
+cypress/screenshots/
+junit.xml
+*.gcov
+*.lcov
+*.lst
+*.map
+*.min.js
+*.min.css
+bundle.js
+bundle.min.js
+dist/
+build/
+.release-it-cache
+.eslintcache
+.stylelintcache
+.nyc_output/
+coverage/
+*.lcov
+*.log
+*.log.*
+!*.svg
+*.bin
+*.exe
+*.dll
+*.so
+*.dylib
+*.o
+*.a
+*.obj
+*.lib
+*.sln
+*.csproj
+*.user
+*.suo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+.AppleDouble
+.LSOverride
+.DocumentRevisions-V100
+.FBCIndex
+.savedState
+.metadata
+!.metadata
+graphs/
+*.pid
+*.seed
+*.pid.lock
+pids/
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.yarn-integrity
+.yarn-metadata.json
+node_modules/
+jspm_packages/
+web_modules/
+*.js.map
+*.mjs.map
+*.cjs.map
+*.ts.map
+*.tsx.map
+*.jsx.map
+*.css.map
+*.scss.map
+*.sass.map
+*.less.map
+*.styl.map
+.angular/
+.angular-cli/
+.angular-cli.json
+.angular.json
+.ng_build/
+.ng_cache/
+.ng_temp/
+.ng_zorro_temp/
+.ng_zorro_cache/
+.nx/
+nx.json
+nx.cache
+.nx/cache
+.nx/workspace-data
+coverage/
+istanbul/
+.nyc_output/
+.jest/
+jest.config.js
+jest.setup.js
+jest.teardown.js
+.jest-test-results.json
+coverage/
+.nyc_output/
+.jscpd/
+jscpd-report/
+.jscpd.json
+.remarkrc
+.stylelintrc
+.eslintrc
+.jshintrc
+.babelrc
+.postcssrc
+.prettierrc
+.rolluprc
+.webpackrc
+.vsls
+.vs/
+.vscode/
+.vscode-test/
+.vsts-test/
+.idea/
+.iml
+.iws
+.settings/
+nbproject/
+nbbuild/
+nbdist/
+.nbm/
+.netbeans/
+.netbeans_preferences
+.externalToolBuilders/
+launches/
+.tm_properties
+.project
+.classpath
+.target
+.tmp/
+temp/
+.cache/
+.caches/
+.cargo/
+.target/
+Cargo.lock
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+.directory
+*.nib
+layout/
+Logs/
+.InterprocesLock
+.lock-wscript
+.wafpickle-*
+.classe*
+*.swp
+*.swo
+*~
+.project
+.c9/
+*.history
+server.js.debug
+client.js.debug
+*.js.map
+*.mjs.map
+*.cjs.map
+*.ts.map
+*.tsx.map
+*.jsx.map
+*.css.map
+*.scss.map
+*.sass.map
+*.less.map
+*.styl.map
+.angular/
+.angular-cli/
+.angular-cli.json
+.angular.json
+.ng_build/
+.ng_cache/
+.ng_temp/
+.ng_zorro_temp/
+.ng_zorro_cache/
+.nx/
+nx.json
+nx.cache
+.nx/cache
+.nx/workspace-data
 ```

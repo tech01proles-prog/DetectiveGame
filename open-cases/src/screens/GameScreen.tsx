@@ -103,7 +103,33 @@ export default function GameScreen({state,setState,onFinish,onRestart,scenario}:
   const setTab=(tab:Tab)=>setState(s=>s?({...s,selectedTab:tab}):null);
   const note=(v:string)=>setState(s=>s?({...s,notes:v}):null);
 
-  const chooseDialogue=(choice:{id:string;clueIds?:string[];nextId?:string;text?:string;note?:string})=>{
+  const chooseDialogue=(choice:{id:string;clueIds?:string[];nextId?:string;text?:string;note?:string;tone?:'friendly'|'aggressive'|'cunning'|'neutral'})=>{
+    // Update NPC mood based on dialogue choice tone
+    if (dialogue && choice.tone) {
+      const moodChanges: Record<string, Record<string, number>> = {
+        'friendly': { 'friendly': 1, 'neutral': 0, 'hostile': -1, 'suspicious': -1 },
+        'aggressive': { 'friendly': -2, 'neutral': -1, 'hostile': 1, 'suspicious': 1 },
+        'cunning': { 'friendly': -1, 'neutral': 0, 'hostile': 0, 'suspicious': 1 },
+        'neutral': { 'friendly': 0, 'neutral': 0, 'hostile': 0, 'suspicious': 0 }
+      };
+      
+      const currentMood = state.npcMoods?.[dialogue.characterId] || 'neutral';
+      const change = moodChanges[choice.tone]?.[currentMood] || 0;
+      
+      let newMood = currentMood;
+      if (change > 0) {
+        newMood = currentMood === 'friendly' ? 'friendly' : 
+                  currentMood === 'neutral' ? 'friendly' : 
+                  currentMood === 'suspicious' ? 'neutral' : 'suspicious';
+      } else if (change < 0) {
+        newMood = currentMood === 'hostile' ? 'hostile' : 
+                  currentMood === 'suspicious' ? 'hostile' : 
+                  currentMood === 'neutral' ? 'suspicious' : 'neutral';
+      }
+      
+      setState(s => s ? ({...s, npcMoods: {...(s.npcMoods||{}), [dialogue.characterId]: newMood}}): null);
+    }
+    
     const nextState=discoverFromClues({...state,foundClueIds:[...new Set([...state.foundClueIds,...(choice.clueIds||[])])],dialogueFlags:[...(state.dialogueFlags||[]),choice.id]}, scenario);
     setState(nextState);
     if(choice.nextId&&dialogueNodes[choice.nextId]){
@@ -190,6 +216,31 @@ function DialogueModal({node,scenario,onClose,onChoose,state}:{node:DialogueNode
   const character = scenario.characters.find(c => c.id === node.characterId);
   const scenarioId = scenario.scenario.id;
   const portraitUrl = character ? resolveImageUrl(scenarioId, character.portrait) : '';
+  const currentMood = state.npcMoods?.[node.characterId] || 'neutral';
+  
+  // Get tone color and icon
+  const getToneStyle = (tone?: string) => {
+    switch(tone) {
+      case 'friendly': return { color: '#4ade80', borderColor: 'rgba(74, 222, 128, 0.3)', bg: 'rgba(74, 222, 128, 0.1)' };
+      case 'aggressive': return { color: '#f87171', borderColor: 'rgba(248, 113, 113, 0.3)', bg: 'rgba(248, 113, 113, 0.1)' };
+      case 'cunning': return { color: '#fbbf24', borderColor: 'rgba(251, 191, 36, 0.3)', bg: 'rgba(251, 191, 36, 0.1)' };
+      default: return { color: '#9ca3af', borderColor: 'rgba(156, 163, 175, 0.3)', bg: 'rgba(156, 163, 175, 0.1)' };
+    }
+  };
+  
+  const moodLabels: Record<string, string> = {
+    'friendly': 'Дружелюбен',
+    'neutral': 'Нейтрален',
+    'hostile': 'Враждебен',
+    'suspicious': 'Подозрителен'
+  };
+  
+  const moodColors: Record<string, string> = {
+    'friendly': '#4ade80',
+    'neutral': '#9ca3af',
+    'hostile': '#f87171',
+    'suspicious': '#fbbf24'
+  };
   
   return <div className="modal-backdrop dialogue-backdrop">
     <div className="modal dialogue-modal" onClick={e=>e.stopPropagation()}>
@@ -199,15 +250,47 @@ function DialogueModal({node,scenario,onClose,onChoose,state}:{node:DialogueNode
       </div>
       <div className="speaker">
         {portraitUrl ? <img src={portraitUrl} alt={character?.name}/> : <div className="avatar-placeholder"><Users size={40}/></div>}
-        <div><b>{character?.name||'Неизвестный'}</b><span>{character?.role||''}</span></div>
+        <div>
+          <b>{character?.name||'Неизвестный'}</b>
+          <span>{character?.role||''}</span>
+          <div className="mood-indicator" style={{color: moodColors[currentMood], fontSize: '11px', marginTop: '4px'}}>
+            ● {moodLabels[currentMood]}
+          </div>
+        </div>
       </div>
       <div className="dialogue-lines">{node.lines.map((line,i)=><p key={i}>{line}</p>)}</div>
       <div className="choice-list">
         <span className="section-label">Что спросить дальше</span>
         {node.choices.map(c=>{
           const isViewed = state.dialogueFlags?.includes(c.id);
-          return <button className="dialogue-choice" key={c.id} disabled={isViewed} onClick={()=>onChoose(c)} style={{opacity:isViewed?0.5:1,cursor:isViewed?'not-allowed':'pointer'}}>
-            <div><b>{c.label}</b><span>{isViewed?'Уже известно':(c.text||'Продолжить разговор и проверить показания.')}</span></div>
+          const toneStyle = getToneStyle(c.tone);
+          return <button 
+            className="dialogue-choice" 
+            key={c.id} 
+            disabled={isViewed} 
+            onClick={()=>onChoose(c)} 
+            style={{
+              opacity: isViewed ? 0.5 : 1,
+              cursor: isViewed ? 'not-allowed' : 'pointer',
+              borderLeft: `3px solid ${toneStyle.color}`,
+              background: isViewed ? 'transparent' : toneStyle.bg
+            }}
+          >
+            <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+              <span style={{
+                fontSize: '10px',
+                padding: '2px 6px',
+                borderRadius: '3px',
+                background: toneStyle.color,
+                color: '#0a0c0d',
+                fontWeight: '600',
+                textTransform: 'uppercase'
+              }}>
+                {c.tone === 'friendly' ? 'ДРУЖЕЛЮБНО' : c.tone === 'aggressive' ? 'АГРЕССИВНО' : c.tone === 'cunning' ? 'ХИТРО' : 'НЕЙТРАЛЬНО'}
+              </span>
+              <b>{c.label}</b>
+            </div>
+            <span>{isViewed?'Уже известно':(c.text||'Продолжить разговор и проверить показания.')}</span>
             {isViewed?<Check size={17}/>:<ChevronRight size={17}/>}
           </button>
         })}
