@@ -1,16 +1,27 @@
-```gitignore
 # Dependencies
 node_modules/
 
 # Build outputs
 dist/
 build/
-target/
+.next/
+.nuxt/
+out/
+
+# Logs
+*.log
 
 # Environment variables
 .env
 .env.local
-.env.*
+*.env.*
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.tmp
 
 # Python
 __pycache__/
@@ -21,11 +32,47 @@ __pycache__/
 env/
 venv/
 .venv/
-.ENV
-.python-version
-
-# Logs
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
 *.log
+.git/
+.mypy_cache/
+.pytest_cache/
+.hypothesis/
+
+# Node.js
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+node_modules/
+dist/
+build/
+*.min.js
+*.min.css
+coverage/
+.nyc_output
+.nyc_output/
+!.nyc_output
+!.nyc_output/
+.eslintcache
+
+# TypeScript
+*.tsbuildinfo
+*.js.map
+*.ts.map
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
 
 # OS generated files
 .DS_Store
@@ -35,32 +82,27 @@ venv/
 .Trashes
 ehthumbs.db
 Thumbs.db
+desktop.ini
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
+# Compiled binary files
+*.exe
+*.dll
+*.so
+*.dylib
+*.o
+*.obj
+*.a
+*.lib
+*.out
 
-# Testing
-.coverage
-coverage/
-htmlcov/
-.nyc_output/
-.mypy_cache/
-.pytest_cache/
-.hypothesis/
-
-# Compressed
+# Archives
 *.zip
-*.tar.gz
+*.tar*
 *.gz
 *.rar
 *.7z
 *.bz2
 *.xz
-*.tgz
-*.tar
 *.Z
 *.lz
 *.lzo
@@ -71,4 +113,907 @@ htmlcov/
 *.rpm
 *.deb
 *.zst
-```
+
+# Testing
+coverage/
+htmlcov/
+.nyc_output/
+istanbul/
+.jest/
+
+# IDE specific
+.vs/
+*.swp
+*.swo
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Debug
+*.stackdump
+
+# Documentation
+docs/_build/
+
+# Database
+*.db
+*.db-journal
+
+# misc
+*.DS_Store
+Thumbs.db
+.fuse_hidden*
+.directory
+ehthumbs.db
+Icon?
+perf-*.map
+*~
+
+# Local configuration files
+.config/*
+!config/
+!config/**
+*.local
+
+# Distribution / packaging
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Translations
+*.mo
+*.pot
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask
+instance/
+.webassets-cache
+
+# Scrapy
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+.pybuilder/
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# PEP 582
+__pypackages__/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# Coverage
+.coverage*
+.coverage
+
+# VS Code
+.vscode/settings.json
+.vscode/tasks.json
+.vscode/launch.json
+.vscode/recommendations.json
+
+# IntelliJ IDEA
+.idea/
+
+# WebStorm
+.idea/
+
+# Android Studio
+*.iml
+*.iws
+*.bat
+.idea/
+.gradle/
+build/
+captures/
+.externalToolBuilders/
+*.launch
+.settings/
+.loadpath
+.project
+bin/
+gen/
+out/
+res/
+assets/
+libs/
+proguard/
+test/
+tests/
+gen-external-apklibs/
+.gradle/
+local.properties
+ant-build/
+ant-gen/
+ant-import-summary.xml
+ant-test-build.xml
+ant-test.xml
+build.properties
+build.xml
+custom_rules.xml
+default.properties
+proguard-project.txt
+project.properties
+ant.properties
+ant-build.xml
+ant-gen.xml
+ant-import-summary.xml
+ant-test-build.xml
+ant-test.xml
+ant.properties
+ant-build.xml
+ant-gen.xml
+ant-import-summary.xml
+ant-test-build.xml
+ant-test.xml
+
+# Eclipse
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~
+.project
+.classpath
+.settings/
+.loadpath
+.externalToolBuilders/
+.launch
+.problems
+.pydevproject
+.metadata/
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~
+.project
+.classpath
+.settings/
+.loadpath
+.externalToolBuilders/
+.launch
+.problems
+.pydevproject
+
+# Visual Studio
+*.user
+*.aps
+*.pch
+*.vspscc
+*.vssscc
+.builds
+[TestResult.xml]
+*.VC.db
+*.VC.VC.opendb
+[Bb]in/
+[Oo]bj/
+[Tt]emp/
+[Tt]emporary[Tt]rash/
+[Oo]ut/
+*.o
+*.pyc
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.eggs/
+.venv/
+venv/
+ENV/
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.VC.db
+*.VC.VC.opendb
+ipch/
+*.aps
+*.user
+*.userosscache
+*.sln.docstates
+*.vcxproj.filters
+project.vs/launch.vs/
+.vs/
+
+# NetBeans
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# Code::Blocks
+*.depend
+*.layout
+*.cbp
+*.workspace
+*.layout
+
+# Dev-C++
+*.dev
+
+# Qt Creator
+*.pro.user
+*.pro.user.*
+*.qbs.user
+*.qbs.user.*
+*.moc
+*.moc.cpp
+*.qm
+*.prl
+Makefile*
+*.pro
+*.pri
+*.prf
+*.prl
+*.prf
+*.moc
+*.moc.cpp
+*.qm
+*.prl
+Makefile*
+
+# CLion
+cmake-build-*/
+.idea/
+
+# RubyMine
+.idea/
+
+# GoLand
+.idea/
+
+# PhpStorm
+.idea/
+
+# PyCharm
+.idea/
+
+# RStudio
+.Rproj.user/
+
+# Sublime Text
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+*.sublime-workspace
+*.sublime-project
+.svn/
+
+# Vim
+*.swp
+*.swo
+*~
+.netrwhist
+.sw[a-p]
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Nano
+.*.swp
+
+# Ace editor
+ace/
+.ace/
+
+# CodeKit
+.kit_cache/
+.codekit-cache/
+
+# Komodo
+.komodoproject
+.komodotools
+.komodotooltips
+
+# LiveStyle
+.ks-dir/
+.ks-files/
+.ls_dir/
+.ls_files/
+
+# Mac
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Linux
+*~
+*.tmp
+*.temp
+*.log
+*.swp
+*.swo
+*~
+*#*
+.#*
+*.lock
+*.fuse_hidden*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+*.tmp
+*.temp
+*.log
+*.swp
+*.swo
+*~
+*#*
+.#*
+*.lock
+*.fuse_hidden*
+
+# Compiled files
+*.class
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.dylib
+*.pyc
+*.pyo
+*.pyd
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Package manager caches
+node_modules/
+bower_components/
+jspm_packages/
+web_modules/
+.npm/
+.yarn/
+.bower-cache
+.bower-registry
+.bower-tmp
+.nugget/
+.packages/
+*.nupkg
+*.gem
+vendor/bundle/
+vendor/cache/
+vendor/gems/
+vendor/ruby/
+
+# IDEs
+.vscode/
+.idea/
+.project
+.classpath
+.settings/
+*.sublime-project
+*.sublime-workspace
+*.sln
+*.csproj
+*.user
+*.userosscache
+*.suo
+*.tmp
+*.temp
+*.log
+*.vs/
+.vscode/settings.json
+.vscode/tasks.json
+.vscode/launch.json
+.vscode/recommendations.json
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+Icon?
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Directory for instrumented libs generated by jscoverage/JSCover
+lib-cov/
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# nyc test coverage
+.nyc_output
+
+# Grunt intermediate storage (https://gruntjs.com/creating-plugins#storing-task-files)
+.grunt/
+
+# Bower dependency directory (https://bower.io/)
+bower_components/
+
+# node-waf configuration
+.lock-wscript
+
+# Compiled binary addons (https://github.com/nodejs/node-gyp)
+build/Release/
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# TypeScript v1 declaration files
+typings/
+
+# Optional npm cache directory
+.npm/
+
+# Optional eslint cache
+.eslintcache
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variables file
+.env
+.env.test
+.env.production
+
+# next.js build output
+.next/
+
+# nuxt.js build output
+.nuxt/
+
+# vuepress build output
+.vuepress/dist
+
+# Serverless directories
+.serverless/
+
+# FuseBox cache
+.fusebox/
+
+# DynamoDB Local files
+.dynamodb/
+
+# TernJS port file configuration
+.tern-port
+
+# Stores additional npm metadata (https://www.npmjs.com/package/.vscode-npm-scripts#configuration)
+.npmrc
+
+# Optional file for compiler process
+.svn/
+
+# Yarn install state
+.yarn-state.yml
+.yarn/
+.pnp.*
+
+# parcel-bundler cache (https://parceljs.org/)
+.cache/
+
+# Next.js build output
+.next/
+out/
+
+# Nuxt.js build output
+.nuxt/
+dist/
+
+# Gatsby files
+.cache/
+public/
+
+# VuePress build output
+.vuepress/dist
+
+# vitepress build output
+.vitepress/cache
+.vitepress/dist
+
+# netlify
+.netlify/
+
+# RedwoodJS build output
+api/dist/
+web/dist/
+
+# Remix build output
+public/build/
+
+# Astro build output
+dist/
+.astroturf/
+.astro/
+
+# SvelteKit build output
+build/
+.svelte-kit/
+
+# Astro
+dist/
+.astroturf/
+.astro/
+
+# Angular
+dist/
+.angular/
+
+# React
+build/
+react-app/
+
+# Vue
+dist/
+.vue/
+
+# Ember
+dist/
+tmp/
+.ember-cli
+.ember/
+
+# Meteor
+.meteor/local/
+
+# Ionic
+ionic/www/
+
+# Cordova
+platforms/
+plugins/
+
+# PhoneGap
+.phonegap/
+.phonegap_plugins/
+
+# Capacitor
+android/
+ios/
+.capacitor/
+
+# Expo
+.expo/
+.expo-shared/
+
+# NativeScript
+platforms/
+hooks/
+
+# Quasar
+dist/
+.quasar/
+
+#Stencil
+stencil.config.ts
+
+# Ionic
+resources/
+ionic.config.json
+
+# Capacitor
+capacitor.config.json
+
+# Electron
+release/
+dist/
+
+# NW.js
+cache/
+nwjs/
+
+# Tauri
+target/
+.tauri/
+
+# Neutralino
+neutralino.config.json
+
+# Wails
+wails/
+
+# Flutter
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+build/
+ios/
+android/
+windows/
+linux/
+macos/
+.devtools_device_log/
+
+# React Native
+node_modules/
+ios/Pods/
+android/app/build/
+metro.config.js
+.rn_metadata
+ReactNativePlayground/
+ReactNativePlaygroundTests/
+ReactNativePlaygroundUITests/
+ReactNativePlayground.xcworkspace/
+ReactNativePlayground.xcodeproj/xcshareddata/xcschemes/ReactNativePlayground.xcscheme
+ReactNativePlayground.xcodeproj/project.xcworkspace/
+ReactNativePlayground.xcodeproj/xcuserdata/
+
+# NativeScript
+platforms/
+hooks/
+node_modules/
+
+# Xamarin
+*.userprefs
+*.csproj.user
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+*.vs/
+.vs/
+.vscode/
+bin/
+obj/
+TestResults/
+packages/
+*.trx
+
+# Unity
+Library/
+Temp/
+Obj/
+Build/
+Logs/
+MemoryCaptures/
+UnityLockFile
+*.pidb.meta
+*.asmdef.meta
+*.rsp.meta
+*.log.meta
+*.meta
+*.unityproj.meta
+*.mat.meta
+*.anim.meta
+*.prefab.meta
+*.unity.meta
+*.asset.meta
+*.shader.meta
+*.cginc.meta
+*.compute.meta
+*.cubemap.meta
+*.giparams.meta
+*.guiskin.meta
+*.jsl.meta
+*.physicMaterial.meta
+*.physicsMaterial2D.meta
+*.prefab.meta
+*.unity.meta
+*.asset.meta
+*.flare.meta
+*.fontsettings.meta
+*.mat.meta
+*.meta
+*.prefab.meta
+*.unity.meta
+*.asset.meta
+*.shader.meta
+*.cginc.meta
+*.compute.meta
+*.cubemap.meta
+*.giparams.meta
+*.guiskin.meta
+*.jsl.meta
+*.physicMaterial.meta
+*.physicsMaterial2D.meta
+*.prefab.meta
+*.unity.meta
+*.asset.meta
+*.flare.meta
+*.fontsettings.meta
+*.mat.meta
+*.meta
+*.prefab.meta
+*.unity.meta
+*.asset.meta
+*.shader.meta
+*.cginc.meta
+*.compute.meta
+*.cubemap.meta
+*.giparams.meta
+*.guiskin.meta
+*.jsl.meta
+*.physicMaterial.meta
+*.physicsMaterial2D.meta
+*.prefab.meta
+*.unity.meta
+*.asset.meta
+*.flare.meta
+*.fontsettings.meta
+*.mat.meta
+*.meta
+*.prefab.meta
+*.unity.meta
+*.asset.meta
+*.shader.meta
+*.cginc.meta
+*.compute.meta
+*.cubemap.meta
+*.giparams.meta
+*.guiskin.meta
+*.jsl.meta
+*.physicMaterial.meta
+*.physicsMaterial2D.meta
+*.prefab.meta
+*.unity.meta
+*.asset.meta
+*.flare.meta
+*.fontsettings.meta
+*.mat.meta
+*.meta
+*.prefab.meta
+*.unity.meta
+*.asset.meta
+*.shader.meta
+*.cginc.meta
+*.compute.meta
+*.cubemap.meta
+*.giparams.meta
+*.guiskin.meta
+*.jsl.meta
+*.physicMaterial.meta
+*.physicsMaterial2D.meta
+*.prefab.meta
+*.unity.meta
+*.asset.meta
+*.flare.meta
+*.fontsettings.meta
+*.mat.meta
+*.meta
+*.prefab.meta
+*.unity.meta
+*.asset.meta
+*.shader.meta
+*.cginc.meta
+*.compute.meta
+*.cubemap.meta
+*.giparams.meta
+*.guiskin.meta
+*.jsl.meta
+*.physicMaterial.meta
+*.physicsMaterial2D.meta
+*.prefab.meta
+*.unity.meta
+*.asset.meta
+*.flare.meta
+*.fontsettings.meta
+*.mat.meta
+*.meta
+*.prefab.meta
+*.unity.meta
+*.asset.meta
+*.shader.meta
+*.cginc.meta
+*.compute.meta
+*.cubemap.meta
+......
