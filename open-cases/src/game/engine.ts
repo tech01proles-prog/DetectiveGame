@@ -18,6 +18,9 @@ function getSaveKey(scenarioId: string) {
   return `${SAVE_KEY_PREFIX}${scenarioId}-v1`;
 }
 
+// Export SAVE_KEY_PREFIX for use in App.tsx
+export { SAVE_KEY_PREFIX };
+
 /**
  * Creates initial game state for a scenario
  */
