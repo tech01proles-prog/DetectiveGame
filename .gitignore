@@ -1,19 +1,21 @@
-```gitignore
+```
 # Dependencies
 node_modules/
 
 # Build outputs
 dist/
 build/
-*.js.map
-*.css.map
+*.js
+*.ts
+*.tsx
+*.css
 
 # Environment variables
 .env
 .env.local
-*.env.*
+.env.*
 
-# IDE and editor files
+# IDE files
 .vscode/
 .idea/
 *.swp
@@ -23,208 +25,88 @@ build/
 # Logs
 *.log
 
-# Coverage
-coverage/
-htmlcov/
-.coverage
-
-# Python specific
+# Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 .Python
 *.so
-.Python
-*.egg-info/
-.eggs/
-.venv/
-venv/
-.env
-pip-log.txt
-pip-delete-this-directory.txt
-.pytest_cache/
-.mypy_cache/
-.coverage
+
+# Coverage reports
+coverage/
 htmlcov/
-.tox/
-noxfile.json
-*.pot
-*.mo
-*.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
+.coverage
+
+# OS generated files
 .DS_Store
- Thumbs.db
- .DS_Store
- .coverage
- .pytest_cache/
- .mypy_cache/
- .tox/
- .venv/
- venv/
- __pycache__/
- *.py[cod]
- *$py.class
- *.so
- .Python
- build/
- develop-eggs/
- dist/
- downloads/
- eggs/
- .eggs/
- lib/
- lib64/
- parts/
- sdist/
- var/
- wheels/
- *.egg-info/
- .installed.cfg
- *.egg
- .env
- .venv
- env/
- ENV/
- venv.bak/
- ENV.bak/
- .env.local
- .env.dev
- .env.prod
- .env.test
- .env.testing
- .env.staging
- .env.development
- .env.production
- .env.backup
- .env.save
- .env.old
- .env.copy
- .env.sample
- .env.example
- .env.template
- .env.default
- .env.local.example
- .env.development.local
- .env.test.local
- .env.production.local
- .env.staging.local
- .env.backup
- .env.save
- .env.old
- .env.copy
- .env.sample
- .env.example
- .env.template
- .env.default
- .env.local.example
- .env.development.local
- .env.test.local
- .env.production.local
- .env.staging.local
- .env.backup
- .env.save
- .env.old
- .env.copy
- .env.sample
- .env.example
- .env.template
- .env.default
- .env.local.example
- .env.development.local
- .env.test.local
- .env.production.local
- .env.staging.local
- .env.backup
- .env.save
- .env.old
- .env.copy
- .env.sample
- .env.example
- .env.template
- .env.default
- .env.local.example
- .env.development.local
- .env.test.local
- .env.production.local
- .env.staging.local
- .env.backup
- .env.save
- .env.old
- .env.copy
- .env.sample
- .env.example
- .env.template
- .env.default
- .env.local.example
- .env.development.local
- .env.test.local
- .env.production.local
- .env.staging.local
- .env.backup
- .env.save
- .env.old
- .env.copy
- .env.sample
- .env.example
- .env.template
- .env.default
- .env.local.example
- .env.development.local
- .env.test.local
- .env.production.local
- .env.staging.local
- .env.backup
- .env.save
- .env.old
- .env.copy
- .env.sample
- .env.example
- .env.template
- .env.default
- .env.local.example
- .env.development.local
- .env.test.local
- .env.production.local
- .env.staging.local
- .env.backup
- .env.save
- .env.old
- .env.copy
- .env.sample
- .env.example
- .env.template
- .env.default
- .env.local.example
- .env.development.local
- .env.test.local
- .env.production.local
- .env.staging.local
- .env.backup
- .env.save
- .env.old
- .env.copy
- .env.sample
- .env.example
- .env.template
- .env.default
- .env.local.example
- .env.development.local
- .env.test.local
- .env.production.local
- .env.staging.local
- .env.backup
- .env.save
- .env.old
- .env.copy
- .env.sample
- .env.example
- .env.template
- .env.default
- .env.local.example
- .env.development.local
- .env.test.local
-......
+Thumbs.db
+
+# Testing
+.nyc_output/
+coverage.xml
+*.gcda
+*.gcno
+
+# Compiled JavaScript
+lib/
+temp/
+out/
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Debug log
+debug.log
+
+# System Files
+*.sln
+*.csproj
+*.user
+*.userosscache
+*.suo
+
+# Package manager
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ember
+tmp/
+.ember-cli
+.ember/
+dist/
+node_modules/
+
+# React Native
+node_modules/
+ios/Pods/
+android/build/
+.expo/
+.webpack/
+
+# Next.js
+.next/
+out/
+
+# Nuxt.js
+.nuxt/
+dist/
+
+# Vue.js
+dist/
+.vuepress/dist/
+
+# Gatsby
+public/
+.cache/
+
+# Webpack
+webpack-stats.json
+
+# TypeScript
+*.tsbuildinfo
 ```
