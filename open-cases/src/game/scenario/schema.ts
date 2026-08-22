@@ -74,6 +74,8 @@ export interface Clue {
   relatedClues: string[];
   /** Context describing when/how this clue was found */
   foundWhen: string;
+  /** Optional: If true, this clue is a false lead (red herring) that does not contribute to solving the case */
+  isRedHerring?: boolean;
 }
 
 export interface LocationAction {

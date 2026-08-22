@@ -32,7 +32,19 @@ export interface Character {
   secret?: string; // Hidden secret
   suspectLevel?: number; // 0-100 suspicion level
 }
-export interface Clue { id:string; title:string; type:string; description:string; detail:string; locationId:string; importance:Importance; relatedCharacters:string[]; relatedClues:string[]; foundWhen:string; }
+export interface Clue { 
+  id:string; 
+  title:string; 
+  type:string; 
+  description:string; 
+  detail:string; 
+  locationId:string; 
+  importance:Importance; 
+  relatedCharacters:string[]; 
+  relatedClues:string[]; 
+  foundWhen:string;
+  isRedHerring?: boolean; // Whether this clue is a false lead (red herring)
+}
 export interface LocationAction { id:string; label:string; description:string; clueIds:string[]; characterId?:string; requiresClueIds?:string[]; once?:boolean; event?:string; }
 export interface Location { 
   id:string; 
