@@ -5,7 +5,7 @@
  * Supports multiple scenarios loaded from JSON files.
  */
 
-import type { GameState, DialogueNode, TimelineEvent, Deduction, CharacterProfile } from './types';
+import type { GameState, DialogueNode, TimelineEvent, Deduction, CharacterProfile, NewsArticle } from './types';
 import type { ScenarioData, Location, Clue, Character } from './scenario/schema';
 import { getLocationById, getClueById, getCharacterById, getDialogueNode } from './scenario/loader';
 
@@ -90,7 +90,10 @@ export function createInitialState(scenario: ScenarioData): GameState {
       }],
       trustLevel: initialTrust[char.id],
       lastInteraction: undefined
-    }))
+    })),
+    newsFeed: [],
+    playerReputation: 0,
+    mediaAttention: 0
   };
 }
 
@@ -528,12 +531,62 @@ export function advanceTime(state: GameState, minutes: number, scenario?: import
     }
   }
   
+  // Update news feed based on time and events
+  let newsFeed = state.newsFeed || [];
+  let playerReputation = state.playerReputation ?? 0;
+  let mediaAttention = state.mediaAttention ?? 0;
+  
+  if (scenario?.newsFeed?.enabled) {
+    // Check for articles that should be published at this time
+    for (const articleConfig of scenario.newsFeed.articles) {
+      // Skip if already published
+      if (newsFeed.some(a => a.id === articleConfig.id)) continue;
+      
+      // Check if article should be published based on time
+      const shouldPublishByTime = articleConfig.publishedAtTime !== undefined && newTime >= articleConfig.publishedAtTime;
+      
+      // Check if article should be published based on events
+      const shouldPublishByEvent = articleConfig.triggerEventId && state.triggeredEvents?.includes(articleConfig.triggerEventId);
+      
+      // Check if article should be published based on clues
+      const shouldPublishByClues = articleConfig.triggerClueIds?.every(clueId => state.foundClueIds.includes(clueId));
+      
+      if (shouldPublishByTime || shouldPublishByEvent || shouldPublishByClues) {
+        const newArticle: NewsArticle = {
+          id: articleConfig.id,
+          headline: articleConfig.headline,
+          summary: articleConfig.summary,
+          fullText: articleConfig.fullText,
+          publishedAt: newTime,
+          source: articleConfig.source,
+          tone: articleConfig.tone,
+          relatedCharacterIds: articleConfig.relatedCharacterIds,
+          relatedClueIds: articleConfig.relatedClueIds,
+          impactOnReputation: articleConfig.impactOnReputation ?? 0,
+          unlocksLocations: articleConfig.unlocksLocations,
+          unlocksDialogue: articleConfig.unlocksDialogue
+        };
+        
+        newsFeed = [...newsFeed, newArticle];
+        
+        // Update reputation and media attention
+        if (articleConfig.impactOnReputation !== undefined) {
+          playerReputation = Math.max(-100, Math.min(100, playerReputation + articleConfig.impactOnReputation));
+        }
+        mediaAttention = Math.min(100, mediaAttention + 5);
+      }
+    }
+  }
+  
   return {
     ...state,
     gameTime: newTime,
     triggeredEvents: [...(state.triggeredEvents || []), ...triggeredEvents],
     activeWeatherEffects,
-    currentLighting
+    currentLighting,
+    newsFeed,
+    playerReputation,
+    mediaAttention
   };
 }
 
