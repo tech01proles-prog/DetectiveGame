@@ -7,7 +7,7 @@ import {resolveImageUrl} from '@/game/scenario/loader';
 import type {DialogueNode,GameState,Tab,Location,Character,Clue,TimelineEvent,DialogueChoice,BoardNode,BoardConnection} from '@/game/types';
 import type {ScenarioData} from '@/game/scenario/schema';
 
-const tabs:{id:Tab|'board';label:string;icon:any}[]=[{id:'case',label:'Дело',icon:BookOpen},{id:'people',label:'Люди',icon:Users},{id:'clues',label:'Улики',icon:Search},{id:'notes',label:'Заметки',icon:NotebookPen},{id:'timeline',label:'Хронология',icon:Clock3}];
+const tabs:{id:Tab|'board';label:string;icon:any}[]=[{id:'case',label:'Дело',icon:BookOpen},{id:'people',label:'Люди',icon:Users},{id:'board',label:'Доска',icon:StickyNote},{id:'clues',label:'Улики',icon:Search},{id:'notes',label:'Заметки',icon:NotebookPen},{id:'timeline',label:'Хронология',icon:Clock3}];
 
 // Helper to get dialogue node ID for an action
 const getActionDialogueId = (actionId: string, scenario: ScenarioData): string | undefined => {
@@ -158,7 +158,7 @@ export default function GameScreen({state,setState,onFinish,onRestart,scenario}:
     <div className="game-body">
       <aside className={`left-rail ${sidebar?'':'collapsed'}`}>{sidebar&&<><div className="rail-head"><div><span className="eyebrow">РАССЛЕДОВАНИЕ</span><strong>Тишина на Мэдисон</strong></div><button onClick={()=>setSidebar(false)} aria-label="Свернуть панель"><PanelRightClose size={17}/></button></div><nav>{tabs.map(t=>{const Icon=t.icon;return <button key={t.id} className={state.selectedTab===t.id?'active':''} onClick={()=>setState(s=>s?({...s,selectedTab:t.id as Tab}):null)}><Icon size={17}/><span>{t.label}</span>{t.id==='clues'&&found.length>0&&<em>{found.length}</em>}</button>})}</nav><div className="rail-progress"><div><span>Материалы дела</span><b>{progress}%</b></div><div className="progress"><i style={{width:`${progress}%`}}/></div><small>Открыто {discovered.length} из {locations.length} точек</small></div></>}{!sidebar&&<button className="expand-rail" onClick={()=>setSidebar(true)} aria-label="Развернуть панель"><PanelRightOpen size={18}/></button>}</aside>
       <section className="map-panel">{state.selectedTab === 'board' ? <InvestigationBoard state={state} setState={setState} scenario={scenario}/> : <><MapView locations={locations} discovered={discovered} selectedId={state.selectedLocationId} mode={state.mapMode} onSelect={select} mapTemplateId={mapTemplateId}/><div className="map-hint"><MapPin size={13}/><span>Выберите точку на карте</span></div><div className="map-legend"><span><i className="legend-dot open"/> открыта</span><span><i className="legend-dot new"/> выбрана</span><span><i className="legend-dot locked"/> неизвестна</span></div><div className="case-stamp">SEATTLE<br/><b>CASE 001</b></div></>}</section>
-      <aside className="right-panel"><div className="panel-scroll">{state.selectedTab==='case'&&<CaseTab loc={loc} state={state} action={action} setFinalOpen={setFinalOpen} canFinal={canFinal} scenario={scenario}/>} {state.selectedTab==='people'&&<PeopleTab state={state} select={select} scenario={scenario}/>} {state.selectedTab==='clues'&&<CluesTab found={found} onOpen={setDetailClue}/>} {state.selectedTab==='notes'&&<NotesTab value={state.notes} onChange={note}/>} {state.selectedTab==='timeline'&&<TimelineTab state={state} scenario={scenario}/>}</div></aside>
+      <aside className="right-panel"><div className="panel-scroll">{state.selectedTab==='case'&&<CaseTab loc={loc} state={state} action={action} setFinalOpen={setFinalOpen} canFinal={canFinal} scenario={scenario}/>} {state.selectedTab==='people'&&<PeopleTab state={state} select={select} scenario={scenario}/>} {state.selectedTab==='board'&&<BoardTab state={state} setState={setState} scenario={scenario}/>} {state.selectedTab==='clues'&&<CluesTab found={found} onOpen={setDetailClue}/>} {state.selectedTab==='notes'&&<NotesTab value={state.notes} onChange={note}/>} {state.selectedTab==='timeline'&&<TimelineTab state={state} scenario={scenario}/>}</div></aside>
     </div>
     {detailClue&&<ClueModal clue={clues.find(c=>c.id===detailClue)!} onClose={()=>setDetailClue(null)}/>} 
     {eventNotice&&<EventModal notice={eventNotice} onClose={()=>setEventNotice(null)}/>} 
@@ -226,6 +226,49 @@ function PeopleTab({state,select,scenario}:{state:GameState;select:(id:string)=>
     {interactedCharacters.length === 0 && <div className="empty">Пока нет данных о персонажах. Начните расследование и опрашивайте свидетелей.</div>}
   </div></>
 }
+function BoardTab({state,setState,scenario}:{state:GameState;setState:React.Dispatch<React.SetStateAction<GameState | null>>;scenario:ScenarioData}){
+  const board = state.investigationBoard || { nodes: [], connections: [], selectedTool: 'select' };
+  const foundClues = scenario.clues.filter(c => state.foundClueIds.includes(c.id));
+  const questionedChars = scenario.characters.filter(c => state.questionedCharacterIds.includes(c.id));
+  
+  return <><div className="panel-title"><span className="eyebrow">ДОСКА РАССЛЕДОВАНИЯ</span><h2>Доска улик</h2><p>Переключитесь на вкладку «Доска» в основном окне для работы с уликами</p></div>
+  <div className="board-summary">
+    <div className="summary-card">
+      <strong>{board.nodes.filter(n => n.type === 'clue').length}</strong>
+      <span>Улики на доске</span>
+    </div>
+    <div className="summary-card">
+      <strong>{board.nodes.filter(n => n.type === 'character').length}</strong>
+      <span>Персонажи</span>
+    </div>
+    <div className="summary-card">
+      <strong>{board.connections.length}</strong>
+      <span>Связей нитью</span>
+    </div>
+  </div>
+  <div className="board-hint">
+    <StickyNote size={32} style={{marginBottom: '16px', opacity: 0.5}}/>
+    <p><strong>Как работать с доской:</strong></p>
+    <ul>
+      <li>Откройте вкладку <strong>«Доска»</strong> в левой панели</li>
+      <li>Добавляйте улики и персонажей из палитры слева</li>
+      <li>Перетаскивайте стикеры мышкой</li>
+      <li>Инструментом «Связать» соединяйте улики красной нитью</li>
+      <li>Используйте зум и панорамирование для навигации</li>
+    </ul>
+  </div>
+  {board.nodes.length > 0 && (
+    <div className="board-preview-list">
+      <span className="section-label">Элементы на доске:</span>
+      {board.nodes.map(node => (
+        <div key={node.id} className="preview-node" style={{borderLeft: `4px solid ${node.color || '#fef3c7'}`}}>
+          <strong>{node.title}</strong>
+          <small>{node.type === 'clue' ? 'Улика' : 'Персонаж'}</small>
+        </div>
+      ))}
+    </div>
+  )}
+</>}
 function CluesTab({found,onOpen}:{found:any[];onOpen:(id:string)=>void}){return <><div className="panel-title"><span className="eyebrow">ДОКАЗАТЕЛЬСТВА</span><h2>Улики <em>{found.length}</em></h2><p>Нажимайте на материалы и сопоставляйте детали.</p></div><div className="clue-list">{found.map(c=><button className={`clue-card ${c.importance}`} key={c.id} onClick={()=>onOpen(c.id)}><div className="clue-type">{c.type}</div><b>{c.title}</b><span>{c.description}</span><small>{c.foundWhen}</small></button>)}{found.length===0&&<div className="empty">Пока ничего. Начните с дома Беннеттов и школы.</div>}</div></>}
 function NotesTab({value,onChange}:{value:string;onChange:(v:string)=>void}){return <><div className="panel-title"><span className="eyebrow">РАБОЧИЙ БЛОКНОТ</span><h2>Заметки</h2><p>Пишите собственные версии. Игра не проверяет текст заметок.</p></div><textarea className="notes" value={value} onChange={e=>onChange(e.target.value)} placeholder={'Например:\n20:07 — Майя официально покинула школу.\n20:19 — фургон у мастерской.\nПочему Дэниел говорит 20:14?'} /><div className="note-tip"><NotebookPen size={16}/><span>Хорошая привычка: рядом с каждой гипотезой записывайте, какая улика её подтверждает.</span></div></>}
 function TimelineTab({state,scenario}:{state:GameState;scenario:ScenarioData}){
