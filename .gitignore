@@ -1,54 +1,51 @@
-```
+```markdown
+# Compiled and binary files
+*.pyc
+__pycache__/
+*.class
+*.o
+*.exe
+*.dll
+*.so
+*.a
+*.obj
+*.out
+
 # Dependencies
 node_modules/
+venv/
+.venv/
+.env
+.env.local
+*.env.*
 
 # Build artifacts
 dist/
 build/
 target/
-
-# Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-*.py.class
-*.py.obj
-.Python
-env/
-venv/
-.venv/
-.eggs/
-.egg-info/
-*.egg-info/
-
-# Logs
 *.log
+coverage/
+htmlcov/
+.coverage
 
-# Environment variables
-.env
-.env.local
-*.env.*
-
-# IDE specific
+# Editors and IDE
 .vscode/
 .idea/
 *.swp
 *.swo
 *.tmp
 
-# OS generated
+# System files
 .DS_Store
 Thumbs.db
 
-# Testing
-.coverage
-coverage/
-htmlcov/
-.pytest_cache/
+# Python specific
+*.pyc
+__pycache__/
 .mypy_cache/
+.pytest_cache/
 
-# Compression
+# Compressed files
 *.zip
 *.gz
 *.tar
