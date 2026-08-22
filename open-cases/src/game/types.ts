@@ -1,6 +1,6 @@
 export type Screen = 'title' | 'selector' | 'intro' | 'game' | 'ending';
 export type MapMode = 'satellite' | 'scheme';
-export type Tab = 'case' | 'people' | 'board' | 'clues' | 'notes' | 'timeline';
+export type Tab = 'case' | 'people' | 'board' | 'clues' | 'notes' | 'timeline' | 'news';
 export type Importance = 'critical' | 'important' | 'context';
 
 // Map location for stylized map
@@ -142,6 +142,10 @@ export interface GameState {
   // Atmospheric effects state
   activeWeatherEffects?: Array<{type: string; intensity: number; active: boolean}>;
   currentLighting?: {brightness: number; colorFilter?: string};
+  // Dynamic news feed state
+  newsFeed?: NewsArticle[]; // List of published news articles
+  playerReputation?: number; // Player's public reputation (-100 to 100)
+  mediaAttention?: number; // Level of media attention (0-100)
 }
 
 // Investigation board types for interactive clues board
@@ -222,6 +226,22 @@ export interface TrustChange {
   change: number; // Positive or negative trust change
   reason: string;
   timestamp: number;
+}
+
+// Dynamic news feed system
+export interface NewsArticle {
+  id: string;
+  headline: string;
+  summary: string;
+  fullText: string;
+  publishedAt: number; // Game time in minutes when article was published
+  source: string; // News source (e.g., "City News", "Madison Gazette")
+  tone: 'positive' | 'neutral' | 'negative' | 'sensational'; // Article tone affecting reputation
+  relatedCharacterIds?: string[]; // Characters mentioned in the article
+  relatedClueIds?: string[]; // Clues referenced in the article
+  impactOnReputation?: number; // How much this article affects player reputation (-20 to +20)
+  unlocksLocations?: string[]; // Locations unlocked by this news coverage
+  unlocksDialogue?: string[]; // Dialogue nodes unlocked by this news
 }
 
 export type GameStateWithNull = GameState | null;

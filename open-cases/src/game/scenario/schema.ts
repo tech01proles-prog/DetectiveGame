@@ -355,4 +355,24 @@ export interface ScenarioData {
       conditions?: string[]; // Location IDs or time ranges when sound plays
     }>;
   };
+  /** Optional: Dynamic news feed settings for reactive media coverage */
+  newsFeed?: {
+    enabled: boolean;
+    articles: Array<{
+      id: string;
+      headline: string;
+      summary: string;
+      fullText: string;
+      triggerEventId?: string; // Event that triggers this article
+      triggerClueIds?: string[]; // Clues that trigger this article
+      publishedAtTime?: number; // Game time in minutes when article is published
+      source: string;
+      tone: 'positive' | 'neutral' | 'negative' | 'sensational';
+      relatedCharacterIds?: string[];
+      relatedClueIds?: string[];
+      impactOnReputation?: number; // -20 to +20
+      unlocksLocations?: string[];
+      unlocksDialogue?: string[];
+    }>;
+  };
 }

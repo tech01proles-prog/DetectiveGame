@@ -1,13 +1,13 @@
 import {useMemo,useState,useEffect} from 'react';
-import {BookOpen,ChevronRight,FileText,MessageSquare,NotebookPen,Search,Users,Clock3,Lock,Check,PanelRightClose,PanelRightOpen,Send,MapPin,Radio,Eye,Camera,FileSearch,CircleAlert,Repeat,StickyNote,Stamp,FileSpreadsheet} from 'lucide-react';
+import {BookOpen,ChevronRight,FileText,MessageSquare,NotebookPen,Search,Users,Clock3,Lock,Check,PanelRightClose,PanelRightOpen,Send,MapPin,Radio,Eye,Camera,FileSearch,CircleAlert,Repeat,StickyNote,Stamp,FileSpreadsheet,Newspaper} from 'lucide-react';
 import MapView from '@/game/MapView';
 import InvestigationBoard from '@/game/InvestigationBoard';
 import {calculateScore,discoverFromClues,performAction,getDynamicDialogueNode,saveGame,loadGame} from '@/game/engine';
 import {resolveImageUrl} from '@/game/scenario/loader';
-import type {DialogueNode,GameState,Tab,Location,Character,Clue,TimelineEvent,DialogueChoice,BoardNode,BoardConnection} from '@/game/types';
+import type {DialogueNode,GameState,Tab,Location,Character,Clue,TimelineEvent,DialogueChoice,BoardNode,BoardConnection,NewsArticle} from '@/game/types';
 import type {ScenarioData} from '@/game/scenario/schema';
 
-const tabs:{id:Tab|'board';label:string;icon:any}[]=[{id:'case',label:'Дело',icon:BookOpen},{id:'people',label:'Люди',icon:Users},{id:'board',label:'Доска',icon:StickyNote},{id:'clues',label:'Улики',icon:Search},{id:'notes',label:'Заметки',icon:NotebookPen},{id:'timeline',label:'Хронология',icon:Clock3}];
+const tabs:{id:Tab|'board'|'news';label:string;icon:any}[]=[{id:'case',label:'Дело',icon:BookOpen},{id:'people',label:'Люди',icon:Users},{id:'board',label:'Доска',icon:StickyNote},{id:'clues',label:'Улики',icon:Search},{id:'notes',label:'Заметки',icon:NotebookPen},{id:'timeline',label:'Хронология',icon:Clock3},{id:'news',label:'Новости',icon:Newspaper}];
 
 // Helper to get dialogue node ID for an action
 const getActionDialogueId = (actionId: string, scenario: ScenarioData): string | undefined => {
@@ -189,7 +189,7 @@ export default function GameScreen({state,setState,onFinish,onRestart,scenario}:
     <div className="game-body">
       <aside className={`left-rail ${sidebar?'':'collapsed'}`}>{sidebar&&<><div className="rail-head"><div><span className="eyebrow">РАССЛЕДОВАНИЕ</span><strong>Тишина на Мэдисон</strong></div><button onClick={()=>setSidebar(false)} aria-label="Свернуть панель"><PanelRightClose size={17}/></button></div><nav>{tabs.map(t=>{const Icon=t.icon;return <button key={t.id} className={state.selectedTab===t.id?'active':''} onClick={()=>setState(s=>s?({...s,selectedTab:t.id as Tab}):null)}><Icon size={17}/><span>{t.label}</span>{t.id==='clues'&&found.length>0&&<em>{found.length}</em>}</button>})}</nav><div className="rail-progress"><div><span>Материалы дела</span><b>{progress}%</b></div><div className="progress"><i style={{width:`${progress}%`}}/></div><small>Открыто {discovered.length} из {locations.length} точек</small></div></>}{!sidebar&&<button className="expand-rail" onClick={()=>setSidebar(true)} aria-label="Развернуть панель"><PanelRightOpen size={18}/></button>}</aside>
       <section className="map-panel">{state.selectedTab === 'board' ? <InvestigationBoard state={state} setState={setState} scenario={scenario}/> : <><MapView locations={locations} discovered={discovered} selectedId={state.selectedLocationId} mode={state.mapMode} onSelect={select} mapTemplateId={mapTemplateId}/><div className="map-hint"><MapPin size={13}/><span>Выберите точку на карте</span></div><div className="map-legend"><span><i className="legend-dot open"/> открыта</span><span><i className="legend-dot new"/> выбрана</span><span><i className="legend-dot locked"/> неизвестна</span></div><div className="case-stamp">SEATTLE<br/><b>CASE 001</b></div></>}</section>
-      <aside className="right-panel"><div className="panel-scroll">{state.selectedTab==='case'&&<CaseTab loc={loc} state={state} action={action} setFinalOpen={setFinalOpen} canFinal={canFinal} scenario={scenario}/>} {state.selectedTab==='people'&&<PeopleTab state={state} select={select} scenario={scenario}/>} {state.selectedTab==='board'&&<BoardTab state={state} setState={setState} scenario={scenario}/>} {state.selectedTab==='clues'&&<CluesTab found={found} onOpen={setDetailClue}/>} {state.selectedTab==='notes'&&<NotesTab value={state.notes} onChange={note}/>} {state.selectedTab==='timeline'&&<TimelineTab state={state} scenario={scenario}/>}</div></aside>
+      <aside className="right-panel"><div className="panel-scroll">{state.selectedTab==='case'&&<CaseTab loc={loc} state={state} action={action} setFinalOpen={setFinalOpen} canFinal={canFinal} scenario={scenario}/>} {state.selectedTab==='people'&&<PeopleTab state={state} select={select} scenario={scenario}/>} {state.selectedTab==='board'&&<BoardTab state={state} setState={setState} scenario={scenario}/>} {state.selectedTab==='clues'&&<CluesTab found={found} onOpen={setDetailClue}/>} {state.selectedTab==='notes'&&<NotesTab value={state.notes} onChange={note}/>} {state.selectedTab==='timeline'&&<TimelineTab state={state} scenario={scenario}/>} {state.selectedTab==='news'&&<NewsTab state={state} scenario={scenario}/>}</div></aside>
     </div>
     {detailClue&&<ClueModal clue={clues.find(c=>c.id===detailClue)!} onClose={()=>setDetailClue(null)}/>} 
     {eventNotice&&<EventModal notice={eventNotice} onClose={()=>setEventNotice(null)}/>} 
@@ -467,4 +467,97 @@ function DialogueModal({node,scenario,onClose,onChoose,state}:{node:DialogueNode
 function FinalModal({state,scenario,onClose,onSubmit}:{state:GameState;scenario:ScenarioData;onClose:()=>void;onSubmit:(a:any)=>void}){const [person,setPerson]=useState('');const [motive,setMotive]=useState('');const [method,setMethod]=useState('');const [location,setLocation]=useState('');return <div className="modal-backdrop"><div className="modal final-modal"><div className="modal-head"><div><span className="eyebrow">ФИНАЛЬНАЯ ВЕРСИЯ</span><h2>Что произошло?</h2></div><button onClick={onClose}>×</button></div><p>Сформируйте свою версию только из того, что удалось подтвердить. Ошибка не закрывает дело автоматически.</p><Select label="Кто организовал исчезновение?" value={person} set={setPerson} opts={[['leah','Лия Моррис'],['daniel','Дэниел Кроу'],['nora','Нора Вэйл'],['sam','Сэмюэл Рид']]}/><Select label="Какой был мотив?" value={motive} set={setMotive} opts={[['exposure','Скрыть схему подмены серийных номеров'],['money','Получить выкуп'],['revenge','Личная месть'],['escape','Помочь Майе скрыться']]}/><Select label="Как Майю заманили?" value={method} set={setMethod} opts={[['lured','Сообщением о встрече и фотографиях'],['force','Сразу силой у школы'],['fake','Поддельным звонком от матери'],['random','Случайно возле магазина']]}/><Select label="Где ключевая точка?" value={location} set={setLocation} opts={[['northline_storage','Northline Storage'],['lincoln_school','Lincoln High School'],['reed_garage','Reed Auto'],['city_news','Seattle Ledger']]}/><button className="btn primary full" disabled={!person||!motive||!method||!location} onClick={()=>onSubmit({person,motive,method,location})}>Закрыть дело <Send size={17}/></button></div></div>}
 
 function Select({label,value,set,opts}:{label:string;value:string;set:(v:string)=>void;opts:string[][]}){return <label className="select-wrap"><span>{label}</span><select value={value} onChange={e=>set(e.target.value)}><option value="">Выберите ответ…</option>{opts.map(([v,t])=><option value={v} key={v}>{t}</option>)}</select></label>}
+
+function NewsTab({state,scenario}:{state:GameState;scenario:ScenarioData}){
+  const articles = state.newsFeed || [];
+  const playerReputation = state.playerReputation ?? 0;
+  const mediaAttention = state.mediaAttention ?? 0;
+  
+  // Sort articles by publication time (newest first)
+  const sortedArticles = [...articles].sort((a, b) => b.publishedAt - a.publishedAt);
+  
+  const getToneStyle = (tone: string) => {
+    switch(tone) {
+      case 'positive': return { color: '#16a34a', bg: '#f0fdf4', icon: '📈' };
+      case 'negative': return { color: '#dc2626', bg: '#fef2f2', icon: '📉' };
+      case 'sensational': return { color: '#7c3aed', bg: '#f5f3ff', icon: '🔥' };
+      default: return { color: '#6b7280', bg: '#f9fafb', icon: '📰' };
+    }
+  };
+  
+  const getReputationColor = () => {
+    if (playerReputation > 30) return '#16a34a';
+    if (playerReputation > 0) return '#65a30d';
+    if (playerReputation > -30) return '#ca8a04';
+    return '#dc2626';
+  };
+  
+  return <><div className="panel-title">
+    <span className="eyebrow"><Newspaper size={12}/> СРЕДСТВА МАССОВОЙ ИНФОРМАЦИИ</span>
+    <h2>Лента новостей</h2>
+    <p>Публикации в прессе о ходе расследования.</p>
+  </div>
+  
+  {/* Reputation and attention indicators */}
+  <div className="news-stats">
+    <div className="stat-card">
+      <span className="stat-label">Репутация</span>
+      <div className="stat-value" style={{color: getReputationColor()}}>
+        {playerReputation > 0 ? '+' : ''}{playerReputation}
+      </div>
+      <div className="stat-bar">
+        <div className="stat-fill" style={{width: `${Math.abs(playerReputation)}%`, background: getReputationColor()}}/>
+      </div>
+    </div>
+    <div className="stat-card">
+      <span className="stat-label">Внимание СМИ</span>
+      <div className="stat-value">{mediaAttention}%</div>
+      <div className="stat-bar">
+        <div className="stat-fill" style={{width: `${mediaAttention}%`, background: '#2563eb'}}/>
+      </div>
+    </div>
+  </div>
+  
+  {/* News articles list */}
+  <div className="news-feed">
+    {sortedArticles.length === 0 ? (
+      <div className="empty">
+        <Newspaper size={48} style={{opacity: 0.3, marginBottom: '12px'}}/>
+        <p>Пока нет публикаций в прессе.</p>
+        <small>Новости появятся по ходу расследования.</small>
+      </div>
+    ) : (
+      sortedArticles.map(article => {
+        const toneStyle = getToneStyle(article.tone);
+        return <div key={article.id} className="news-article" style={{borderLeft: `3px solid ${toneStyle.color}`}}>
+          <div className="article-header">
+            <span className="article-source">{article.source}</span>
+            <span className="article-tone" style={{background: toneStyle.bg, color: toneStyle.color}}>
+              {toneStyle.icon} {article.tone === 'positive' ? 'ПОЗИТИВ' : article.tone === 'negative' ? 'НЕГАТИВ' : article.tone === 'sensational' ? 'СЕНСАЦИЯ' : 'НЕЙТРАЛЬНО'}
+            </span>
+          </div>
+          <h3 className="article-headline">{article.headline}</h3>
+          <p className="article-summary">{article.summary}</p>
+          <details className="article-details">
+            <summary>Читать полностью</summary>
+            <p className="article-full-text">{article.fullText}</p>
+            {article.relatedCharacterIds && article.relatedCharacterIds.length > 0 && (
+              <div className="article-meta">
+                <small>Упомянуты: {article.relatedCharacterIds.join(', ')}</small>
+              </div>
+            )}
+          </details>
+          <div className="article-footer">
+            <time>Опубликовано через {(article.publishedAt / 60).toFixed(1)} ч. после начала дела</time>
+            {article.impactOnReputation !== undefined && article.impactOnReputation !== 0 && (
+              <span className="reputation-change" style={{color: article.impactOnReputation > 0 ? '#16a34a' : '#dc2626'}}>
+                {article.impactOnReputation > 0 ? '+' : ''}{article.impactOnReputation} репутация
+              </span>
+            )}
+          </div>
+        </div>;
+      })
+    )}
+  </div></>;
+}
 
