@@ -174,6 +174,8 @@ export interface DialogueChoice {
   requiresKeywords?: string[];
   /** Optional: If true, this choice is only available if the keyword is NOT in notes */
   hideIfHasKeyword?: string | null;
+  /** Optional: Tone/mood of the dialogue choice affecting NPC response */
+  tone?: 'friendly' | 'aggressive' | 'cunning' | 'neutral';
 }
 
 export interface DialogueNode {
