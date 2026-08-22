@@ -487,19 +487,53 @@ export function updateCharacterTrust(
 }
 
 /**
- * Advances game time
+ * Advances game time and updates atmospheric effects
  */
-export function advanceTime(state: GameState, minutes: number): GameState {
+export function advanceTime(state: GameState, minutes: number, scenario?: import('./scenario/schema').ScenarioData): GameState {
   const newTime = (state.gameTime || 0) + minutes;
   
   // Check for time-based events
   const triggeredEvents: string[] = [];
-  // Could add logic here to trigger events based on time
+  
+  // Update atmospheric effects based on time
+  let activeWeatherEffects = state.activeWeatherEffects || [];
+  let currentLighting = state.currentLighting || { brightness: 1.0 };
+  
+  if (scenario?.atmosphere) {
+    const { weatherEffects, lightingChanges } = scenario.atmosphere;
+    
+    // Update weather effects
+    if (weatherEffects) {
+      activeWeatherEffects = weatherEffects.map(effect => {
+        const isActive = !effect.startTime || (newTime >= effect.startTime && (!effect.endTime || newTime <= effect.endTime));
+        return {
+          type: effect.type,
+          intensity: effect.intensity,
+          active: isActive
+        };
+      }).filter(e => e.active);
+    }
+    
+    // Update lighting
+    if (lightingChanges) {
+      for (const change of lightingChanges) {
+        if (newTime >= change.timeRange[0] && newTime <= change.timeRange[1]) {
+          currentLighting = {
+            brightness: change.brightness,
+            colorFilter: change.colorFilter
+          };
+          break;
+        }
+      }
+    }
+  }
   
   return {
     ...state,
     gameTime: newTime,
-    triggeredEvents: [...(state.triggeredEvents || []), ...triggeredEvents]
+    triggeredEvents: [...(state.triggeredEvents || []), ...triggeredEvents],
+    activeWeatherEffects,
+    currentLighting
   };
 }
 

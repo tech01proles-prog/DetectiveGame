@@ -698,7 +698,9 @@
           "label": "Изучить",
           "text": "Подделка?",
           "nextId": "victor_fake",
-          "requiresClueIds": ["clue_21_fake_receipt"]
+          "requiresClueIds": [
+            "clue_21_fake_receipt"
+          ]
         }
       ]
     },
@@ -811,5 +813,145 @@
     ],
     "keyLocationId": "cross_tower",
     "minimumCluesRequired": 18
+  },
+  "deductions": [
+    {
+      "id": "deduct_victor_mastermind",
+      "title": "Виктор — организатор",
+      "description": "Соедините поддельный чек, записи камер и мотив",
+      "requiredClueIds": [
+        "clue_21_fake_receipt",
+        "clue_14_camera_logs",
+        "clue_18_business motive"
+      ],
+      "resultText": "Виктор Кросс организовал похищение для сокрытия незаконных операций",
+      "relatedCharacterIds": [
+        "victor"
+      ],
+      "isCorrect": true
+    },
+    {
+      "id": "deduct_maya_witness",
+      "title": "Майя — ключевой свидетель",
+      "description": "Свяжите фотографии Майи с её исчезновением",
+      "requiredClueIds": [
+        "clue_01_maya_photo",
+        "clue_06_disappearance_report",
+        "clue_19_following_notes"
+      ],
+      "resultText": "Майя была похищена потому что сфотографировала незаконный груз",
+      "relatedCharacterIds": [
+        "maya",
+        "victor"
+      ],
+      "isCorrect": true
+    },
+    {
+      "id": "deduct_marculus_involved",
+      "title": "Маркус — соучастник",
+      "description": "Соедините показания Маркуса с фургоном",
+      "requiredClueIds": [
+        "clue_07_van_sighting",
+        "clue_15_marcus_payment",
+        "clue_22_van_analysis"
+      ],
+      "resultText": "Маркус перевозил похищенную Майю по указанию Виктора",
+      "relatedCharacterIds": [
+        "marcus",
+        "victor"
+      ],
+      "isCorrect": true
+    }
+  ],
+  "timePressure": {
+    "enabled": true,
+    "totalTime": 120,
+    "criticalEvents": [
+      {
+        "time": 60,
+        "eventId": "t1",
+        "description": "Звонок от похитителей с угрозами"
+      },
+      {
+        "time": 90,
+        "eventId": "t2",
+        "description": "Доказательства начинают исчезать"
+      },
+      {
+        "time": 110,
+        "eventId": "t3",
+        "description": "Последний шанс спасти Майю"
+      }
+    ]
+  },
+  "atmosphere": {
+    "enabled": true,
+    "weatherEffects": [
+      {
+        "type": "rain",
+        "intensity": 0.7,
+        "startTime": 0,
+        "endTime": 60,
+        "description": "Лёгкий дождь создаёт мрачную атмосферу"
+      },
+      {
+        "type": "fog",
+        "intensity": 0.5,
+        "startTime": 60,
+        "endTime": 120,
+        "description": "Туман сгущается по мере развития расследования"
+      }
+    ],
+    "lightingChanges": [
+      {
+        "timeRange": [
+          0,
+          30
+        ],
+        "brightness": 0.8,
+        "colorFilter": "sepia(0.2)",
+        "description": "Утренний свет"
+      },
+      {
+        "timeRange": [
+          30,
+          90
+        ],
+        "brightness": 0.6,
+        "colorFilter": "hue-rotate(10deg)",
+        "description": "Дневное освещение"
+      },
+      {
+        "timeRange": [
+          90,
+          120
+        ],
+        "brightness": 0.4,
+        "colorFilter": "sepia(0.4) hue-rotate(-20deg)",
+        "description": "Вечерние сумерки"
+      }
+    ],
+    "ambientSounds": [
+      {
+        "id": "city_rain",
+        "type": "weather",
+        "volume": 0.3,
+        "conditions": [
+          "bennett_home",
+          "lincoln_school",
+          "madison_market"
+        ]
+      },
+      {
+        "id": "industrial_hum",
+        "type": "industrial",
+        "volume": 0.2,
+        "conditions": [
+          "cross_tower",
+          "northline_warehouse",
+          "abandoned_depot"
+        ]
+      }
+    ]
   }
 }
