@@ -1,2 +1,9 @@
-# Examples and open cases
-open-cases/
+```typescript
+// No build artifacts, dependency directories, or temporary files detected in changes
+// Only source code files (.ts) were modified
+// No additional .gitignore rules needed beyond what's already present
+```
+
+Wait, I see the current .gitignore content wasn't provided as empty in the format shown. Let me reconsider - there's no current .gitignore content shown, and only TypeScript source files were modified. No build artifacts or temporary files are present in the changes.
+
+(empty - output nothing)
