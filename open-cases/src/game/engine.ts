@@ -5,7 +5,7 @@
  * Supports multiple scenarios loaded from JSON files.
  */
 
-import type { GameState, DialogueNode, TimelineEvent } from './types';
+import type { GameState, DialogueNode, TimelineEvent, Deduction, CharacterProfile } from './types';
 import type { ScenarioData, Location, Clue, Character } from './scenario/schema';
 import { getLocationById, getClueById, getCharacterById, getDialogueNode } from './scenario/loader';
 
@@ -35,6 +35,12 @@ export { SAVE_KEY_PREFIX, NUM_SAVE_SLOTS };
 export function createInitialState(scenario: ScenarioData): GameState {
   const initialLocations = scenario.locations.filter(l => l.initial).map(l => l.id);
   
+  // Initialize character trust based on scenario data
+  const initialTrust: Record<string, number> = {};
+  scenario.characters.forEach(char => {
+    initialTrust[char.id] = char.baseTrust ?? 50; // Default to 50 if not specified
+  });
+  
   return {
     started: false,
     introRead: false,
@@ -58,7 +64,33 @@ export function createInitialState(scenario: ScenarioData): GameState {
       nodes: [],
       connections: [],
       selectedTool: 'select'
-    }
+    },
+    characterTrust: initialTrust,
+    gameTime: 0,
+    deductions: [],
+    revealedTimelineEvents: [],
+    characterProfiles: scenario.characters.map(char => ({
+      characterId: char.id,
+      photo: char.portrait,
+      basicInfo: {
+        name: char.name,
+        age: char.age,
+        role: char.role
+      },
+      alibi: char.alibi,
+      alibiVerified: false,
+      motive: char.motive,
+      secrets: char.secret ? [char.secret] : [],
+      connections: char.connections || [],
+      suspicionLevel: char.suspectLevel ?? 0,
+      statusHistory: [{
+        time: 0,
+        status: char.status,
+        reason: 'Initial status'
+      }],
+      trustLevel: initialTrust[char.id],
+      lastInteraction: undefined
+    }))
   };
 }
 
@@ -367,4 +399,138 @@ export function getFoundClues(state: GameState, scenario: ScenarioData): Clue[] 
   return state.foundClueIds
     .map(id => getClueById(scenario, id))
     .filter((c): c is Clue => c !== undefined);
+}
+
+/**
+ * Makes a deduction by connecting clues
+ */
+export function makeDeduction(
+  state: GameState,
+  scenario: ScenarioData,
+  deductionId: string
+): GameState | null {
+  const predefinedDeduction = scenario.deductions?.find(d => d.id === deductionId);
+  if (!predefinedDeduction) return null;
+  
+  // Check if player has all required clues
+  const hasAllClues = predefinedDeduction.requiredClueIds.every(clueId => 
+    state.foundClueIds.includes(clueId)
+  );
+  if (!hasAllClues) return null;
+  
+  // Check if deduction already made
+  if (state.deductions?.some(d => d.id === deductionId)) return null;
+  
+  const newDeduction: Deduction = {
+    ...predefinedDeduction,
+    discoveredAt: state.gameTime || 0
+  };
+  
+  // Update character profiles if deduction involves characters
+  let updatedProfiles = state.characterProfiles;
+  if (predefinedDeduction.relatedCharacterIds && updatedProfiles) {
+    updatedProfiles = updatedProfiles.map(profile => {
+      if (predefinedDeduction.relatedCharacterIds!.includes(profile.characterId)) {
+        return {
+          ...profile,
+          suspicionLevel: predefinedDeduction.isCorrect 
+            ? Math.min(100, profile.suspicionLevel + 20)
+            : Math.max(0, profile.suspicionLevel - 10)
+        };
+      }
+      return profile;
+    });
+  }
+  
+  return {
+    ...state,
+    deductions: [...(state.deductions || []), newDeduction],
+    revealedTimelineEvents: [
+      ...(state.revealedTimelineEvents || []),
+      ...predefinedDeduction.relatedCharacterIds?.map(id => `deduction_${id}`) || []
+    ],
+    characterProfiles: updatedProfiles
+  };
+}
+
+/**
+ * Updates character trust level
+ */
+export function updateCharacterTrust(
+  state: GameState,
+  characterId: string,
+  change: number,
+  reason: string
+): GameState {
+  const currentTrust = state.characterTrust?.[characterId] ?? 50;
+  const newTrust = Math.max(0, Math.min(100, currentTrust + change));
+  
+  // Update character profile
+  const updatedProfiles = state.characterProfiles?.map(profile => 
+    profile.characterId === characterId
+      ? {
+          ...profile,
+          trustLevel: newTrust,
+          lastInteraction: state.gameTime || 0
+        }
+      : profile
+  );
+  
+  return {
+    ...state,
+    characterTrust: {
+      ...state.characterTrust,
+      [characterId]: newTrust
+    },
+    characterProfiles: updatedProfiles
+  };
+}
+
+/**
+ * Advances game time
+ */
+export function advanceTime(state: GameState, minutes: number): GameState {
+  const newTime = (state.gameTime || 0) + minutes;
+  
+  // Check for time-based events
+  const triggeredEvents: string[] = [];
+  // Could add logic here to trigger events based on time
+  
+  return {
+    ...state,
+    gameTime: newTime,
+    triggeredEvents: [...(state.triggeredEvents || []), ...triggeredEvents]
+  };
+}
+
+/**
+ * Checks if a dialogue choice is available based on trust and other requirements
+ */
+export function isDialogueChoiceAvailable(
+  state: GameState,
+  choice: import('./scenario/schema').DialogueChoice,
+  characterId: string
+): boolean {
+  // Check trust requirement
+  if (choice.minTrust !== undefined) {
+    const trust = state.characterTrust?.[characterId] ?? 50;
+    if (trust < choice.minTrust) return false;
+  }
+  
+  // Check clue requirements
+  if (choice.requiresClueIds?.some(id => !state.foundClueIds.includes(id))) {
+    return false;
+  }
+  
+  // Check keyword requirements
+  if (choice.requiresKeywords) {
+    const playerNotes = state.notes || '';
+    if (!choice.requiresKeywords.every(kw => 
+      playerNotes.toLowerCase().includes(kw.toLowerCase())
+    )) {
+      return false;
+    }
+  }
+  
+  return true;
 }

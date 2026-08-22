@@ -1,0 +1,815 @@
+{
+  "$schema": "../scenario-schema.json",
+  "scenario": {
+    "id": "case-003",
+    "title": "Тень на Мэдисон",
+    "city": "Сиэтл",
+    "year": 2026,
+    "duration": "120 минут",
+    "players": "1-6",
+    "difficulty": "Сложная"
+  },
+  "mapTemplateId": "seattle_districts",
+  "characters": [
+    {
+      "id": "victor",
+      "name": "Виктор Кросс",
+      "age": 52,
+      "role": "владелец Cross Industries",
+      "relation": "Главный подозреваемый",
+      "summary": "Предприниматель.",
+      "quote": "Я создаю рабочие места.",
+      "portrait": "portraits/victor.svg",
+      "locationId": "cross_tower",
+      "status": "suspect"
+    },
+    {
+      "id": "maya",
+      "name": "Майя Беннетт",
+      "age": 16,
+      "role": "ученица",
+      "relation": "Пропавшая",
+      "summary": "Сфотографировала груз.",
+      "quote": "Я хотела снять.",
+      "portrait": "portraits/maya.svg",
+      "status": "missing"
+    },
+    {
+      "id": "elena",
+      "name": "Елена Беннетт",
+      "age": 42,
+      "role": "мать",
+      "relation": "Мать пропавшей",
+      "summary": "Настаивает на расследовании.",
+      "quote": "Они скрывают.",
+      "portrait": "portraits/elena.svg",
+      "locationId": "bennett_home",
+      "status": "witness"
+    },
+    {
+      "id": "daniel",
+      "name": "Дэниел Кроу",
+      "age": 39,
+      "role": "учитель",
+      "relation": "Преподаватель",
+      "summary": "Получал угрозы.",
+      "quote": "Она была особенной.",
+      "portrait": "portraits/daniel.svg",
+      "locationId": "lincoln_school",
+      "status": "witness"
+    },
+    {
+      "id": "nora",
+      "name": "Нора Вэйл",
+      "age": 27,
+      "role": "администратор",
+      "relation": "Работодатель",
+      "summary": "Помогала с плёнками.",
+      "quote": "Я боялась.",
+      "portrait": "portraits/nora.svg",
+      "locationId": "rainier_lab",
+      "status": "witness"
+    },
+    {
+      "id": "marcus",
+      "name": "Маркус Хилл",
+      "age": 31,
+      "role": "водитель",
+      "relation": "Свидетель",
+      "summary": "Видел фургон.",
+      "quote": "Мне заплатили.",
+      "portrait": "portraits/marcus.svg",
+      "locationId": "madison_market",
+      "status": "witness"
+    },
+    {
+      "id": "june",
+      "name": "Джун Пак",
+      "age": 17,
+      "role": "одноклассница",
+      "relation": "Подруга",
+      "summary": "Получала сообщения.",
+      "quote": "За ней следили.",
+      "portrait": "portraits/june.svg",
+      "locationId": "lincoln_school",
+      "status": "witness"
+    },
+    {
+      "id": "sam",
+      "name": "Сэмюэл Рид",
+      "age": 45,
+      "role": "механик",
+      "relation": "Сообщник",
+      "summary": "Предоставлял гараж.",
+      "quote": "Нет выбора.",
+      "portrait": "portraits/sam.svg",
+      "locationId": "reed_garage",
+      "status": "suspect"
+    },
+    {
+      "id": "leah",
+      "name": "Лия Моррис",
+      "age": 34,
+      "role": "журналистка",
+      "relation": "Контакт",
+      "summary": "Получала компромат.",
+      "quote": "Запретили.",
+      "portrait": "portraits/leah.svg",
+      "locationId": "city_news",
+      "status": "witness"
+    }
+  ],
+  "clues": [
+    {
+      "id": "clue_01_phone",
+      "title": "Телефон",
+      "type": "предмет",
+      "description": "Найден дома.",
+      "detail": "Сообщение.",
+      "locationId": "bennett_home",
+      "importance": "critical",
+      "relatedCharacters": [
+        "maya",
+        "elena"
+      ],
+      "relatedClues": [
+        "clue_02_photo"
+      ]
+    },
+    {
+      "id": "clue_02_photo",
+      "title": "Фото",
+      "type": "фотография",
+      "description": "Здание.",
+      "detail": "Фургон.",
+      "locationId": "bennett_home",
+      "importance": "critical",
+      "relatedCharacters": [
+        "maya"
+      ],
+      "relatedClues": [
+        "clue_03_van"
+      ]
+    },
+    {
+      "id": "clue_03_van",
+      "title": "Фургон",
+      "type": "наблюдение",
+      "description": "Ford Transit.",
+      "detail": "Треугольник.",
+      "locationId": "madison_market",
+      "importance": "important",
+      "relatedCharacters": [
+        "marcus"
+      ]
+    },
+    {
+      "id": "clue_04_attendance",
+      "title": "Журнал",
+      "type": "документ",
+      "description": "Ушла в 20:14.",
+      "detail": "Карта 20:07.",
+      "locationId": "lincoln_school",
+      "importance": "important",
+      "relatedCharacters": [
+        "daniel"
+      ]
+    },
+    {
+      "id": "clue_05_camera",
+      "title": "Камера",
+      "type": "видео",
+      "description": "Фургон 20:19.",
+      "detail": "Уезжает.",
+      "locationId": "reed_garage",
+      "importance": "critical",
+      "relatedCharacters": [
+        "sam"
+      ]
+    },
+    {
+      "id": "clue_06_route",
+      "title": "Маршрут",
+      "type": "карта",
+      "description": "8 минут.",
+      "detail": "I-90.",
+      "locationId": "reed_garage",
+      "importance": "important",
+      "relatedCharacters": [
+        "sam"
+      ]
+    },
+    {
+      "id": "clue_07_manifest",
+      "title": "Накладная",
+      "type": "документ",
+      "description": "RB-14.",
+      "detail": "Подпись.",
+      "locationId": "madison_market",
+      "importance": "critical",
+      "relatedCharacters": [
+        "leah"
+      ]
+    },
+    {
+      "id": "clue_08_chat",
+      "title": "Чат",
+      "type": "сообщения",
+      "description": "Джун.",
+      "detail": "Отправь Лии.",
+      "locationId": "lincoln_school",
+      "importance": "critical",
+      "relatedCharacters": [
+        "june",
+        "leah"
+      ]
+    },
+    {
+      "id": "clue_09_boxes",
+      "title": "Коробки",
+      "type": "фотография",
+      "description": "RB-14.",
+      "detail": "Паллеты.",
+      "locationId": "rainier_lab",
+      "importance": "important",
+      "relatedCharacters": [
+        "nora"
+      ]
+    },
+    {
+      "id": "clue_10_news",
+      "title": "Конверт",
+      "type": "документ",
+      "description": "Фото.",
+      "detail": "Материалы.",
+      "locationId": "city_news",
+      "importance": "critical",
+      "relatedCharacters": [
+        "leah"
+      ]
+    },
+    {
+      "id": "clue_11_storage",
+      "title": "Доступ",
+      "type": "журнал",
+      "description": "20:36.",
+      "detail": "Cross.",
+      "locationId": "northline_storage",
+      "importance": "critical",
+      "relatedCharacters": [
+        "victor"
+      ]
+    },
+    {
+      "id": "clue_12_cross",
+      "title": "Сотрудник",
+      "type": "документ",
+      "description": "Джейсон.",
+      "detail": "Водитель.",
+      "locationId": "cross_tower",
+      "importance": "critical",
+      "relatedCharacters": [
+        "victor"
+      ]
+    },
+    {
+      "id": "clue_13_payment",
+      "title": "Перевод",
+      "type": "документ",
+      "description": "5000.",
+      "detail": "Оффшор.",
+      "locationId": "madison_market",
+      "importance": "critical",
+      "relatedCharacters": [
+        "marcus",
+        "victor"
+      ]
+    },
+    {
+      "id": "clue_14_threat",
+      "title": "Угроза",
+      "type": "сообщения",
+      "description": "Письмо.",
+      "detail": "Забудь.",
+      "locationId": "lincoln_school",
+      "importance": "important",
+      "relatedCharacters": [
+        "daniel",
+        "victor"
+      ]
+    },
+    {
+      "id": "clue_15_encrypted",
+      "title": "Сервер",
+      "type": "документ",
+      "description": "IP.",
+      "detail": "Оболочка.",
+      "locationId": "cross_tower",
+      "importance": "important",
+      "relatedCharacters": [
+        "victor"
+      ]
+    },
+    {
+      "id": "clue_16_witness",
+      "title": "Охранник",
+      "type": "показание",
+      "description": "Ночь.",
+      "detail": "20:45.",
+      "locationId": "northline_storage",
+      "importance": "important",
+      "relatedCharacters": [
+        "victor"
+      ]
+    },
+    {
+      "id": "clue_17_garage",
+      "title": "Следы",
+      "type": "предмет",
+      "description": "Кровь.",
+      "detail": "ДНК.",
+      "locationId": "reed_garage",
+      "importance": "critical",
+      "relatedCharacters": [
+        "sam",
+        "maya"
+      ]
+    },
+    {
+      "id": "clue_18_confession",
+      "title": "Признание",
+      "type": "показание",
+      "description": "Сэм.",
+      "detail": "Кросс.",
+      "locationId": "reed_garage",
+      "importance": "critical",
+      "relatedCharacters": [
+        "sam",
+        "victor"
+      ]
+    },
+    {
+      "id": "clue_19_ledger",
+      "title": "Книга",
+      "type": "документ",
+      "description": "Бухгалтерия.",
+      "detail": "Выплаты.",
+      "locationId": "cross_tower",
+      "importance": "critical",
+      "relatedCharacters": [
+        "victor"
+      ]
+    },
+    {
+      "id": "clue_20_bribe",
+      "title": "Взятки",
+      "type": "документ",
+      "description": "Офицер.",
+      "detail": "Платежи.",
+      "locationId": "cross_tower",
+      "importance": "important",
+      "relatedCharacters": [
+        "victor"
+      ]
+    },
+    {
+      "id": "clue_21_fake_receipt",
+      "title": "Чек",
+      "type": "документ",
+      "description": "Подделка.",
+      "detail": "Алиби.",
+      "locationId": "cross_tower",
+      "importance": "important",
+      "relatedCharacters": [
+        "victor"
+      ],
+      "isRedHerring": true,
+      "isFalseDocument": true,
+      "documentTexture": "receipt",
+      "stampText": "FAKE",
+      "stampColor": "#dc2626"
+    },
+    {
+      "id": "clue_22_alibi",
+      "title": "Алиби",
+      "type": "показание",
+      "description": "Ужин.",
+      "detail": "До 20:00.",
+      "locationId": "cross_tower",
+      "importance": "critical",
+      "relatedCharacters": [
+        "victor"
+      ]
+    },
+    {
+      "id": "clue_23_final",
+      "title": "Координаты",
+      "type": "сообщения",
+      "description": "Лии.",
+      "detail": "Склад.",
+      "locationId": "abandoned_warehouse",
+      "importance": "critical",
+      "relatedCharacters": [
+        "maya",
+        "leah"
+      ]
+    },
+    {
+      "id": "clue_24_location",
+      "title": "Склад",
+      "type": "предмет",
+      "description": "Место.",
+      "detail": "Борьба.",
+      "locationId": "abandoned_warehouse",
+      "importance": "critical",
+      "relatedCharacters": [
+        "maya",
+        "victor"
+      ]
+    }
+  ],
+  "locations": [
+    {
+      "id": "bennett_home",
+      "title": "Дом Беннетт",
+      "subtitle": "Место",
+      "description": "Дом.",
+      "lat": 47.6097,
+      "lng": -122.3331,
+      "address": "1428 Madison St Seattle WA",
+      "category": "Жильё",
+      "initial": true,
+      "discovered": true,
+      "clueIds": [
+        "clue_01_phone",
+        "clue_02_photo"
+      ],
+      "characterIds": [
+        "elena"
+      ]
+    },
+    {
+      "id": "lincoln_school",
+      "title": "Lincoln High",
+      "subtitle": "Школа",
+      "description": "Школа.",
+      "lat": 47.6145,
+      "lng": -122.3284,
+      "address": "2200 NE 50th St Seattle WA",
+      "category": "Образование",
+      "initial": true,
+      "discovered": true,
+      "clueIds": [
+        "clue_04_attendance",
+        "clue_08_chat",
+        "clue_14_threat"
+      ],
+      "characterIds": [
+        "daniel",
+        "june"
+      ]
+    },
+    {
+      "id": "rainier_lab",
+      "title": "Rainier Lab",
+      "subtitle": "Лаборатория",
+      "description": "Работа.",
+      "lat": 47.6062,
+      "lng": -122.3321,
+      "address": "1501 Rainier Ave S Seattle WA",
+      "category": "Сервис",
+      "initial": false,
+      "discovered": false,
+      "clueIds": [
+        "clue_09_boxes"
+      ],
+      "characterIds": [
+        "nora"
+      ]
+    },
+    {
+      "id": "madison_market",
+      "title": "Madison Market",
+      "subtitle": "Рынок",
+      "description": "Рынок.",
+      "lat": 47.6101,
+      "lng": -122.3145,
+      "address": "Madison St Seattle WA",
+      "category": "Торговля",
+      "initial": true,
+      "discovered": true,
+      "clueIds": [
+        "clue_03_van",
+        "clue_07_manifest",
+        "clue_13_payment"
+      ],
+      "characterIds": [
+        "marcus"
+      ]
+    },
+    {
+      "id": "reed_garage",
+      "title": "Reed Garage",
+      "subtitle": "Гараж",
+      "description": "Мастерская.",
+      "lat": 47.6089,
+      "lng": -122.3201,
+      "address": "1420 E Madison St Seattle WA",
+      "category": "Сервис",
+      "initial": false,
+      "discovered": false,
+      "clueIds": [
+        "clue_05_camera",
+        "clue_06_route",
+        "clue_17_garage",
+        "clue_18_confession"
+      ],
+      "characterIds": [
+        "sam"
+      ]
+    },
+    {
+      "id": "city_news",
+      "title": "City News",
+      "subtitle": "Редакция",
+      "description": "Газета.",
+      "lat": 47.6062,
+      "lng": -122.3321,
+      "address": "500 Union St Seattle WA",
+      "category": "Медиа",
+      "initial": false,
+      "discovered": false,
+      "clueIds": [
+        "clue_10_news",
+        "clue_23_final"
+      ],
+      "characterIds": [
+        "leah"
+      ]
+    },
+    {
+      "id": "cross_tower",
+      "title": "Cross Tower",
+      "subtitle": "Штаб",
+      "description": "Небоскрёб.",
+      "lat": 47.6062,
+      "lng": -122.3321,
+      "address": "1000 2nd Ave Seattle WA",
+      "category": "Бизнес",
+      "initial": false,
+      "discovered": false,
+      "clueIds": [
+        "clue_12_cross",
+        "clue_15_encrypted",
+        "clue_19_ledger",
+        "clue_20_bribe",
+        "clue_21_fake_receipt",
+        "clue_22_alibi"
+      ],
+      "characterIds": [
+        "victor"
+      ]
+    },
+    {
+      "id": "northline_storage",
+      "title": "Northline Storage",
+      "subtitle": "Склад",
+      "description": "Хранение.",
+      "lat": 47.6201,
+      "lng": -122.3491,
+      "address": "N Northline Way Seattle WA",
+      "category": "Склад",
+      "initial": false,
+      "discovered": false,
+      "clueIds": [
+        "clue_11_storage",
+        "clue_16_witness"
+      ],
+      "characterIds": []
+    },
+    {
+      "id": "abandoned_warehouse",
+      "title": "Заброшенный склад",
+      "subtitle": "Тайное",
+      "description": "Промзона.",
+      "lat": 47.5868,
+      "lng": -122.3351,
+      "address": "Industrial District Seattle WA",
+      "category": "Склад",
+      "initial": false,
+      "discovered": false,
+      "clueIds": [
+        "clue_24_location"
+      ],
+      "characterIds": []
+    }
+  ],
+  "timeline": [
+    {
+      "id": "t1",
+      "time": "18:02",
+      "title": "Приход",
+      "text": "Отметка.",
+      "source": "Журнал"
+    },
+    {
+      "id": "t2",
+      "time": "20:07",
+      "title": "Выход",
+      "text": "Карта.",
+      "source": "СКУД"
+    },
+    {
+      "id": "t3",
+      "time": "20:14",
+      "title": "Запись",
+      "text": "Дэниел.",
+      "source": "Журнал"
+    },
+    {
+      "id": "t4",
+      "time": "20:19",
+      "title": "Фургон",
+      "text": "Появление.",
+      "source": "Камера"
+    },
+    {
+      "id": "t5",
+      "time": "20:27",
+      "title": "Отъезд",
+      "text": "I-90.",
+      "source": "Камера"
+    },
+    {
+      "id": "t6",
+      "time": "20:36",
+      "title": "Вход",
+      "text": "Карта.",
+      "source": "СКУД"
+    },
+    {
+      "id": "t7",
+      "time": "20:51",
+      "title": "Звонок",
+      "text": "Выкл.",
+      "source": "История"
+    },
+    {
+      "id": "t8",
+      "time": "21:30",
+      "title": "Заявление",
+      "text": "Елена.",
+      "source": "Протокол"
+    }
+  ],
+  "dialogueNodes": {
+    "victor_intro": {
+      "id": "victor_intro",
+      "characterId": "victor",
+      "title": "Встреча",
+      "eyebrow": "ПОДОЗРЕВАЕМЫЙ",
+      "intro": "Офис.",
+      "lines": [
+        "Не имею отношения.",
+        "Бизнес законен."
+      ],
+      "choices": [
+        {
+          "id": "ask_alibi",
+          "label": "Алиби",
+          "text": "Где были?",
+          "nextId": "victor_alibi"
+        }
+      ]
+    },
+    "victor_alibi": {
+      "id": "victor_alibi",
+      "characterId": "victor",
+      "title": "Алиби",
+      "eyebrow": "ПРОВЕРКА",
+      "intro": "Чек.",
+      "lines": [
+        "Вот чек.",
+        "20:15."
+      ],
+      "choices": [
+        {
+          "id": "examine",
+          "label": "Изучить",
+          "text": "Подделка?",
+          "nextId": "victor_fake",
+          "requiresClueIds": ["clue_21_fake_receipt"]
+        }
+      ]
+    },
+    "victor_fake": {
+      "id": "victor_fake",
+      "characterId": "victor",
+      "title": "Разоблачение",
+      "eyebrow": "ОБВИЧЕНИЕ",
+      "intro": "Несоответствия.",
+      "lines": [
+        "Ошибка."
+      ],
+      "choices": [
+        {
+          "id": "arrest",
+          "label": "Арест",
+          "text": "Арестованы.",
+          "nextId": null
+        }
+      ]
+    },
+    "elena_start": {
+      "id": "elena_start",
+      "characterId": "elena",
+      "title": "Мать",
+      "eyebrow": "СВИДЕТЕЛЬ",
+      "intro": "Женщина.",
+      "lines": [
+        "Не сбежала."
+      ],
+      "choices": []
+    },
+    "marcus_start": {
+      "id": "marcus_start",
+      "characterId": "marcus",
+      "title": "Водитель",
+      "eyebrow": "СВИДЕТЕЛЬ",
+      "intro": "Нервничает.",
+      "lines": [
+        "Видел.",
+        "Заплатили."
+      ],
+      "choices": []
+    },
+    "sam_start": {
+      "id": "sam_start",
+      "characterId": "sam",
+      "title": "Механик",
+      "eyebrow": "СООБЩНИК",
+      "intro": "Избегает.",
+      "lines": [
+        "Пригрозил."
+      ],
+      "choices": []
+    },
+    "leah_start": {
+      "id": "leah_start",
+      "characterId": "leah",
+      "title": "Журналистка",
+      "eyebrow": "ИНФОРМАТОР",
+      "intro": "Дверь.",
+      "lines": [
+        "Доказательства."
+      ],
+      "choices": []
+    },
+    "june_start": {
+      "id": "june_start",
+      "characterId": "june",
+      "title": "Подруга",
+      "eyebrow": "СВИДЕТЕЛЬ",
+      "intro": "Испугана.",
+      "lines": "Следили.",
+      "choices": []
+    },
+    "daniel_start": {
+      "id": "daniel_start",
+      "characterId": "daniel",
+      "title": "Учитель",
+      "eyebrow": "СВИДЕТЕЛЬ",
+      "intro": "Обеспокоен.",
+      "lines": [
+        "Опасное."
+      ],
+      "choices": []
+    },
+    "nora_start": {
+      "id": "nora_start",
+      "characterId": "nora",
+      "title": "Администратор",
+      "eyebrow": "СВИДЕТЕЛЬ",
+      "intro": "Нервная.",
+      "lines": [
+        "Плёнки."
+      ],
+      "choices": []
+    }
+  },
+  "solution": {
+    "culpritCharacterId": "victor",
+    "motiveKeywords": [
+      "бизнес",
+      "деньги",
+      "контроль"
+    ],
+    "methodKeywords": [
+      "похищение",
+      "угроза",
+      "подкуп"
+    ],
+    "keyLocationId": "cross_tower",
+    "minimumCluesRequired": 18
+  }
+}

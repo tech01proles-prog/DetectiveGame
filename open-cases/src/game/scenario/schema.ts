@@ -51,6 +51,20 @@ export interface Character {
   locationId?: string;
   /** Character status in the investigation */
   status: 'missing' | 'witness' | 'suspect' | 'cleared';
+  /** Optional: Character's alibi statement */
+  alibi?: string;
+  /** Optional: Potential motive */
+  motive?: string;
+  /** Optional: Hidden secret */
+  secret?: string;
+  /** Optional: Initial suspicion level (0-100) */
+  suspectLevel?: number;
+  /** Optional: Base trust level for this character (0-100) */
+  baseTrust?: number;
+  /** Optional: Dialogue nodes available only with high trust */
+  highTrustDialogueIds?: string[];
+  /** Optional: Characters this person is connected to */
+  connections?: string[];
 }
 
 export interface Clue {
@@ -76,6 +90,20 @@ export interface Clue {
   foundWhen: string;
   /** Optional: If true, this clue is a false lead (red herring) that does not contribute to solving the case */
   isRedHerring?: boolean;
+  /** Optional: If true, this is a forged/fake document */
+  isFalseDocument?: boolean;
+  /** Optional: Document texture type for visual styling */
+  documentTexture?: 'old_paper' | 'new_paper' | 'photo' | 'receipt' | 'official';
+  /** Optional: Text for document stamp (e.g., "CONFIDENTIAL", "FAKE") */
+  stampText?: string;
+  /** Optional: Color of the stamp (e.g., "#dc2626" for red) */
+  stampColor?: string;
+  /** Optional: Time window when this clue is available (start time in minutes from game start) */
+  availableFrom?: number;
+  /** Optional: Time window when this clue expires (end time in minutes from game start) */
+  expiresAt?: number;
+  /** Optional: Deductions this clue can be used in */
+  usedInDeductions?: string[];
 }
 
 export interface LocationAction {
@@ -176,6 +204,14 @@ export interface DialogueChoice {
   hideIfHasKeyword?: string | null;
   /** Optional: Tone/mood of the dialogue choice affecting NPC response */
   tone?: 'friendly' | 'aggressive' | 'cunning' | 'neutral';
+  /** Optional: Clue IDs required to unlock this dialogue choice */
+  requiresClueIds?: string[];
+  /** Optional: Trust change caused by this dialogue choice (-50 to +50) */
+  trustChange?: number;
+  /** Optional: Minimum trust level required to see this choice (0-100) */
+  minTrust?: number;
+  /** Optional: Time cost in minutes for this dialogue choice */
+  timeCost?: number;
 }
 
 export interface DialogueNode {
@@ -203,6 +239,12 @@ export interface DialogueNode {
   triggersEvent?: string;
   /** Optional: If set, this dialogue node is hidden if the keyword exists in player notes */
   hideIfHasKeyword?: string | null;
+  /** Optional: Minimum trust level required to access this dialogue (0-100) */
+  minTrust?: number;
+  /** Optional: Time cost in minutes for this dialogue interaction */
+  timeCost?: number;
+  /** Optional: NPC mood during this dialogue node */
+  npcMood?: 'friendly' | 'neutral' | 'hostile' | 'suspicious';
 }
 
 export interface MapTemplate {
@@ -273,5 +315,21 @@ export interface ScenarioData {
       unlocksLocations?: string[];
       unlocksDialogue?: string[];
     };
+  };
+  /** Optional: Predefined deductions for the scenario */
+  deductions?: Array<{
+    id: string;
+    title: string;
+    description: string;
+    requiredClueIds: string[];
+    resultText: string;
+    relatedCharacterIds?: string[];
+    isCorrect: boolean;
+  }>;
+  /** Optional: Time pressure settings */
+  timePressure?: {
+    enabled: boolean;
+    totalTime: number; // Total game time in minutes
+    criticalEvents: Array<{ time: number; eventId: string; description: string }>;
   };
 }
