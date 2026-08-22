@@ -1,30 +1,62 @@
-```typescript
-// Example of a basic .gitignore for a TypeScript/JavaScript project
+```gitignore
+# Dependencies
 node_modules/
+
+# Build outputs
 dist/
 build/
-coverage/
-.nyc_output/
+*.js
+*.ts
+*.tsx
+*.jsx
+
+# Logs and temp files
+*.log
+*.tmp
+
+# Environment
 .env
 .env.local
-.env.*
-*.log
-tmp/
-.temp/
+*.env.*
+
+# Editors
 .vscode/
 .idea/
 *.swp
 *.swo
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+.venv/
+.env
+.env.local
+
+# Coverage reports
+coverage/
+htmlcov/
+.coverage
+
+# MyPy cache
+.mypy_cache/
+# Pytest cache
+.pytest_cache/
+
+# OS generated files
 .DS_Store
 Thumbs.db
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-debug.log*
-*.tmp
-*.temp
+
+# Compiled and binary files
+*.o
+*.obj
+*.out
+*.exe
+*.dll
+*.so
+*.a
+*.class
 ```
-
-Wait, let me reconsider. The modified files are just TypeScript source files (.ts), which should not be ignored. Looking at the change list again - only schema.ts and types.ts were modified, which are source code files. There are no build artifacts, dependency directories, or temporary files in the change list.
-
-(empty - output nothing)

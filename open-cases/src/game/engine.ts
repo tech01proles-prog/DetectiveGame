@@ -10,16 +10,24 @@ import type { ScenarioData, Location, Clue, Character } from './scenario/schema'
 import { getLocationById, getClueById, getCharacterById, getDialogueNode } from './scenario/loader';
 
 const SAVE_KEY_PREFIX = 'open-cases-scenario-';
+const NUM_SAVE_SLOTS = 3; // Number of save slots per scenario
 
 /**
- * Gets the save key for a specific scenario
+ * Gets the save key for a specific scenario and slot
  */
-function getSaveKey(scenarioId: string) {
-  return `${SAVE_KEY_PREFIX}${scenarioId}-v1`;
+function getSaveKey(scenarioId: string, slotIndex: number = 0) {
+  return `${SAVE_KEY_PREFIX}${scenarioId}-slot${slotIndex}-v1`;
+}
+
+/**
+ * Gets all save keys for a scenario
+ */
+export function getAllSaveKeys(scenarioId: string): string[] {
+  return Array.from({ length: NUM_SAVE_SLOTS }, (_, i) => getSaveKey(scenarioId, i));
 }
 
 // Export SAVE_KEY_PREFIX for use in App.tsx
-export { SAVE_KEY_PREFIX };
+export { SAVE_KEY_PREFIX, NUM_SAVE_SLOTS };
 
 /**
  * Creates initial game state for a scenario
@@ -55,11 +63,11 @@ export function createInitialState(scenario: ScenarioData): GameState {
 }
 
 /**
- * Loads game state for a specific scenario
+ * Loads game state for a specific scenario and slot
  */
-export function loadGame(scenarioId?: string): GameState | null {
+export function loadGame(scenarioId?: string, slotIndex: number = 0): GameState | null {
   try {
-    const key = scenarioId ? getSaveKey(scenarioId) : 'free-detective-case-001-v1';
+    const key = scenarioId ? getSaveKey(scenarioId, slotIndex) : 'free-detective-case-001-v1';
     const raw = localStorage.getItem(key);
     return raw ? JSON.parse(raw) as GameState : null;
   } catch {
@@ -68,17 +76,17 @@ export function loadGame(scenarioId?: string): GameState | null {
 }
 
 /**
- * Saves game state for a specific scenario with debouncing
+ * Saves game state for a specific scenario and slot with debouncing
  */
 let saveTimeout: ReturnType<typeof setTimeout> | null = null;
-export function saveGame(state: GameState, immediate = false) {
+export function saveGame(state: GameState, immediate = false, slotIndex: number = 0) {
   if (saveTimeout) {
     clearTimeout(saveTimeout);
   }
   
   const doSave = () => {
     try {
-      const key = state.scenarioId ? getSaveKey(state.scenarioId) : 'free-detective-case-001-v1';
+      const key = state.scenarioId ? getSaveKey(state.scenarioId, slotIndex) : 'free-detective-case-001-v1';
       // Optimize: remove large/unnecessary data before saving
       const stateToSave = { ...state };
       localStorage.setItem(key, JSON.stringify(stateToSave));
@@ -96,13 +104,33 @@ export function saveGame(state: GameState, immediate = false) {
 }
 
 /**
- * Clears save for a specific scenario
+ * Clears save for a specific scenario and slot
  */
-export function clearSave(scenarioId?: string) {
+export function clearSave(scenarioId?: string, slotIndex: number = 0) {
   try {
-    const key = scenarioId ? getSaveKey(scenarioId) : 'free-detective-case-001-v1';
+    const key = scenarioId ? getSaveKey(scenarioId, slotIndex) : 'free-detective-case-001-v1';
     localStorage.removeItem(key);
   } catch {}
+}
+
+/**
+ * Gets all saves for a scenario (for save slots UI)
+ */
+export function getSavesForScenario(scenarioId: string): Array<{ slot: number; state: GameState; timestamp: number }> {
+  const saves: Array<{ slot: number; state: GameState; timestamp: number }> = [];
+  
+  for (let i = 0; i < NUM_SAVE_SLOTS; i++) {
+    const key = getSaveKey(scenarioId, i);
+    const raw = localStorage.getItem(key);
+    if (raw) {
+      try {
+        const state = JSON.parse(raw) as GameState;
+        saves.push({ slot: i, state, timestamp: Date.now() });
+      } catch {}
+    }
+  }
+  
+  return saves;
 }
 
 /**
