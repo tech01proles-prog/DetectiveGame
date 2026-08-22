@@ -44,6 +44,10 @@ export interface Clue {
   relatedClues:string[]; 
   foundWhen:string;
   isRedHerring?: boolean; // Whether this clue is a false lead (red herring)
+  isFalseDocument?: boolean; // Whether this is a forged/fake document
+  documentTexture?: 'old_paper' | 'new_paper' | 'photo' | 'receipt' | 'official'; // Document texture type for visual styling
+  stampText?: string; // Text for document stamp (e.g., "CONFIDENTIAL", "FAKE")
+  stampColor?: string; // Color of the stamp (e.g., "#dc2626" for red)
 }
 export interface LocationAction { id:string; label:string; description:string; clueIds:string[]; characterId?:string; requiresClueIds?:string[]; once?:boolean; event?:string; }
 export interface Location { 
