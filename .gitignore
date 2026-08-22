@@ -1,88 +1,59 @@
-```gitignore
-# Dependencies
-node_modules/
+```
+# Documentation and generated content
+open-cases/docs/*.md
+open-cases/public/scenarios/*/portraits/*
 
-# Build outputs
+# Compiled and build artifacts
+*.pyc
+__pycache__/
+*.o
+*.obj
 dist/
 build/
-*.js
-*.ts
-*.tsx
-*.jsx
+target/
 
-# Environment variables
+# Dependencies
+.venv/
+venv/
+node_modules/
+.julia/
+zig-*/
+
+# Logs and temp files
+*.log
+*.tmp
+*.swp
+*.swo
+
+# Environment
 .env
 .env.local
 *.env.*
 
-# IDE and editor files
+# Editors
 .vscode/
 .idea/
 *.swp
 *.swo
-*.tmp
 
-# Logs
-*.log
-
-# Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-env/
-venv/
-.venv/
-pip-log.txt
-pip-delete-this-directory.txt
-.tox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.log
-.git*
-*.pot
-*.pyc
-*.pyo
-*.pyd
-.MF
-.pytest_cache/
-.mypy_cache/
-.hypothesis/
-
-# Compiled and binary files
-*.o
-*.obj
-*.exe
-*.dll
-*.so
-*.a
-*.out
-
-# OS generated files
+# System files
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
 
-# Archives
+# Coverage
+coverage/
+htmlcov/
+.coverage
+
+# Compressed files
 *.zip
-*.tar.gz
-*.tar.bz2
-*.tar.xz
-*.rar
-*.7z
 *.gz
 *.tar
+*.tgz
 *.bz2
 *.xz
+*.7z
+*.rar
 *.zst
 *.lz4
 *.lzh
