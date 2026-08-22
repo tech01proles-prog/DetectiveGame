@@ -133,6 +133,12 @@ export interface GameState {
   viewedDialogueNodeIds?: string[]; // Track viewed dialogue nodes to mark them as inactive
   investigationBoard?: InvestigationBoard; // Board state for clues board tab
   npcMoods?: Record<string, 'friendly' | 'neutral' | 'hostile' | 'suspicious'>; // Track NPC moods by character ID
+  // New fields for enhanced gameplay
+  characterTrust?: Record<string, number>; // Trust level (0-100) for each character
+  gameTime?: number; // Current game time in minutes from start
+  deductions?: Deduction[]; // Player-made deductions connecting clues
+  revealedTimelineEvents?: string[]; // Timeline events revealed through deduction
+  characterProfiles?: CharacterProfile[]; // Auto-updating character dossiers
 }
 
 // Investigation board types for interactive clues board
@@ -159,6 +165,60 @@ export interface InvestigationBoard {
   nodes: BoardNode[];
   connections: BoardConnection[];
   selectedTool: 'select' | 'connect' | 'add';
+}
+
+// New types for enhanced gameplay features
+
+// Deduction system - connecting clues to form new facts
+export interface Deduction {
+  id: string;
+  title: string;
+  description: string;
+  requiredClueIds: string[]; // Clues needed to make this deduction
+  resultText: string; // New fact discovered through deduction
+  relatedCharacterIds?: string[]; // Characters involved in this deduction
+  isCorrect?: boolean; // Whether this deduction is correct (for scoring)
+  discoveredAt?: number; // Game time when deduction was made
+}
+
+// Character profile with auto-updating information
+export interface CharacterProfile {
+  characterId: string;
+  photo: string;
+  basicInfo: {
+    name: string;
+    age: number;
+    role: string;
+  };
+  alibi?: string; // Character's stated alibi
+  alibiVerified?: boolean; // Whether alibi has been confirmed
+  motive?: string; // Potential motive discovered
+  secrets?: string[]; // Discovered secrets
+  connections: string[]; // Other character IDs this person is connected to
+  suspicionLevel: number; // 0-100 based on evidence
+  statusHistory: Array<{
+    time: number;
+    status: 'witness' | 'suspect' | 'cleared' | 'missing';
+    reason: string;
+  }>;
+  trustLevel: number; // 0-100, affects dialogue options
+  lastInteraction?: number; // Game time of last interaction
+}
+
+// Dynamic time system
+export interface GameTime {
+  minutes: number; // Minutes elapsed since game start
+  displayTime: string; // Formatted time string (e.g., "20:45")
+  timePressure?: boolean; // Whether time pressure is active
+  eventsByTime: Record<number, string[]>; // Events triggered at specific times
+}
+
+// Trust system for character relationships
+export interface TrustChange {
+  characterId: string;
+  change: number; // Positive or negative trust change
+  reason: string;
+  timestamp: number;
 }
 
 export type GameStateWithNull = GameState | null;
