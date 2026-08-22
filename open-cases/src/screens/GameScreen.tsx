@@ -171,6 +171,18 @@ export default function GameScreen({state,setState,onFinish,onRestart,scenario}:
       setState(savedGame);
     }
   }, []);
+
+  // Set started flag when user makes first meaningful action
+  useEffect(() => {
+    if (!state.started && (
+      state.discoveredLocationIds.length > scenario.locations.filter(l => l.initial).length ||
+      state.foundClueIds.length > 0 ||
+      state.questionedCharacterIds.length > 0 ||
+      state.completedActionIds.length > 0
+    )) {
+      setState(s => s ? ({ ...s, started: true }) : null);
+    }
+  }, [state.discoveredLocationIds, state.foundClueIds, state.questionedCharacterIds, state.completedActionIds]);
   
   return <div className="game-shell">
     <header className="game-top"><div className="brand"><span className="brand-mark">OC</span><div><b>OPEN CASES</b><small>Дело №001 · Тишина на Мэдисон</small></div></div><div className="top-status"><span><span className="live-dot"/> СИСТЕМА АКТИВНА</span><span>{found.length} / {totalClues} улик</span><button onClick={onRestart} className="top-link">Сбросить</button></div></header>
