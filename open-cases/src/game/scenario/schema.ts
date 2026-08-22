@@ -76,6 +76,14 @@ export interface Clue {
   foundWhen: string;
   /** Optional: If true, this clue is a false lead (red herring) that does not contribute to solving the case */
   isRedHerring?: boolean;
+  /** Optional: If true, this is a forged/fake document */
+  isFalseDocument?: boolean;
+  /** Optional: Document texture type for visual styling */
+  documentTexture?: 'old_paper' | 'new_paper' | 'photo' | 'receipt' | 'official';
+  /** Optional: Text for document stamp (e.g., "CONFIDENTIAL", "FAKE") */
+  stampText?: string;
+  /** Optional: Color of the stamp (e.g., "#dc2626" for red) */
+  stampColor?: string;
 }
 
 export interface LocationAction {
@@ -176,6 +184,8 @@ export interface DialogueChoice {
   hideIfHasKeyword?: string | null;
   /** Optional: Tone/mood of the dialogue choice affecting NPC response */
   tone?: 'friendly' | 'aggressive' | 'cunning' | 'neutral';
+  /** Optional: Clue IDs required to unlock this dialogue choice */
+  requiresClueIds?: string[];
 }
 
 export interface DialogueNode {

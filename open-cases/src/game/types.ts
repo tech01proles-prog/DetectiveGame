@@ -93,6 +93,7 @@ export interface DialogueChoice {
   requiresKeywords?:string[]; 
   hideIfHasKeyword?:string|null;
   tone?: 'friendly' | 'aggressive' | 'cunning' | 'neutral'; // Tone/mood of the dialogue choice
+  requiresClueIds?: string[]; // Clue IDs required to unlock this dialogue choice
 }
 export interface DialogueNode { 
   id:string; 
