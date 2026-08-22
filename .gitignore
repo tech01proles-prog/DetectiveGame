@@ -5,14 +5,13 @@ node_modules/
 # Build outputs
 dist/
 build/
-*.js
-*.ts
-*.tsx
-*.jsx
+*.js.map
+*.ts.map
 
 # Logs and temp files
 *.log
 *.tmp
+*.swp
 
 # Environment
 .env
@@ -22,8 +21,6 @@ build/
 # Editors
 .vscode/
 .idea/
-*.swp
-*.swo
 
 # Python
 __pycache__/
@@ -31,32 +28,33 @@ __pycache__/
 *.pyo
 *.pyd
 .Python
-venv/
-.venv/
-.env
-.env.local
-
-# Coverage reports
+*.so
+.coverage
 coverage/
 htmlcov/
-.coverage
-
-# MyPy cache
-.mypy_cache/
-# Pytest cache
 .pytest_cache/
+.mypy_cache/
+.tox/
+.nox/
+.eggs/
+*.egg-info/
+.venv/
+venv/
+.env/
 
-# OS generated files
+# Node.js
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+node_modules/
+jspm_packages/
+*.module.js
+
+# TypeScript
+*.tsbuildinfo
+*.bak
+
+# General
 .DS_Store
 Thumbs.db
-
-# Compiled and binary files
-*.o
-*.obj
-*.out
-*.exe
-*.dll
-*.so
-*.a
-*.class
 ```

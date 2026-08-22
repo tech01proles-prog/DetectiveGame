@@ -140,8 +140,10 @@ export default function GameScreen({state,setState,onFinish,onRestart,scenario}:
       return
     }
     const added=(choice.clueIds||[]).map(id=>clues.find(c=>c.id===id)?.title).filter(Boolean) as string[];
-    setDialogue(null);setDialogueNodeId(null);
+    // Mark the choice as viewed but keep dialogue open for continuation
+    setState(s => s ? ({...s, dialogueFlags: [...(s.dialogueFlags||[]), choice.id]}): null);
     if(added.length||choice.text){setEventNotice({title:'Разговор записан',text:choice.text||'Показание добавлено в материалы дела.',clues:added});}
+    // Don't close dialogue - allow player to continue conversation
   };
 
   const canFinal=state.foundClueIds.length>=10;
@@ -342,8 +344,8 @@ function DialogueModal({node,scenario,onClose,onChoose,state}:{node:DialogueNode
                 {c.tone === 'friendly' ? 'ДРУЖЕЛЮБНО' : c.tone === 'aggressive' ? 'АГРЕССИВНО' : c.tone === 'cunning' ? 'ХИТРО' : 'НЕЙТРАЛЬНО'}
               </span>
               <b>{c.label}</b>
+              {isViewed && <span style={{fontSize: '11px', color: '#9ca3af', marginLeft: '8px'}}>— {c.text || c.label}</span>}
             </div>
-            <span>{isViewed?'Уже известно':''}</span>
             {isViewed?<Check size={17}/>:<ChevronRight size={17}/>}
           </button>
         })}
