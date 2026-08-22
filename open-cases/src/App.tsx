@@ -20,6 +20,23 @@ export default function App() {
 
   // Load existing save on mount - check for any scenario save
   useEffect(() => {
+    // Helper to check if a save has meaningful progress
+    const hasMeaningfulProgress = (parsed: any) => {
+      if (!parsed) return false;
+      // If game is finished, don't offer continue (should restart)
+      if (parsed.finished) return false;
+      // If started flag is true, definitely has progress
+      if (parsed.started) return true;
+      // Otherwise check for any meaningful progress
+      return (
+        parsed.introRead ||
+        (parsed.discoveredLocationIds && parsed.discoveredLocationIds.length > 0) ||
+        (parsed.foundClueIds && parsed.foundClueIds.length > 0) ||
+        (parsed.questionedCharacterIds && parsed.questionedCharacterIds.length > 0) ||
+        (parsed.completedActionIds && parsed.completedActionIds.length > 0)
+      );
+    };
+
     // First try to find any saved scenario by checking common keys
     let foundSave: GameState | null = null;
     let foundScenarioId: string | undefined = undefined;
@@ -29,7 +46,7 @@ export default function App() {
     if (defaultSave) {
       try {
         const parsed = JSON.parse(defaultSave);
-        if (parsed && parsed.started && !parsed.finished) {
+        if (hasMeaningfulProgress(parsed)) {
           foundSave = parsed;
           foundScenarioId = parsed.scenarioId;
         }
@@ -43,7 +60,7 @@ export default function App() {
         if (key && key.startsWith(SAVE_KEY_PREFIX)) {
           try {
             const parsed = JSON.parse(localStorage.getItem(key) || '');
-            if (parsed && parsed.started && !parsed.finished) {
+            if (hasMeaningfulProgress(parsed)) {
               foundSave = parsed;
               foundScenarioId = parsed.scenarioId;
               break;
@@ -89,6 +106,23 @@ export default function App() {
   };
 
   const continueGame = () => {
+    // Helper to check if a save has meaningful progress
+    const hasMeaningfulProgress = (parsed: any) => {
+      if (!parsed) return false;
+      // If game is finished, don't offer continue (should restart)
+      if (parsed.finished) return false;
+      // If started flag is true, definitely has progress
+      if (parsed.started) return true;
+      // Otherwise check for any meaningful progress
+      return (
+        parsed.introRead ||
+        (parsed.discoveredLocationIds && parsed.discoveredLocationIds.length > 0) ||
+        (parsed.foundClueIds && parsed.foundClueIds.length > 0) ||
+        (parsed.questionedCharacterIds && parsed.questionedCharacterIds.length > 0) ||
+        (parsed.completedActionIds && parsed.completedActionIds.length > 0)
+      );
+    };
+
     // Find any saved scenario
     let foundSave: GameState | null = null;
     let foundScenarioId: string | undefined = undefined;
@@ -98,7 +132,7 @@ export default function App() {
     if (defaultSave) {
       try {
         const parsed = JSON.parse(defaultSave);
-        if (parsed && parsed.started && !parsed.finished) {
+        if (hasMeaningfulProgress(parsed)) {
           foundSave = parsed;
           foundScenarioId = parsed.scenarioId;
         }
@@ -112,7 +146,7 @@ export default function App() {
         if (key && key.startsWith(SAVE_KEY_PREFIX)) {
           try {
             const parsed = JSON.parse(localStorage.getItem(key) || '');
-            if (parsed && parsed.started && !parsed.finished) {
+            if (hasMeaningfulProgress(parsed)) {
               foundSave = parsed;
               foundScenarioId = parsed.scenarioId;
               break;
