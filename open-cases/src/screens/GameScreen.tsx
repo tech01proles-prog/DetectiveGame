@@ -1,8 +1,8 @@
 import {useMemo,useState,useEffect} from 'react';
-import {BookOpen,ChevronRight,FileText,MessageSquare,NotebookPen,Search,Users,Clock3,Lock,Check,PanelRightClose,PanelRightOpen,Send,MapPin,Radio,Eye,Camera,FileSearch,CircleAlert,Repeat,StickyNote} from 'lucide-react';
+import {BookOpen,ChevronRight,FileText,MessageSquare,NotebookPen,Search,Users,Clock3,Lock,Check,PanelRightClose,PanelRightOpen,Send,MapPin,Radio,Eye,Camera,FileSearch,CircleAlert,Repeat,StickyNote,Stamp,FileSpreadsheet} from 'lucide-react';
 import MapView from '@/game/MapView';
 import InvestigationBoard from '@/game/InvestigationBoard';
-import {calculateScore,discoverFromClues,performAction,getDynamicDialogueNode,saveGame} from '@/game/engine';
+import {calculateScore,discoverFromClues,performAction,getDynamicDialogueNode,saveGame,loadGame} from '@/game/engine';
 import {resolveImageUrl} from '@/game/scenario/loader';
 import type {DialogueNode,GameState,Tab,Location,Character,Clue,TimelineEvent,DialogueChoice,BoardNode,BoardConnection} from '@/game/types';
 import type {ScenarioData} from '@/game/scenario/schema';
@@ -148,10 +148,29 @@ export default function GameScreen({state,setState,onFinish,onRestart,scenario}:
 
   const canFinal=state.foundClueIds.length>=10;
   
-  // Auto-save game state periodically
+  // Auto-save game state periodically and on page unload
   useEffect(() => {
     saveGame(state);
+    
+    // Save on page unload
+    const handleBeforeUnload = () => {
+      saveGame(state, true);
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
   }, [state]);
+  
+  // Load saved game on mount (for auto-resume after refresh)
+  useEffect(() => {
+    const savedGame = loadGame(scenario.scenario.id);
+    if (savedGame && !savedGame.started) {
+      // Auto-resume: merge saved progress with current state
+      setState(savedGame);
+    }
+  }, []);
   
   return <div className="game-shell">
     <header className="game-top"><div className="brand"><span className="brand-mark">OC</span><div><b>OPEN CASES</b><small>Дело №001 · Тишина на Мэдисон</small></div></div><div className="top-status"><span><span className="live-dot"/> СИСТЕМА АКТИВНА</span><span>{found.length} / {totalClues} улик</span><button onClick={onRestart} className="top-link">Сбросить</button></div></header>
@@ -308,7 +327,43 @@ function TimelineTab({state,scenario}:{state:GameState;scenario:ScenarioData}){
     {sortedEvents.length === 0 && <div className="empty">Хронология пуста. Продолжайте расследование, чтобы открыть события.</div>}
   </div></>
 }
-function ClueModal({clue,onClose}:{clue:any;onClose:()=>void}){return <div className="modal-backdrop" onClick={onClose}><div className="modal clue-modal" onClick={e=>e.stopPropagation()}><div className="modal-head"><div><span className="eyebrow">{clue.type} · {clue.importance==='critical'?'КЛЮЧЕВАЯ':clue.importance==='important'?'ВАЖНАЯ':'КОНТЕКСТ'}</span><h2>{clue.title}</h2></div><button onClick={onClose}>×</button></div><p>{clue.description}</p><div className="evidence-detail"><MessageSquare size={18}/><span>{clue.detail}</span></div><div className="related"><b>Связи</b><span>{clue.relatedClues.length} связанных улик · {clue.relatedCharacters.length} персонажей</span></div></div></div>}
+function ClueModal({clue,onClose}:{clue:any;onClose:()=>void}){
+  // Determine document texture class based on clue properties
+  const textureClass = clue.documentTexture || 'new_paper';
+  const hasStamp = clue.stampText && clue.stampColor;
+  
+  return <div className="modal-backdrop" onClick={onClose}>
+    <div className={`modal clue-modal ${clue.isFalseDocument ? 'false-document' : ''}`} onClick={e=>e.stopPropagation()}>
+      <div className="clue-document-wrapper">
+        {/* Document texture background */}
+        <div className={`document-texture ${textureClass}`}>
+          {/* Stamp overlay if present */}
+          {hasStamp && (
+            <div className="document-stamp" style={{
+              borderColor: clue.stampColor,
+              color: clue.stampColor,
+              transform: 'rotate(-15deg)'
+            }}>
+              {clue.stampText}
+            </div>
+          )}
+          
+          {/* False document indicator */}
+          {clue.isFalseDocument && (
+            <div className="false-document-badge">
+              <FileSpreadsheet size={14}/> ЛОЖНЫЙ ДОКУМЕНТ
+            </div>
+          )}
+          
+          <div className="modal-head"><div><span className="eyebrow">{clue.type} · {clue.importance==='critical'?'КЛЮЧЕВАЯ':clue.importance==='important'?'ВАЖНАЯ':'КОНТЕКСТ'}</span><h2>{clue.title}</h2></div><button onClick={onClose}>×</button></div>
+          <p className="clue-description">{clue.description}</p>
+          <div className="evidence-detail"><MessageSquare size={18}/><span>{clue.detail}</span></div>
+          <div className="related"><b>Связи</b><span>{clue.relatedClues.length} связанных улик · {clue.relatedCharacters.length} персонажей</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+}
 function EventModal({notice,onClose}:{notice:{title:string;text:string;clues:string[]};onClose:()=>void}){return <div className="event-layer"><div className="event-card"><div className="event-accent"/><div className="event-kicker"><CircleAlert size={14}/> ОПЕРАТИВНАЯ ЗАПИСЬ</div><h3>{notice.title}</h3><p>{notice.text}</p>{notice.clues.length>0&&<div className="event-discoveries"><span>Добавлено в дело</span>{notice.clues.map(c=><b key={c}>+ {c}</b>)}</div>}<button className="btn primary full" onClick={onClose}>Продолжить</button></div></div>}
 function DialogueModal({node,scenario,onClose,onChoose,state}:{node:DialogueNode;scenario:ScenarioData;onClose:()=>void;onChoose:(c:any)=>void;state:GameState}){
   const character = scenario.characters.find(c => c.id === node.characterId);

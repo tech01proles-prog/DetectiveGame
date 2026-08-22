@@ -1146,3 +1146,185 @@ h1, h2, h3, h4 {
   color: #9ca3af;
   text-transform: uppercase;
 }
+
+/* Realistic Document Styles */
+.clue-document-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.document-texture {
+  position: relative;
+  padding: 24px;
+  border-radius: 4px;
+  box-shadow: inset 0 0 30px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+/* Old paper texture - yellowed, aged */
+.document-texture.old_paper {
+  background: linear-gradient(135deg, #f5e6d3 0%, #e8dcc8 50%, #d4c4a8 100%);
+  font-family: 'DM Mono', monospace;
+}
+
+.document-texture.old_paper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.document-texture.old_paper::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(ellipse at center, transparent 0%, rgba(139, 90, 43, 0.1) 100%);
+  pointer-events: none;
+}
+
+/* New paper - clean, white */
+.document-texture.new_paper {
+  background: #ffffff;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Photo texture */
+.document-texture.photo {
+  background: #1a1a1a;
+  color: #f0f0f0;
+  border: 8px solid #fff;
+}
+
+/* Receipt texture - thermal paper look */
+.document-texture.receipt {
+  background: linear-gradient(to bottom, #fefefe 0%, #f5f5f5 100%);
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  border-left: 2px dashed #ddd;
+  border-right: 2px dashed #ddd;
+}
+
+/* Official document - formal, stamped */
+.document-texture.official {
+  background: linear-gradient(135deg, #fefefe 0%, #f8f9fa 100%);
+  font-family: 'Times New Roman', serif;
+  border: 1px solid #d1d5db;
+}
+
+.document-texture.official::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  border: 2px double #9ca3af;
+  pointer-events: none;
+}
+
+/* Document stamp effect */
+.document-stamp {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-15deg);
+  border: 3px solid;
+  padding: 12px 24px;
+  font: 700 18px 'Inter', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  opacity: 0.7;
+  pointer-events: none;
+  z-index: 10;
+  border-radius: 4px;
+}
+
+/* False document badge */
+.false-document-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(220, 38, 38, 0.9);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font: 700 11px 'Inter', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 20;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.clue-modal.false-document .modal-head {
+  border-bottom-color: #dc2626;
+}
+
+.clue-description {
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 16px 0;
+}
+
+/* Monospace font for documents */
+.document-texture.old_paper p,
+.document-texture.receipt p,
+.document-texture.official p {
+  font-family: 'DM Mono', monospace;
+}
+
+.document-texture.official h2 {
+  font-family: 'Times New Roman', serif;
+  font-weight: 700;
+}
+
+/* Thread animation on investigation board */
+@keyframes threadFlow {
+  0% {
+    stroke-dashoffset: 10;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.thread-animation {
+  animation: threadFlow 1s linear infinite;
+}
+
+/* Save indicator */
+.save-indicator {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(16, 185, 129, 0.9);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font: 500 12px 'Inter', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 9999;
+  animation: fadeInOut 2s ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(10px); }
+  20% { opacity: 1; transform: translateY(0); }
+  80% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-10px); }
+}
+
