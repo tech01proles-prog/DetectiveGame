@@ -139,6 +139,9 @@ export interface GameState {
   deductions?: Deduction[]; // Player-made deductions connecting clues
   revealedTimelineEvents?: string[]; // Timeline events revealed through deduction
   characterProfiles?: CharacterProfile[]; // Auto-updating character dossiers
+  // Atmospheric effects state
+  activeWeatherEffects?: Array<{type: string; intensity: number; active: boolean}>;
+  currentLighting?: {brightness: number; colorFilter?: string};
 }
 
 // Investigation board types for interactive clues board

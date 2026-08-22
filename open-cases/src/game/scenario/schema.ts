@@ -332,4 +332,27 @@ export interface ScenarioData {
     totalTime: number; // Total game time in minutes
     criticalEvents: Array<{ time: number; eventId: string; description: string }>;
   };
+  /** Optional: Atmospheric effects settings for immersive gameplay */
+  atmosphere?: {
+    enabled: boolean;
+    weatherEffects: Array<{
+      type: 'rain' | 'fog' | 'snow' | 'wind' | 'storm';
+      intensity: number; // 0-1
+      startTime?: number; // Game time in minutes when effect starts
+      endTime?: number; // Game time in minutes when effect ends
+      description?: string;
+    }>;
+    lightingChanges: Array<{
+      timeRange: [number, number]; // Start and end time in minutes
+      brightness: number; // 0-1
+      colorFilter?: string; // CSS color filter (e.g., "sepia(0.3)", "hue-rotate(45deg)")
+      description?: string;
+    }>;
+    ambientSounds?: Array<{
+      id: string;
+      type: 'city' | 'nature' | 'industrial' | 'interior' | 'weather';
+      volume: number; // 0-1
+      conditions?: string[]; // Location IDs or time ranges when sound plays
+    }>;
+  };
 }
