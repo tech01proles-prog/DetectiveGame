@@ -434,8 +434,8 @@
       "title": "Дом Беннетт",
       "subtitle": "Место",
       "description": "Дом.",
-      "lat": 47.6097,
-      "lng": -122.3331,
+      "lat": 47.6114,
+      "lng": -122.3148,
       "address": "1428 Madison St Seattle WA",
       "category": "Жильё",
       "initial": true,
@@ -446,6 +446,33 @@
       ],
       "characterIds": [
         "elena"
+      ],
+      "image": "locations/home.svg",
+      "coordinates": {
+        "x": 36,
+        "y": 33.6
+      },
+      "actions": [
+        {
+          "id": "home_room",
+          "label": "Осмотреть комнату Майи",
+          "description": "Проверить рабочий стол, телефон, рюкзак и фотографии.",
+          "clueIds": [
+            "clue_01_phone",
+            "clue_02_photo"
+          ],
+          "once": true,
+          "event": "home_inspected"
+        },
+        {
+          "id": "home_mother",
+          "label": "Поговорить с Еленой",
+          "description": "Уточнить привычки Майи, маршрут домой и последние сообщения.",
+          "clueIds": [],
+          "characterId": "elena",
+          "once": true,
+          "event": "mother_questioned"
+        }
       ]
     },
     {
@@ -453,8 +480,8 @@
       "title": "Lincoln High",
       "subtitle": "Школа",
       "description": "Школа.",
-      "lat": 47.6145,
-      "lng": -122.3284,
+      "lat": 47.6174,
+      "lng": -122.3054,
       "address": "2200 NE 50th St Seattle WA",
       "category": "Образование",
       "initial": true,
@@ -467,6 +494,46 @@
       "characterIds": [
         "daniel",
         "june"
+      ],
+      "image": "locations/school.svg",
+      "coordinates": {
+        "x": 52,
+        "y": 20
+      },
+      "actions": [
+        {
+          "id": "school_records",
+          "label": "Проверить журнал доступа",
+          "description": "Сопоставить отметку кружка с электронной системой школы.",
+          "clueIds": [
+            "clue_04_attendance"
+          ],
+          "once": true,
+          "requiresClueIds": [
+            "clue_02_photo"
+          ],
+          "event": "school_records"
+        },
+        {
+          "id": "school_june",
+          "label": "Поговорить с Джун",
+          "description": "Попросить показать последние сообщения Майи.",
+          "clueIds": [
+            "clue_08_chat"
+          ],
+          "characterId": "june",
+          "once": true,
+          "event": "june_questioned"
+        },
+        {
+          "id": "school_daniel",
+          "label": "Допросить Дэниела Кроу",
+          "description": "Уточнить, когда именно Майя ушла и что забирала.",
+          "clueIds": [],
+          "characterId": "daniel",
+          "once": true,
+          "event": "daniel_questioned"
+        }
       ]
     },
     {
@@ -474,8 +541,8 @@
       "title": "Rainier Lab",
       "subtitle": "Лаборатория",
       "description": "Работа.",
-      "lat": 47.6062,
-      "lng": -122.3321,
+      "lat": 47.6095,
+      "lng": -122.3158,
       "address": "1501 Rainier Ave S Seattle WA",
       "category": "Сервис",
       "initial": false,
@@ -485,15 +552,48 @@
       ],
       "characterIds": [
         "nora"
-      ]
+      ],
+      "image": "locations/lab.svg",
+      "coordinates": {
+        "x": 32,
+        "y": 45
+      },
+      "actions": [
+        {
+          "id": "lab_archive",
+          "label": "Проверить архив заказов",
+          "description": "Найти последние задания Майи и номера заказов.",
+          "clueIds": [
+            "clue_09_boxes"
+          ],
+          "once": true,
+          "requiresClueIds": [
+            "clue_02_photo"
+          ],
+          "event": "lab_archive"
+        },
+        {
+          "id": "lab_nora",
+          "label": "Поговорить с Норой",
+          "description": "Уточнить, что Майя печатала и кому показывала фотографии.",
+          "clueIds": [],
+          "characterId": "nora",
+          "once": true,
+          "requiresClueIds": [
+            "clue_02_photo"
+          ],
+          "event": "nora_questioned"
+        }
+      ],
+      "lockedReason": "Нужна зацепка о фотографиях Майи."
     },
     {
       "id": "madison_market",
       "title": "Madison Market",
       "subtitle": "Рынок",
       "description": "Рынок.",
-      "lat": 47.6101,
-      "lng": -122.3145,
+      "lat": 47.6108,
+      "lng": -122.3093,
       "address": "Madison St Seattle WA",
       "category": "Торговля",
       "initial": true,
@@ -505,15 +605,50 @@
       ],
       "characterIds": [
         "marcus"
-      ]
+      ],
+      "image": "locations/market.svg",
+      "coordinates": {
+        "x": 48,
+        "y": 38
+      },
+      "actions": [
+        {
+          "id": "market_marcus",
+          "label": "Поговорить с Маркусом",
+          "description": "Попросить восстановить маршрут доставки и описать автомобиль.",
+          "clueIds": [
+            "clue_03_van"
+          ],
+          "characterId": "marcus",
+          "once": true,
+          "requiresClueIds": [
+            "clue_02_photo"
+          ],
+          "event": "marcus_questioned"
+        },
+        {
+          "id": "market_books",
+          "label": "Проверить книгу поставок",
+          "description": "Сопоставить код RB-14 с поставками рядом со складом.",
+          "clueIds": [
+            "clue_07_manifest"
+          ],
+          "once": true,
+          "requiresClueIds": [
+            "clue_03_van"
+          ],
+          "event": "manifest_found"
+        }
+      ],
+      "lockedReason": "Нужно установить связь Майи с серым фургоном."
     },
     {
       "id": "reed_garage",
       "title": "Reed Garage",
       "subtitle": "Гараж",
       "description": "Мастерская.",
-      "lat": 47.6089,
-      "lng": -122.3201,
+      "lat": 47.6078,
+      "lng": -122.3086,
       "address": "1420 E Madison St Seattle WA",
       "category": "Сервис",
       "initial": false,
@@ -526,15 +661,49 @@
       ],
       "characterIds": [
         "sam"
-      ]
+      ],
+      "image": "locations/garage.svg",
+      "coordinates": {
+        "x": 48.8,
+        "y": 54.1
+      },
+      "actions": [
+        {
+          "id": "garage_camera",
+          "label": "Просмотреть запись камеры",
+          "description": "Посмотреть интервал 20:00–20:40.",
+          "clueIds": [
+            "clue_05_camera"
+          ],
+          "once": true,
+          "requiresClueIds": [
+            "clue_03_van"
+          ],
+          "event": "camera_reviewed"
+        },
+        {
+          "id": "garage_route",
+          "label": "Восстановить маршрут",
+          "description": "Сопоставить время и направление движения фургона.",
+          "clueIds": [
+            "clue_06_route"
+          ],
+          "once": true,
+          "requiresClueIds": [
+            "clue_05_camera"
+          ],
+          "event": "route_reconstructed"
+        }
+      ],
+      "lockedReason": "Нужен номер/описание автомобиля."
     },
     {
       "id": "city_news",
       "title": "City News",
       "subtitle": "Редакция",
       "description": "Газета.",
-      "lat": 47.6062,
-      "lng": -122.3321,
+      "lat": 47.6069,
+      "lng": -122.3331,
       "address": "500 Union St Seattle WA",
       "category": "Медиа",
       "initial": false,
@@ -545,7 +714,29 @@
       ],
       "characterIds": [
         "leah"
-      ]
+      ],
+      "image": "locations/news.svg",
+      "coordinates": {
+        "x": 17,
+        "y": 50.5
+      },
+      "actions": [
+        {
+          "id": "news_leah",
+          "label": "Поговорить с Лией",
+          "description": "Предъявить ей фотографию и спросить о материалах Майи.",
+          "clueIds": [
+            "clue_10_news"
+          ],
+          "characterId": "leah",
+          "once": true,
+          "requiresClueIds": [
+            "clue_08_chat"
+          ],
+          "event": "leah_questioned"
+        }
+      ],
+      "lockedReason": "Нужно узнать, кому Майя собиралась отправить фотографии."
     },
     {
       "id": "cross_tower",
@@ -568,15 +759,20 @@
       ],
       "characterIds": [
         "victor"
-      ]
+      ],
+      "image": "locations/tower.svg",
+      "coordinates": {
+        "x": 25,
+        "y": 55
+      }
     },
     {
       "id": "northline_storage",
       "title": "Northline Storage",
       "subtitle": "Склад",
       "description": "Хранение.",
-      "lat": 47.6201,
-      "lng": -122.3491,
+      "lat": 47.5958,
+      "lng": -122.3174,
       "address": "N Northline Way Seattle WA",
       "category": "Склад",
       "initial": false,
@@ -585,7 +781,56 @@
         "clue_11_storage",
         "clue_16_witness"
       ],
-      "characterIds": []
+      "characterIds": [],
+      "image": "locations/storage.svg",
+      "coordinates": {
+        "x": 38,
+        "y": 76.2
+      },
+      "actions": [
+        {
+          "id": "storage_access",
+          "label": "Проверить журнал доступа",
+          "description": "Найти вход в секцию B около 20:36.",
+          "clueIds": [
+            "clue_11_storage"
+          ],
+          "once": true,
+          "requiresClueIds": [
+            "clue_07_manifest"
+          ],
+          "event": "storage_log"
+        },
+        {
+          "id": "storage_section",
+          "label": "Осмотреть секцию B",
+          "description": "Проверить коридор, парковку и оставленные предметы.",
+          "clueIds": [
+            "clue_bag",
+            "clue_second_car"
+          ],
+          "once": true,
+          "requiresClueIds": [
+            "clue_11_storage"
+          ],
+          "event": "storage_search"
+        },
+        {
+          "id": "storage_records",
+          "label": "Изучить таблицу серийных номеров",
+          "description": "Проверить компьютер менеджера склада.",
+          "clueIds": [
+            "clue_truth"
+          ],
+          "once": true,
+          "requiresClueIds": [
+            "clue_10_news",
+            "clue_11_storage"
+          ],
+          "event": "truth_found"
+        }
+      ],
+      "lockedReason": "Нужен код RB-14 и связь со складом."
     },
     {
       "id": "abandoned_warehouse",
@@ -601,7 +846,12 @@
       "clueIds": [
         "clue_24_location"
       ],
-      "characterIds": []
+      "characterIds": [],
+      "image": "locations/warehouse.svg",
+      "coordinates": {
+        "x": 30,
+        "y": 85
+      }
     }
   ],
   "timeline": [
