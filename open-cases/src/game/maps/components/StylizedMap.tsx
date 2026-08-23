@@ -274,15 +274,6 @@ const StylizedMap: React.FC<StylizedMapProps> = ({
 
   return (
     <div ref={containerRef} className="relative w-full h-full bg-[#f5f5f4] rounded-lg overflow-hidden shadow-inner" style={{ aspectRatio: '2/1' }}>
-      {/* Custom background image if provided */}
-      {backgroundImage && (
-        <img 
-          src={backgroundImage} 
-          alt="Map background" 
-          className="absolute inset-0 w-full h-full object-cover"
-          style={{ zIndex: 0 }}
-        />
-      )}
       <svg
         ref={svgRef}
         viewBox="0 0 800 400"
@@ -301,6 +292,18 @@ const StylizedMap: React.FC<StylizedMapProps> = ({
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
       >
+        {/* Custom background image if provided - rendered inside SVG so it scales with the map */}
+        {backgroundImage && (
+          <image
+            href={backgroundImage}
+            x="0"
+            y="0"
+            width="800"
+            height="400"
+            preserveAspectRatio="xMidYMid slice"
+            style={{ zIndex: 0 }}
+          />
+        )}
         {/* Определение паттернов и градиентов (нужны для маркеров) */}
         <defs>
           <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
