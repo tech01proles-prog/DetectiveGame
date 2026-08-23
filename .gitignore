@@ -1,31 +1,42 @@
 ```json
 {
   "id": "case-003",
-  "title": "User Authentication Flow",
-  "description": "Test case for user authentication process including login, session management, and logout functionality",
-  "steps": [
+  "title": "Mixed Language Performance Testing",
+  "description": "A complex scenario involving multiple programming languages and performance metrics",
+  "complexity": "high",
+  "tags": ["performance", "multi-language", "benchmarking"],
+  "files": [
     {
-      "id": 1,
-      "action": "Navigate to login page",
-      "expected": "Login form is displayed"
+      "path": "src/python/performance_test.py",
+      "language": "python",
+      "size": "medium"
     },
     {
-      "id": 2,
-      "action": "Enter valid credentials",
-      "expected": "User is authenticated successfully"
+      "path": "src/go/benchmark.go",
+      "language": "go",
+      "size": "small"
     },
     {
-      "id": 3,
-      "action": "Verify session persistence",
-      "expected": "Session remains active across page navigations"
+      "path": "src/rust/performance.rs",
+      "language": "rust",
+      "size": "medium"
     },
     {
-      "id": 4,
-      "action": "Logout from application",
-      "expected": "User is logged out and redirected to home page"
+      "path": "src/javascript/test_runner.js",
+      "language": "javascript",
+      "size": "large"
     }
   ],
-  "priority": "high",
-  "tags": ["authentication", "security", "session"]
+  "requirements": [
+    "Python 3.9+",
+    "Go 1.19+",
+    "Rust 1.60+",
+    "Node.js 18+"
+  ],
+  "constraints": [
+    "Memory usage must not exceed 2GB",
+    "Execution time must be under 30 seconds",
+    "No external network calls allowed"
+  ]
 }
 ```
