@@ -241,25 +241,45 @@ const StylizedMap: React.FC<StylizedMapProps> = ({
   // Если есть кастомное фоновое изображение, не рисуем процедурный фон (реки, дороги, парки)
   const isCustomMap = !!backgroundImage;
 
+  // Calculate min scale to fit map width to container while preventing seeing beyond bounds
+  // SVG viewBox is 800x400, container aspect ratio is 2/1 (800x400 at base)
+  // We want the map to fill the container width at minimum zoom
+  const minScale = 1; // At scale 1, the 800x400 viewBox fits the 2/1 container perfectly
+  const maxScale = 2.5; // Maximum zoom level
+
   // Pan and zoom handlers
   const handleWheel = (e: React.WheelEvent) => {
     if (!enablePanZoom) return;
     e.preventDefault();
     const delta = e.deltaY > 0 ? 0.9 : 1.1;
-    setScale(prev => Math.min(Math.max(0.5, prev * delta), 3));
+    setScale(prev => Math.min(Math.max(minScale, prev * delta), maxScale));
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
-    if (!enablePanZoom || scale <= 1) return;
+    if (!enablePanZoom || scale <= minScale) return;
     setIsDragging(true);
     setDragStart({ x: e.clientX - position.x, y: e.clientY - position.y });
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!enablePanZoom || !isDragging || scale <= 1) return;
+    if (!enablePanZoom || !isDragging || scale <= minScale) return;
+    
+    const newX = e.clientX - dragStart.x;
+    const newY = e.clientY - dragStart.y;
+    
+    // Calculate bounds to prevent seeing beyond map edges
+    const containerWidth = containerRef.current?.clientWidth || 800;
+    const containerHeight = containerRef.current?.clientHeight || 400;
+    const scaledWidth = 800 * scale;
+    const scaledHeight = 400 * scale;
+    
+    // Only allow panning if the scaled content is larger than container
+    const maxX = Math.max(0, (scaledWidth - containerWidth) / 2);
+    const maxY = Math.max(0, (scaledHeight - containerHeight) / 2);
+    
     setPosition({
-      x: e.clientX - dragStart.x,
-      y: e.clientY - dragStart.y
+      x: Math.max(-maxX, Math.min(maxX, newX)),
+      y: Math.max(-maxY, Math.min(maxY, newY))
     });
   };
 
@@ -460,7 +480,7 @@ const StylizedMap: React.FC<StylizedMapProps> = ({
       {enablePanZoom && (
         <div className="absolute top-4 right-4 flex flex-col gap-2">
           <button
-            onClick={() => setScale(prev => Math.min(prev * 1.2, 3))}
+            onClick={() => setScale(prev => Math.min(prev * 1.2, maxScale))}
             className="w-8 h-8 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg flex items-center justify-center text-gray-700 hover:bg-white transition-colors"
             title="Приблизить"
           >
@@ -470,7 +490,7 @@ const StylizedMap: React.FC<StylizedMapProps> = ({
             </svg>
           </button>
           <button
-            onClick={() => setScale(prev => Math.max(prev / 1.2, 0.5))}
+            onClick={() => setScale(prev => Math.max(prev / 1.2, minScale))}
             className="w-8 h-8 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg flex items-center justify-center text-gray-700 hover:bg-white transition-colors"
             title="Отдалить"
           >
