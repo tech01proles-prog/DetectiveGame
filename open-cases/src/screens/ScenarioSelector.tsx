@@ -24,12 +24,13 @@ interface ScenarioMeta {
 interface CaseFolderProps {
   scenario: ScenarioMeta;
   onSelect: (scenarioId: string, data: ScenarioData) => void;
+  onEdit: (scenarioId: string, data: ScenarioData) => void;
 }
 
 /**
  * Компонент папки с делом - анимированное открытие досье
  */
-const CaseFolder: React.FC<CaseFolderProps> = ({ scenario, onSelect }) => {
+const CaseFolder: React.FC<CaseFolderProps> = ({ scenario, onSelect, onEdit }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [scenarioData, setScenarioData] = useState<ScenarioData | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -51,6 +52,13 @@ const CaseFolder: React.FC<CaseFolderProps> = ({ scenario, onSelect }) => {
     e.stopPropagation();
     if (scenarioData) {
       onSelect(scenario.id, scenarioData);
+    }
+  };
+
+  const handleEdit = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (scenarioData) {
+      onEdit(scenario.id, scenarioData);
     }
   };
 
@@ -99,10 +107,15 @@ const CaseFolder: React.FC<CaseFolderProps> = ({ scenario, onSelect }) => {
 
             {isLoaded && scenarioData && (
               <div className="dossier-footer">
-                <button className="btn-start-case" onClick={handleStart}>
-                  <Play size={18} />
-                  НАЧАТЬ РАССЛЕДОВАНИЕ
-                </button>
+                <div className="flex gap-2">
+                  <button className="btn-start-case flex-1" onClick={handleStart}>
+                    <Play size={18} />
+                    НАЧАТЬ РАССЛЕДОВАНИЕ
+                  </button>
+                  <button className="btn-edit-case" onClick={handleEdit} title="Редактировать сценарий">
+                    <Edit3 size={18} />
+                  </button>
+                </div>
               </div>
             )}
           </div>
@@ -270,6 +283,7 @@ export default function ScenarioSelector({
               key={scenario.id} 
               scenario={scenario} 
               onSelect={onSelect} 
+              onEdit={(id, data) => setEditingScenario({ id, data })}
             />
           ))}
           
