@@ -241,10 +241,10 @@ const StylizedMap: React.FC<StylizedMapProps> = ({
   // Если есть кастомное фоновое изображение, не рисуем процедурный фон (реки, дороги, парки)
   const isCustomMap = !!backgroundImage;
 
-  // Calculate min scale to fit map width to container while preventing seeing beyond bounds
+  // Calculate min scale to fit map height to container while preventing seeing beyond bounds
   // SVG viewBox is 800x400, container aspect ratio is 2/1 (800x400 at base)
-  // We want the map to fill the container width at minimum zoom
-  const minScale = 1; // At scale 1, the 800x400 viewBox fits the 2/1 container perfectly
+  // We want the map to fill the container height at minimum zoom (50% = 0.5 scale makes 400px height fit 400px container)
+  const minScale = 0.5; // At scale 0.5, the 400px height fits the container perfectly, no background visible
   const maxScale = 2.5; // Maximum zoom level
 
   // Pan and zoom handlers
@@ -288,9 +288,14 @@ const StylizedMap: React.FC<StylizedMapProps> = ({
   };
 
   const resetView = () => {
-    setScale(1);
+    setScale(minScale);
     setPosition({ x: 0, y: 0 });
   };
+
+  // Initialize scale to minScale on mount
+  useEffect(() => {
+    setScale(minScale);
+  }, []);
 
   return (
     <div ref={containerRef} className="relative w-full h-full bg-[#f5f5f4] rounded-lg overflow-hidden shadow-inner" style={{ aspectRatio: '2/1' }}>
