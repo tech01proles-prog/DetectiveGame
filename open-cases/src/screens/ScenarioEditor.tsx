@@ -58,9 +58,9 @@ export default function ScenarioEditor({
     const x = ((e.clientX - rect.left) / rect.width) * 800;
     const y = ((e.clientY - rect.top) / rect.height) * 400;
     
-    // Clamp to SVG bounds
-    const clampedX = Math.max(50, Math.min(750, x));
-    const clampedY = Math.max(50, Math.min(350, y));
+    // Allow dragging to any point on the map (minimal constraints)
+    const clampedX = Math.max(0, Math.min(800, x));
+    const clampedY = Math.max(0, Math.min(400, y));
     
     // Convert to percentages (0-100)
     const pctX = (clampedX / 800) * 100;
@@ -261,17 +261,17 @@ export default function ScenarioEditor({
                         <circle
                           cx="0"
                           cy="0"
-                          r={isSelected || isDraggingNow ? 20 : 16}
+                          r={isSelected || isDraggingNow ? 8 : 6}
                           fill={isSelected ? '#e7c776' : '#3b82f6'}
                           stroke="#fff"
-                          strokeWidth="3"
+                          strokeWidth="2"
                           opacity={isDraggingNow ? 0.8 : 1}
                         />
                         <text
                           x="0"
-                          y="5"
+                          y="2"
                           textAnchor="middle"
-                          fontSize="14"
+                          fontSize="8"
                           fill="#fff"
                         >
                           📍
@@ -279,9 +279,9 @@ export default function ScenarioEditor({
                         {isSelected && (
                           <text
                             x="0"
-                            y="-25"
+                            y="-15"
                             textAnchor="middle"
-                            fontSize="12"
+                            fontSize="10"
                             fill="#e7c776"
                             fontWeight="bold"
                           >

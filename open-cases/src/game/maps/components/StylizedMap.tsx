@@ -11,6 +11,8 @@ interface StylizedMapProps {
   backgroundImage?: string;
   /** Optional: Pre-calculated coordinates for locations */
   locationCoordinates?: Record<string, { x: number; y: number }>;
+  /** Enable pan and zoom controls */
+  enablePanZoom?: boolean;
 }
 
 interface Point {
@@ -36,9 +38,15 @@ const StylizedMap: React.FC<StylizedMapProps> = ({
   visitedLocationIds = [],
   backgroundImage,
   locationCoordinates,
+  enablePanZoom = false,
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [hoveredLocation, setHoveredLocation] = useState<string | null>(null);
+  const [scale, setScale] = useState(1);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
   // Get coordinates for a location - use provided coordinates or auto-generate
   const getLocationCoords = (locationId: string, index: number): { x: number; y: number } => {
@@ -233,8 +241,39 @@ const StylizedMap: React.FC<StylizedMapProps> = ({
   // Если есть кастомное фоновое изображение, не рисуем процедурный фон (реки, дороги, парки)
   const isCustomMap = !!backgroundImage;
 
+  // Pan and zoom handlers
+  const handleWheel = (e: React.WheelEvent) => {
+    if (!enablePanZoom) return;
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+    setScale(prev => Math.min(Math.max(0.5, prev * delta), 3));
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!enablePanZoom || scale <= 1) return;
+    setIsDragging(true);
+    setDragStart({ x: e.clientX - position.x, y: e.clientY - position.y });
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!enablePanZoom || !isDragging || scale <= 1) return;
+    setPosition({
+      x: e.clientX - dragStart.x,
+      y: e.clientY - dragStart.y
+    });
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const resetView = () => {
+    setScale(1);
+    setPosition({ x: 0, y: 0 });
+  };
+
   return (
-    <div className="relative w-full h-full bg-[#f5f5f4] rounded-lg overflow-hidden shadow-inner" style={{ aspectRatio: '2/1' }}>
+    <div ref={containerRef} className="relative w-full h-full bg-[#f5f5f4] rounded-lg overflow-hidden shadow-inner" style={{ aspectRatio: '2/1' }}>
       {/* Custom background image if provided */}
       {backgroundImage && (
         <img 
@@ -248,8 +287,19 @@ const StylizedMap: React.FC<StylizedMapProps> = ({
         ref={svgRef}
         viewBox="0 0 800 400"
         preserveAspectRatio="xMidYMid meet"
-        className="w-full h-full relative"
-        style={{ background: backgroundImage ? 'transparent' : '#f5f5f4', zIndex: 1 }}
+        className={`w-full h-full relative ${enablePanZoom ? 'cursor-grab active:cursor-grabbing' : ''}`}
+        style={{ 
+          background: backgroundImage ? 'transparent' : '#f5f5f4', 
+          zIndex: 1,
+          transform: enablePanZoom ? `translate(${position.x}px, ${position.y}px) scale(${scale})` : undefined,
+          transformOrigin: 'center center',
+          transition: isDragging ? 'none' : 'transform 0.1s ease-out'
+        }}
+        onWheel={handleWheel}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
       >
         {/* Определение паттернов и градиентов (нужны для маркеров) */}
         <defs>
@@ -347,27 +397,27 @@ const StylizedMap: React.FC<StylizedMapProps> = ({
               onClick={() => onLocationClick(location)}
               onMouseEnter={() => setHoveredLocation(location.id)}
               onMouseLeave={() => setHoveredLocation(null)}
-              style={{ cursor: 'pointer' }}
+              style={{ cursor: enablePanZoom && scale > 1 ? 'default' : 'pointer' }}
               filter={isActive ? 'url(#glow)' : undefined}
             >
-              {/* Маркер локации */}
+              {/* Маркер локации - smaller in game mode */}
               <circle
                 cx="0"
                 cy="0"
-                r={isActive ? 18 : isHovered ? 16 : 14}
+                r={isActive ? 12 : isHovered ? 10 : 8}
                 fill={isActive ? '#f59e0b' : isVisited ? '#10b981' : '#6b7280'}
                 stroke="#fff"
-                strokeWidth="3"
+                strokeWidth="2"
                 filter="url(#shadow)"
                 className="transition-all duration-200"
               />
 
-              {/* Иконка внутри маркера */}
+              {/* Иконка внутри маркера - smaller size */}
               <text
                 x="0"
-                y="5"
+                y="3"
                 textAnchor="middle"
-                fontSize="16"
+                fontSize="10"
                 fill="#fff"
                 fontWeight="bold"
               >
@@ -376,21 +426,21 @@ const StylizedMap: React.FC<StylizedMapProps> = ({
 
               {/* Подпись локации */}
               {(isHovered || isActive) && (
-                <g transform="translate(0, 30)">
+                <g transform="translate(0, 20)">
                   <rect
-                    x="-60"
-                    y="-12"
-                    width="120"
-                    height="24"
+                    x="-50"
+                    y="-10"
+                    width="100"
+                    height="20"
                     rx="4"
                     fill="#1f2937"
                     opacity="0.9"
                   />
                   <text
                     x="0"
-                    y="4"
+                    y="3"
                     textAnchor="middle"
-                    fontSize="12"
+                    fontSize="10"
                     fill="#fff"
                     fontWeight="500"
                   >
@@ -402,6 +452,41 @@ const StylizedMap: React.FC<StylizedMapProps> = ({
           );
         })}
       </svg>
+
+      {/* Zoom controls for pan/zoom mode */}
+      {enablePanZoom && (
+        <div className="absolute top-4 right-4 flex flex-col gap-2">
+          <button
+            onClick={() => setScale(prev => Math.min(prev * 1.2, 3))}
+            className="w-8 h-8 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg flex items-center justify-center text-gray-700 hover:bg-white transition-colors"
+            title="Приблизить"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </button>
+          <button
+            onClick={() => setScale(prev => Math.max(prev / 1.2, 0.5))}
+            className="w-8 h-8 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg flex items-center justify-center text-gray-700 hover:bg-white transition-colors"
+            title="Отдалить"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </button>
+          <button
+            onClick={resetView}
+            className="w-8 h-8 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg flex items-center justify-center text-gray-700 hover:bg-white transition-colors"
+            title="Сбросить вид"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+              <path d="M3 3v5h5"></path>
+            </svg>
+          </button>
+        </div>
+      )}
 
       {/* Легенда карты */}
       <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm p-3 rounded-lg shadow-lg text-xs">
