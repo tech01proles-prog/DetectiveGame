@@ -9,7 +9,7 @@
     "players": "1-6",
     "difficulty": "Сложная"
   },
-  "mapTemplateId": "seattle_districts",
+  "mapTemplateId": "case_001_seattle",
   "characters": [
     {
       "id": "victor",
