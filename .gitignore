@@ -1,116 +1,49 @@
-```
-# Dependencies
-node_modules/
+# Compiled and build artifacts
+*.pyc
+__pycache__/
+*.o
+*.obj
+*.class
+*.exe
+*.dll
+*.so
+*.a
+*.out
 
-# Build artifacts
+# Dependencies
+.venv/
+venv/
+node_modules/
 dist/
 build/
 target/
+.gradle/
+.mypy_cache/
+.pytest_cache/
 
-# Python specific
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-*.py~
-*.py.class
-*.py.backup
-*.py.save
-*.py.swp
-*.py.swo
-*.py.lock
-*.py.tmp
-*.py.bak
-*.py~backup
-*.py~save
-*.py~swp
-*.py~swo
-*.py~lock
-*.py~tmp
-*.py~bak
-
-# Virtual environments
-venv/
-.venv/
-env/
-.env/
-
-# Logs
+# Logs and temp files
 *.log
-
-# Temporary files
 *.tmp
-*.temp
 *.swp
 *.swo
 
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# Environment variables
+# Environment
 .env
 .env.local
-.env.*
-!env.example
+*.env.*
 
-# IDE specific
+# Editors
 .vscode/
 .idea/
-*.sublime-project
-*.sublime-workspace
-nbproject/
-nbbuild/
-nbdist/
-.nbm/
-.externalToolBuilders/
-*.launch
-.settings/
-.plugins/
-.metadata/
-bin/
-tmp/
-*.tmp
-*.bak
-*.swp
-*~
 
-# Coverage reports
+# System files
+.DS_Store
+Thumbs.db
+
+# Coverage
 coverage/
 htmlcov/
 .coverage
-.coverage.*
-
-# MyPy cache
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# PyTest cache
-.pytest_cache/
-
-# Git
-.git/
-
-# GitHub
-.github/
-
-# GitLab
-.gitlab/
-
-# Backup files
-*~
-*.bak
-*.backup
-*.orig
-*.rej
-*.swp
-*.swo
 
 # Compressed files
 *.zip
@@ -135,100 +68,3 @@ dmypy.json
 *.tar.bz2
 *.tar.xz
 *.tar.zst
-
-# Binary files
-*.exe
-*.dll
-*.so
-*.a
-*.obj
-*.out
-*.o
-*.class
-*.jar
-*.war
-*.ear
-*.bin
-*.dat
-*.idx
-*.indy
-*.diz
-*.pch
-*.pdb
-*.ilk
-*.aps
-*.ncb
-*.opt
-*.plg
-*.toc
-*.mif
-*.xmi
-*.o
-*.a
-*.lib
-*.so
-*.dylib
-*.dll
-*.exe
-*.out
-*.app
-*.ipa
-*.apk
-*.aab
-*.msi
-*.deb
-*.rpm
-*.pkg
-*.run
-*.jar
-*.war
-*.ear
-*.sar
-*.rar
-*.zip
-*.7z
-*.gz
-*.bz2
-*.xz
-*.tar
-*.tgz
-*.tbz2
-*.txz
-*.dmg
-*.iso
-*.img
-*.vhd
-*.vhdx
-*.qcow
-*.qcow2
-*.raw
-*.vdi
-*.vmdk
-*.ova
-*.ovf
-*.box
-*.gem
-*.nupkg
-*.whl
-*.egg
-*.egg-info/
-*.pyc
-*.pyo
-*.pyd
-*.py~
-*.py.class
-*.py.backup
-*.py.save
-*.py.swp
-*.py.swo
-*.py.lock
-*.py.tmp
-*.py.bak
-*.py~backup
-*.py~save
-*.py~swp
-*.py~swo
-*.py~lock
-*.py~tmp
-*.py~bak
-```
