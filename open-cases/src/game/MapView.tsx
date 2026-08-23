@@ -119,6 +119,7 @@ export default function MapView({locations,discovered,selectedId,mode,onSelect,m
           visitedLocationIds={discovered}
           backgroundImage={backgroundImage}
           locationCoordinates={locationCoords}
+          enablePanZoom={true}
         />
       </div>
     );
