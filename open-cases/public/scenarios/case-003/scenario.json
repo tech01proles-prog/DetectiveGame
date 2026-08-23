@@ -463,7 +463,7 @@
           "event": "home_inspected"
         },
         {
-          "id": "home_mother",
+          "id": "bennett_home_elena",
           "label": "Поговорить с Еленой",
           "description": "Уточнить привычки Майи, маршрут домой и последние сообщения.",
           "clueIds": [],
@@ -512,7 +512,7 @@
           "event": "school_records"
         },
         {
-          "id": "school_june",
+          "id": "lincoln_school_june",
           "label": "Поговорить с Джун",
           "description": "Попросить показать последние сообщения Майи.",
           "clueIds": [
@@ -523,7 +523,7 @@
           "event": "june_questioned"
         },
         {
-          "id": "school_daniel",
+          "id": "lincoln_school_daniel",
           "label": "Допросить Дэниела Кроу",
           "description": "Уточнить, когда именно Майя ушла и что забирала.",
           "clueIds": [],
@@ -570,7 +570,7 @@
           "event": "lab_archive"
         },
         {
-          "id": "lab_nora",
+          "id": "rainier_lab_nora",
           "label": "Поговорить с Норой",
           "description": "Уточнить, что Майя печатала и кому показывала фотографии.",
           "clueIds": [],
@@ -609,7 +609,7 @@
       ],
       "actions": [
         {
-          "id": "market_marcus",
+          "id": "madison_market_marcus",
           "label": "Поговорить с Маркусом",
           "description": "Попросить восстановить маршрут доставки и описать автомобиль.",
           "clueIds": [
@@ -715,7 +715,7 @@
       ],
       "actions": [
         {
-          "id": "news_leah",
+          "id": "city_news_leah",
           "label": "Поговорить с Лией",
           "description": "Предъявить ей фотографию и спросить о материалах Майи.",
           "clueIds": [
