@@ -246,6 +246,7 @@ const StylizedMap: React.FC<StylizedMapProps> = ({
   // We want the map to fill the container height at minimum zoom (50% = 0.5 scale makes 400px height fit 400px container)
   const minScale = 0.5; // At scale 0.5, the 400px height fits the container perfectly, no background visible
   const maxScale = 2.5; // Maximum zoom level
+  const initialScale = 1.5; // Start at 150% zoom
 
   // Pan and zoom handlers
   const handleWheel = (e: React.WheelEvent) => {
@@ -288,13 +289,13 @@ const StylizedMap: React.FC<StylizedMapProps> = ({
   };
 
   const resetView = () => {
-    setScale(minScale);
+    setScale(initialScale);
     setPosition({ x: 0, y: 0 });
   };
 
-  // Initialize scale to minScale on mount
+  // Initialize scale to initialScale on mount
   useEffect(() => {
-    setScale(minScale);
+    setScale(initialScale);
   }, []);
 
   return (
