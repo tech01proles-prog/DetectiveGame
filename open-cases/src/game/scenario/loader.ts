@@ -16,9 +16,9 @@ export function validateScenario(data: any): { valid: boolean; errors: string[] 
 
   if (!data.scenario) errors.push('Missing "scenario" object');
   if (!data.characters || !Array.isArray(data.characters)) errors.push('Missing "characters" array');
-  if (!data.clues || !Array.isArray(data.clues)) errors.push('Missing "clues" array');
+  if (data.clues === undefined || !Array.isArray(data.clues)) errors.push('Missing "clues" array');
   if (!data.locations || !Array.isArray(data.locations)) errors.push('Missing "locations" array');
-  if (!data.timeline || !Array.isArray(data.timeline)) errors.push('Missing "timeline" array');
+  if (data.timeline === undefined || !Array.isArray(data.timeline)) errors.push('Missing "timeline" array');
   if (!data.dialogueNodes || typeof data.dialogueNodes !== 'object') errors.push('Missing "dialogueNodes" object');
   if (!data.mapTemplateId) errors.push('Missing "mapTemplateId"');
 
