@@ -1,5 +1,5 @@
 import {useMemo,useState,useEffect} from 'react';
-import {BookOpen,ChevronRight,FileText,MessageSquare,NotebookPen,Search,Users,Clock3,Lock,Check,PanelRightClose,PanelRightOpen,Send,MapPin,Radio,Eye,Camera,FileSearch,CircleAlert,Repeat,StickyNote,Stamp,FileSpreadsheet,Newspaper} from 'lucide-react';
+import {BookOpen,ChevronRight,FileText,MessageSquare,NotebookPen,Search,Users,Clock3,Lock,Check,PanelRightClose,PanelRightOpen,Send,MapPin,Radio,Eye,Camera,FileSearch,CircleAlert,Repeat,StickyNote,Stamp,FileSpreadsheet,Newspaper,ZoomIn,X} from 'lucide-react';
 import MapView from '@/game/MapView';
 import InvestigationBoard from '@/game/InvestigationBoard';
 import {calculateScore,discoverFromClues,performAction,getDynamicDialogueNode,saveGame,loadGame} from '@/game/engine';
@@ -52,6 +52,7 @@ export default function GameScreen({state,setState,onFinish,onRestart,scenario}:
   const [dialogue,setDialogue]=useState<DialogueNode|null>(null);
   const [eventNotice,setEventNotice]=useState<{title:string;text:string;clues:string[]}|null>(null);
   const [dialogueNodeId,setDialogueNodeId]=useState<string|null>(null);
+  const [macroMode,setMacroMode]=useState<{active:boolean;clueId:string}|{active:false;clueId?:string}>({active:false,clueId:''});
   const locations = scenario.locations;
   const characters = scenario.characters;
   const clues = scenario.clues;
@@ -63,6 +64,16 @@ export default function GameScreen({state,setState,onFinish,onRestart,scenario}:
   const totalClues=clues.length;
   const progress=Math.round(Math.min(100,(found.length/totalClues)*100));
   const mapTemplateId = scenario.mapTemplateId;
+  
+  // Get current time-based CSS class for atmosphere
+  const getTimeClass = () => {
+    const gameTime = state.gameTime || 0;
+    const hours = Math.floor(gameTime / 60);
+    if (hours >= 5 && hours < 8) return 'time-dawn';
+    if (hours >= 8 && hours < 17) return 'time-day';
+    if (hours >= 17 && hours < 20) return 'time-dusk';
+    return 'time-night';
+  };
 
   // Helper to get character by ID
   const getCharacter = (id: string) => characters.find(c => c.id === id);
@@ -184,17 +195,48 @@ export default function GameScreen({state,setState,onFinish,onRestart,scenario}:
     }
   }, [state.discoveredLocationIds, state.foundClueIds, state.questionedCharacterIds, state.completedActionIds]);
   
-  return <div className="game-shell">
+  return <div className={`game-shell ${getTimeClass()}`}>
+    {/* Cinematic overlays for film noir atmosphere */}
+    <div className="vignette-overlay"></div>
+    <div className="film-grain"></div>
+    
     <header className="game-top"><div className="brand"><span className="brand-mark">OC</span><div><b>OPEN CASES</b><small>Дело №001 · Тишина на Мэдисон</small></div></div><div className="top-status"><span><span className="live-dot"/> СИСТЕМА АКТИВНА</span><span>{found.length} / {totalClues} улик</span><button onClick={onRestart} className="top-link">Сбросить</button></div></header>
     <div className="game-body">
       <aside className={`left-rail ${sidebar?'':'collapsed'}`}>{sidebar&&<><div className="rail-head"><div><span className="eyebrow">РАССЛЕДОВАНИЕ</span><strong>Тишина на Мэдисон</strong></div><button onClick={()=>setSidebar(false)} aria-label="Свернуть панель"><PanelRightClose size={17}/></button></div><nav>{tabs.map(t=>{const Icon=t.icon;return <button key={t.id} className={state.selectedTab===t.id?'active':''} onClick={()=>setState(s=>s?({...s,selectedTab:t.id as Tab}):null)}><Icon size={17}/><span>{t.label}</span>{t.id==='clues'&&found.length>0&&<em>{found.length}</em>}</button>})}</nav><div className="rail-progress"><div><span>Материалы дела</span><b>{progress}%</b></div><div className="progress"><i style={{width:`${progress}%`}}/></div><small>Открыто {discovered.length} из {locations.length} точек</small></div></>}{!sidebar&&<button className="expand-rail" onClick={()=>setSidebar(true)} aria-label="Развернуть панель"><PanelRightOpen size={18}/></button>}</aside>
       <section className="map-panel">{state.selectedTab === 'board' ? <InvestigationBoard state={state} setState={setState} scenario={scenario}/> : <><MapView locations={locations} discovered={discovered} selectedId={state.selectedLocationId} mode={state.mapMode} onSelect={select} mapTemplateId={mapTemplateId}/><div className="map-hint"><MapPin size={13}/><span>Выберите точку на карте</span></div><div className="map-legend"><span><i className="legend-dot open"/> открыта</span><span><i className="legend-dot new"/> выбрана</span><span><i className="legend-dot locked"/> неизвестна</span></div><div className="case-stamp">SEATTLE<br/><b>CASE 001</b></div></>}</section>
-      <aside className="right-panel"><div className="panel-scroll">{state.selectedTab==='case'&&<CaseTab loc={loc} state={state} action={action} setFinalOpen={setFinalOpen} canFinal={canFinal} scenario={scenario}/>} {state.selectedTab==='people'&&<PeopleTab state={state} select={select} scenario={scenario}/>} {state.selectedTab==='board'&&<BoardTab state={state} setState={setState} scenario={scenario}/>} {state.selectedTab==='clues'&&<CluesTab found={found} onOpen={setDetailClue}/>} {state.selectedTab==='notes'&&<NotesTab value={state.notes} onChange={note}/>} {state.selectedTab==='timeline'&&<TimelineTab state={state} scenario={scenario}/>} {state.selectedTab==='news'&&<NewsTab state={state} scenario={scenario}/>}</div></aside>
+      <aside className="right-panel"><div className="panel-scroll">{state.selectedTab==='case'&&<CaseTab loc={loc} state={state} action={action} setFinalOpen={setFinalOpen} canFinal={canFinal} scenario={scenario}/>} {state.selectedTab==='people'&&<PeopleTab state={state} select={select} scenario={scenario}/>} {state.selectedTab==='board'&&<BoardTab state={state} setState={setState} scenario={scenario}/>} {state.selectedTab==='clues'&&<CluesTab found={found} onOpen={setDetailClue} setMacroMode={setMacroMode}/>} {state.selectedTab==='notes'&&<NotesTab value={state.notes} onChange={note}/>} {state.selectedTab==='timeline'&&<TimelineTab state={state} scenario={scenario}/>} {state.selectedTab==='news'&&<NewsTab state={state} scenario={scenario}/>}</div></aside>
     </div>
     {detailClue&&<ClueModal clue={clues.find(c=>c.id===detailClue)!} onClose={()=>setDetailClue(null)}/>} 
     {eventNotice&&<EventModal notice={eventNotice} onClose={()=>setEventNotice(null)}/>} 
     {dialogue&&<DialogueModal node={dialogue} scenario={scenario} state={state} onClose={()=>{setDialogue(null);setDialogueNodeId(null)}} onChoose={chooseDialogue}/>}
     {finalOpen&&<FinalModal state={state} scenario={scenario} onClose={()=>setFinalOpen(false)} onSubmit={(answers)=>{const score=calculateScore(state,answers,scenario);setState(s=>s?({...s,finalAnswers:answers,score,finished:true,won:score>=70,started:s.started}):null);setFinalOpen(false);onFinish(score>=70)}}/>}
+    
+    {/* Macro mode overlay for detailed clue inspection */}
+    {macroMode.active && macroMode.clueId && (
+      <div className="macro-view" onClick={()=>setMacroMode({active:false})}>
+        <button className="macro-close" onClick={()=>setMacroMode({active:false})}>
+          <X size={24}/>
+        </button>
+        <div className="macro-content document-card" onClick={e=>e.stopPropagation()}>
+          {(() => {
+            const clue = clues.find(c => c.id === macroMode.clueId);
+            if (!clue) return null;
+            return (
+              <div className={`document-card ${clue.documentTexture ? `document-${clue.documentTexture}` : ''}`} style={{padding: '40px', maxWidth: '800px'}}>
+                {clue.isFalseDocument && (
+                  <div className="stamp-overlay" style={{color: clue.stampColor || '#dc2626'}}>
+                    {clue.stampText || 'FAKE'}
+                  </div>
+                )}
+                <h3 style={{fontFamily: "'Playfair Display', serif", fontSize: '28px', marginBottom: '20px'}}>{clue.title}</h3>
+                <p style={{fontSize: '16px', lineHeight: '1.8', color: '#4a4a4a'}}>{clue.detail}</p>
+                {clue.type && <p style={{fontSize: '12px', color: '#888', marginTop: '20px', textTransform: 'uppercase'}}>Тип: {clue.type}</p>}
+              </div>
+            );
+          })()}
+        </div>
+      </div>
+    )}
   </div>
 }
 
@@ -300,7 +342,27 @@ function BoardTab({state,setState,scenario}:{state:GameState;setState:React.Disp
     </div>
   )}
 </>}
-function CluesTab({found,onOpen}:{found:any[];onOpen:(id:string)=>void}){return <><div className="panel-title"><span className="eyebrow">ДОКАЗАТЕЛЬСТВА</span><h2>Улики <em>{found.length}</em></h2><p>Нажимайте на материалы и сопоставляйте детали.</p></div><div className="clue-list">{found.map(c=><button className={`clue-card ${c.importance}`} key={c.id} onClick={()=>onOpen(c.id)}><div className="clue-type">{c.type}</div><b>{c.title}</b><span>{c.description}</span><small>{c.foundWhen}</small></button>)}{found.length===0&&<div className="empty">Пока ничего. Начните с дома Беннеттов и школы.</div>}</div></>}
+function CluesTab({found,onOpen,setMacroMode}:{found:any[];onOpen:(id:string)=>void;setMacroMode?:any}){return <><div className="panel-title"><span className="eyebrow">ДОКАЗАТЕЛЬСТВА</span><h2>Улики <em>{found.length}</em></h2><p>Нажимайте на материалы и сопоставляйте детали. Двойной клик для макро-режима.</p></div><div className="clue-list">{found.map(c=>(
+  <button 
+    className={`clue-card ${c.importance} document-card ${c.documentTexture ? `document-${c.documentTexture}` : ''}`} 
+    key={c.id} 
+    onClick={()=>onOpen(c.id)}
+    onDoubleClick={()=>setMacroMode && setMacroMode({active:true,clueId:c.id})}
+    style={{
+      fontFamily: c.documentTexture === 'receipt' ? "'DM Mono', monospace" : undefined
+    }}
+  >
+    {c.isFalseDocument && (
+      <div className="stamp-overlay" style={{color: c.stampColor || '#dc2626'}}>
+        {c.stampText || 'FAKE'}
+      </div>
+    )}
+    <div className="clue-type">{c.type}</div>
+    <b>{c.title}</b>
+    <span>{c.description}</span>
+    <small>{c.foundWhen}</small>
+  </button>
+))}{found.length===0&&<div className="empty">Пока ничего. Начните с дома Беннеттов и школы.</div>}</div></>}
 function NotesTab({value,onChange}:{value:string;onChange:(v:string)=>void}){return <><div className="panel-title"><span className="eyebrow">РАБОЧИЙ БЛОКНОТ</span><h2>Заметки</h2><p>Пишите собственные версии. Игра не проверяет текст заметок.</p></div><textarea className="notes" value={value} onChange={e=>onChange(e.target.value)} placeholder={'Например:\n20:07 — Майя официально покинула школу.\n20:19 — фургон у мастерской.\nПочему Дэниел говорит 20:14?'} /><div className="note-tip"><NotebookPen size={16}/><span>Хорошая привычка: рядом с каждой гипотезой записывайте, какая улика её подтверждает.</span></div></>}
 function TimelineTab({state,scenario}:{state:GameState;scenario:ScenarioData}){
   // Filter events to only show those that have been revealed/discovered
