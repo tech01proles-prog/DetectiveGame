@@ -96,6 +96,8 @@ export const mapTemplates: MapTemplate[] = [
       'reed_garage': { x: 400, y: 200 },
       'city_news': { x: 150, y: 220 },
       'northline_storage': { x: 320, y: 320 },
+      'cross_tower': { x: 25, y: 55 },
+      'abandoned_warehouse': { x: 30, y: 85 },
     },
   },
 ];
