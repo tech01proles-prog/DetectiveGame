@@ -242,9 +242,9 @@ const StylizedMap: React.FC<StylizedMapProps> = ({
   const isCustomMap = !!backgroundImage;
 
   // Calculate min scale to fit map height to container while preventing seeing beyond bounds
-  // SVG viewBox is 800x400, container aspect ratio is 2/1 (800x400 at base)
-  // We want the map to fill the container height at minimum zoom (50% = 0.5 scale makes 400px height fit 400px container)
-  const minScale = 0.5; // At scale 0.5, the 400px height fits the container perfectly, no background visible
+  // SVG viewBox is 800x400, container has aspectRatio 2/1 (height is 400px at base)
+  // At scale=1, the 400px height exactly fills the container height, no background visible
+  const minScale = 1; // At scale 1, the 400px height fits the container perfectly, no background visible
   const maxScale = 2.5; // Maximum zoom level
   const initialScale = 1.5; // Start at 150% zoom
 
