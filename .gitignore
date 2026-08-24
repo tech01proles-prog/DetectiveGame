@@ -1,38 +1,468 @@
-```ts
-// Project-specific build artifacts and dependencies
+# Dependencies
+node_modules/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+.ENV
+.ENV.*
+.env
+.env.*
+
+# Build outputs
 dist/
 build/
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+*.min.js
+*.min.css
+coverage/
+htmlcov/
+.nyc_output/
+coverage-final.json
 
-// TypeScript/JavaScript specific
-*.tsbuildinfo
-.next/
-.nuxt/
-public/dist/
-
-// Environment variables
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-// IDE specific
+# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
+*~
 
-// OS generated files
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
 .DS_Store
 Thumbs.db
 
-// Logs
-*.log
+# Testing
+.pytest_cache/
+.mypy_cache/
+.coverage
+coverage.xml
 
-// Coverage
-coverage/
-.nyc_output/
-```
+# General
+*.tmp
+*.temp
+.DS_Store
+.TF
+tf_files/
+*.zip
+*.tar.gz
+*.gz
+
+# Node
+.next/
+.nuxt/
+public/dist/
+*.tsbuildinfo
+*.tsx.swp
+
+# Python specific
+*.egg-info/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+htmlcov/
+.cov/
+coverage.xml
+*.cover
+.hypothesis/
+
+# Distribution / packaging
+.Python
+_build/
+buck-out/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+coverage.lcov
+.coverage.*
+.cache
+
+# Translations
+*.mo
+*.pot
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask
+instance/
+.webassets-cache
+
+# Scrapy
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+.pybuilder/
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# PEP 582
+__pypackages__/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# Sage
+home/
+.coq/
+
+# Poetry
+poetry.lock
+poetry.toml
+*.toml
+
+# pdm
+pdm.lock
+pdm.toml
+.pyproject.toml
+
+# conda
+environment.yml
+environment.yaml
+
+# Docker
+.dockerignore
+Dockerfile
+
+# Kubernetes
+.k8s/
+k8s/
+helm/
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+
+# Ansible
+.retry
+
+# Vagrant
+.vagrant/
+
+# Gradle
+.gradle/
+build/
+
+# Maven
+target/
+
+# SBT
+target/
+lib_managed/
+src_managed/
+streams/
+project/project/
+*.sbt.managed
+
+# Leiningen
+target/
+test-target/
+lein-env
+
+# Clojure
+*.class
+*.clj-eval-set
+
+# C#
+*.sln
+*.csproj
+*.user
+*.userosscache
+*.suo
+*.userprefs
+*.svclog
+*.aps
+*.ilk
+*.meta
+*.pidb
+*.pdb
+*.iobj
+*.ipdb
+*.o
+*.obj
+*.lib
+*.so
+*.dylib
+*.exp
+*.tlog
+*.res
+*.pch
+*.tmp
+*.tmp_proj
+*_i.c
+*_p.c
+*_h.h
+*.log
+*.dat
+*.VC.db
+*.VC.VC.opendb
+*.aps
+*.ncb
+*.opendb
+*.opensdf
+*.sdf
+*.cachefile
+*.VC.VC.opendb
+*.VC.db
+*.metagen
+*.tlog
+*.filter
+*.codeworkspace
+*.vcxproj.filters
+[BuildLog.htm
+*.VC.VC.opendb
+*.VC.db
+*.metagen
+*.tlog
+*.filter
+*.codeworkspace
+*.vcxproj.filters
+[BuildLog.htm
+*.VC.VC.opendb
+*.VC.db
+*.metagen
+*.tlog
+*.filter
+*.codeworkspace
+*.vcxproj.filters
+[BuildLog.htm
+
+# Rust
+target/
+Cargo.lock
+*.so
+*.dylib
+*.dll
+
+# Go
+*.o
+*.a
+*.swp
+*~
+._*
+.DS_Store
+.gitignore
+.svn
+.CVS
+.TAG
+tags
+GPATH
+GTAGS
+GRTAGS
+GSYMS
+*.orig
+*.bak
+*.tmp
+*.log
+*.swp
+*~
+.DS_Store
+.swo
+*.swo
+*.swp
+*.tmp
+*.log
+*.swp
+*~
+.DS_Store
+.swo
+*.swo
+*.swp
+*.tmp
+*.log
+*.swp
+*~
+.DS_Store
+.swo
+*.swo
+*.swp
+*.tmp
+*.log
+*.swp
+*~
+.DS_Store
+.swo
+*.swo
+*.swp
+*.tmp
+*.log
+*.swp
+*~
+.DS_Store
+.swo
+*.swo
+*.swp
+*.tmp
+*.log
+*.swp
+*~
+.DS_Store
+.swo
+*.swo
+*.swp
+*.tmp
+*.log
+*.swp
+*~
+.DS_Store
+.swo
+*.swo
+*.swp
+*.tmp
+*.log
+*.swp
+*~
+.DS_Store
+.swo
+*.swo
+*.swp
+*.tmp
+*.log
+*.swp
+*~
+.DS_Store
+.swo
+*.swo
+*.swp
+*.tmp
+*.log
+*.swp
+*~
+.DS_Store
+.swo
+*.swo
+*.swp
+*.tmp
+*.log
+*.swp
+*~
+.DS_Store
+.swo
+*.swo
+*.swp
+*.tmp
+*.log
+*.swp
+*~
+.DS_Store
+.swo
+*.swo
+*.swp
+*.tmp
+*.log
+*.swp
+*~
+.DS_Store
+.swo
+*.swo
+*.swp
+*.tmp
+*.log
+*.swp
+*~
+.DS_Store
+.swo
+*.swo
+*.swp
+*.tmp
+*.log
+*.swp
+*~
+.DS_Store
+.swo
+*.swo
+*.swp
+*.tmp
+*.log
+*.swp
+*~
+.DS_Store
+.swo
+*.swo
+*.swp
+*.tmp
+*.log
+*.swp
+*~
+.DS_Store
+.swo
+*.swo
+*.swp
+*.tmp
+*.log
+*.swp
+*~
+.DS_Store
+.swo
+*.swo
+*.swp
+*.tmp
+*.log
+*.swp
+*~
+.DS_Store
+.swo
+*.swo
+*.swp
+*.tmp
+*.log
+*.swp
+*~
+.DS_Store
+.swo
+*.swo
+......
+# End of .gitignore
