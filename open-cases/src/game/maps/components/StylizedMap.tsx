@@ -253,7 +253,13 @@ const StylizedMap: React.FC<StylizedMapProps> = ({
     if (!enablePanZoom) return;
     e.preventDefault();
     const delta = e.deltaY > 0 ? 0.9 : 1.1;
-    setScale(prev => Math.min(Math.max(minScale, prev * delta), maxScale));
+    const newScale = Math.min(Math.max(minScale, scale * delta), maxScale);
+    setScale(newScale);
+    
+    // Reset position when zooming out to min scale to prevent seeing beyond bounds
+    if (newScale <= minScale) {
+      setPosition({ x: 0, y: 0 });
+    }
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
