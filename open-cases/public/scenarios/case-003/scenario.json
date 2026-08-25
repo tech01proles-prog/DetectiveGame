@@ -23,7 +23,11 @@
       "quote": "Я создаю рабочие места.",
       "portrait": "portraits/victor.svg",
       "locationId": "cross_tower",
-      "status": "suspect"
+      "status": "suspect",
+      "motive": "Сокрытие незаконных операций Cross Industries",
+      "alibi": "Деловой ужин в Harbor View 19:00-21:30",
+      "secret": "Оффшорные счета, Сэм — сообщник",
+      "trustLevel": 2
     },
     {
       "id": "maya",
@@ -34,7 +38,11 @@
       "summary": "Сфотографировала груз.",
       "quote": "Я хотела снять.",
       "portrait": "portraits/maya.svg",
-      "status": "missing"
+      "status": "missing",
+      "motive": "Жертва похищения, хотела раскрыть правду",
+      "alibi": "В школе до 20:14",
+      "secret": "Тайно фотографировала грузы для Лии",
+      "trustLevel": 5
     },
     {
       "id": "elena",
@@ -46,7 +54,11 @@
       "quote": "Они скрывают.",
       "portrait": "portraits/elena.svg",
       "locationId": "bennett_home",
-      "status": "witness"
+      "status": "witness",
+      "motive": "Нет — мать пропавшей",
+      "alibi": "Дома весь вечер",
+      "secret": "Знала что Майя что-то скрывает",
+      "trustLevel": 5
     },
     {
       "id": "daniel",
@@ -58,7 +70,11 @@
       "quote": "Она была особенной.",
       "portrait": "portraits/daniel.svg",
       "locationId": "lincoln_school",
-      "status": "witness"
+      "status": "witness",
+      "motive": "Нет — учитель",
+      "alibi": "В школе до 20:30",
+      "secret": "Получал угрозы, скрывал от полиции",
+      "trustLevel": 4
     },
     {
       "id": "nora",
@@ -70,7 +86,11 @@
       "quote": "Я боялась.",
       "portrait": "portraits/nora.svg",
       "locationId": "rainier_lab",
-      "status": "witness"
+      "status": "witness",
+      "motive": "Нет — помогала",
+      "alibi": "В лаборатории до 21:00",
+      "secret": "Видела подозрительные фото Майи",
+      "trustLevel": 4
     },
     {
       "id": "marcus",
@@ -82,7 +102,11 @@
       "quote": "Мне заплатили.",
       "portrait": "portraits/marcus.svg",
       "locationId": "madison_market",
-      "status": "witness"
+      "status": "witness",
+      "motive": "Деньги — $5000 за молчание",
+      "alibi": "Доставка для Madison Market",
+      "secret": "Дал неполные показания",
+      "trustLevel": 2
     },
     {
       "id": "june",
@@ -94,7 +118,11 @@
       "quote": "За ней следили.",
       "portrait": "portraits/june.svg",
       "locationId": "lincoln_school",
-      "status": "witness"
+      "status": "witness",
+      "motive": "Нет — подруга",
+      "alibi": "Дома, переписывалась с Майей",
+      "secret": "Получала странные сообщения",
+      "trustLevel": 4
     },
     {
       "id": "sam",
@@ -106,7 +134,11 @@
       "quote": "Нет выбора.",
       "portrait": "portraits/sam.svg",
       "locationId": "reed_garage",
-      "status": "suspect"
+      "status": "suspect",
+      "motive": "Деньги и шантаж от Виктора",
+      "alibi": "В гараже весь вечер",
+      "secret": "Предоставил гараж для содержания Майи",
+      "trustLevel": 1
     },
     {
       "id": "leah",
@@ -118,7 +150,11 @@
       "quote": "Запретили.",
       "portrait": "portraits/leah.svg",
       "locationId": "city_news",
-      "status": "witness"
+      "status": "witness",
+      "motive": "Нет — журналист",
+      "alibi": "В редакции до вечера",
+      "secret": "Получила компромат на Cross Industries",
+      "trustLevel": 5
     }
   ],
   "clues": [
@@ -428,6 +464,68 @@
         "maya",
         "victor"
       ]
+    },
+    {
+      "id": "clue_25_fake_witness",
+      "title": "Ложный свидетель",
+      "type": "показание",
+      "description": "Анонимный звонок о видении Майи в парке",
+      "detail": "Голосовой модулятор",
+      "locationId": "loc_2",
+      "importance": "important",
+      "relatedCharacters": [
+        "victor"
+      ],
+      "isRedHerring": true,
+      "foundWhen": "После опроса"
+    },
+    {
+      "id": "clue_26_planted_evidence",
+      "title": "Подброшенный рюкзак",
+      "type": "предмет",
+      "description": "Рюкзак near abandoned warehouse",
+      "detail": "ДНК не совпадает",
+      "locationId": "abandoned_warehouse",
+      "importance": "important",
+      "relatedCharacters": [
+        "victor",
+        "sam"
+      ],
+      "isRedHerring": true,
+      "foundWhen": "При осмотре"
+    },
+    {
+      "id": "clue_27_fake_security_log",
+      "title": "Фальшивый журнал охраны",
+      "type": "документ",
+      "description": "Запись о выходе Виктора в 19:45",
+      "detail": "Время изменено",
+      "locationId": "cross_tower",
+      "importance": "critical",
+      "relatedCharacters": [
+        "victor"
+      ],
+      "isRedHerring": true,
+      "isFalseDocument": true,
+      "documentTexture": "security_log",
+      "stampText": "ALTERED",
+      "stampColor": "#dc2626",
+      "foundWhen": "Проверка записей"
+    },
+    {
+      "id": "clue_28_misleading_gps",
+      "title": "GPS трекер",
+      "type": "электроника",
+      "description": "В машине Маркуса",
+      "detail": "Неверный маршрут",
+      "locationId": "madison_market",
+      "importance": "important",
+      "relatedCharacters": [
+        "marcus",
+        "victor"
+      ],
+      "isRedHerring": true,
+      "foundWhen": "Обыск фургона"
     }
   ],
   "locations": [
@@ -586,7 +684,10 @@
         "x": 32,
         "y": 45
       },
-      "lockedReason": "Нужна зацепка о фотографиях Майи."
+      "lockedReason": "Нужна зацепка о фотографиях Майи.",
+      "requiresClueIds": [
+        "clue_02_photo"
+      ]
     },
     {
       "id": "madison_market",
@@ -693,7 +794,10 @@
         "x": 48.8,
         "y": 54.1
       },
-      "lockedReason": "Нужен номер/описание автомобиля."
+      "lockedReason": "Нужен номер/описание автомобиля.",
+      "requiresClueIds": [
+        "clue_03_van"
+      ]
     },
     {
       "id": "city_news",
@@ -733,7 +837,10 @@
         "x": 17,
         "y": 50.5
       },
-      "lockedReason": "Нужно узнать, кому Майя собиралась отправить фотографии."
+      "lockedReason": "Нужно узнать, кому Майя собиралась отправить фотографии.",
+      "requiresClueIds": [
+        "clue_08_chat"
+      ]
     },
     {
       "id": "northline_storage",
@@ -801,23 +908,154 @@
         "x": 38,
         "y": 76.2
       },
-      "lockedReason": "Нужен код RB-14 и связь со складом."
+      "lockedReason": "Нужен код RB-14 и связь со складом.",
+      "requiresClueIds": [
+        "clue_07_manifest",
+        "clue_11_storage"
+      ]
+    },
+    {
+      "id": "cross_tower",
+      "title": "Cross Tower",
+      "subtitle": "Штаб-квартира Cross Industries",
+      "description": "Высотное здание в центре Сиэтла. Офис Виктора Кросса.",
+      "lat": 47.6062,
+      "lng": -122.3321,
+      "address": "4th Ave, Downtown Seattle",
+      "image": "locations/tower.svg",
+      "category": "Корпорация",
+      "initial": false,
+      "discovered": false,
+      "clueIds": [
+        "clue_12_cross",
+        "clue_15_encrypted",
+        "clue_19_ledger",
+        "clue_20_bribe",
+        "clue_21_fake_receipt",
+        "clue_22_alibi",
+        "clue_27_fake_security_log"
+      ],
+      "characterIds": [
+        "victor"
+      ],
+      "actions": [
+        {
+          "id": "cross_tower_victor",
+          "label": "Допросить Виктора",
+          "description": "Вопросы об алиби",
+          "clueIds": [],
+          "characterId": "victor",
+          "once": true
+        },
+        {
+          "id": "search_victor_office",
+          "label": "Обыскать офис",
+          "description": "Искать документы",
+          "clueIds": [
+            "clue_19_ledger",
+            "clue_20_bribe"
+          ],
+          "once": true,
+          "requiresClueIds": [
+            "clue_14_threat"
+          ]
+        },
+        {
+          "id": "access_server_room",
+          "label": "Взломать серверы",
+          "description": "Зашифрованные файлы",
+          "clueIds": [
+            "clue_15_encrypted",
+            "clue_27_fake_security_log"
+          ],
+          "once": true,
+          "requiresClueIds": [
+            "clue_12_cross"
+          ]
+        }
+      ],
+      "coordinates": {
+        "x": 25,
+        "y": 45
+      },
+      "lockedReason": "Нужны доказательства связи Виктора с похищением"
+    },
+    {
+      "id": "abandoned_warehouse",
+      "title": "Заброшенный склад",
+      "subtitle": "Место содержания Майи",
+      "description": "Старый промышленный склад. Здесь удерживали Майю.",
+      "lat": 47.5892,
+      "lng": -122.3287,
+      "address": "Industrial District, Seattle",
+      "image": "locations/warehouse.svg",
+      "category": "Промышленный",
+      "initial": false,
+      "discovered": false,
+      "clueIds": [
+        "clue_23_final",
+        "clue_24_location",
+        "clue_26_planted_evidence"
+      ],
+      "characterIds": [
+        "maya"
+      ],
+      "actions": [
+        {
+          "id": "search_warehouse",
+          "label": "Обыскать склад",
+          "description": "Искать следы Майи",
+          "clueIds": [
+            "clue_23_final",
+            "clue_24_location"
+          ],
+          "once": true,
+          "requiresClueIds": [
+            "clue_11_storage"
+          ]
+        },
+        {
+          "id": "examine_evidence",
+          "label": "Изучить улики",
+          "description": "Проверить предметы",
+          "clueIds": [
+            "clue_26_planted_evidence"
+          ],
+          "once": true,
+          "requiresClueIds": [
+            "clue_23_final"
+          ]
+        }
+      ],
+      "coordinates": {
+        "x": 15,
+        "y": 80
+      },
+      "lockedReason": "Нужны координаты из сообщений Лии"
     },
     {
       "id": "loc_1",
       "title": "Мейпл Стрит, Переулок",
       "subtitle": "",
-      "description": "Тёмное место на окраине города. Здесь что-то определённо произошло. Тени скрывают больше, чем показывают фонари.",
+      "description": "Тёмный переулок возле школы",
       "lat": null,
       "lng": null,
       "address": "",
-      "image": "",
-      "category": "",
+      "image": "locations/alley.svg",
+      "category": "Улица",
       "initial": false,
       "discovered": false,
       "clueIds": [],
       "characterIds": [],
-      "actions": [],
+      "actions": [
+        {
+          "id": "action_loc_1",
+          "label": "Исследовать",
+          "description": "Осмотреть Тёмный переулок возле школы",
+          "clueIds": [],
+          "once": true
+        }
+      ],
       "coordinates": {
         "x": 89.3,
         "y": 11.1
@@ -827,17 +1065,25 @@
       "id": "loc_2",
       "title": "Оук Авеню, Парк",
       "subtitle": "",
-      "description": "Тёмное место на окраине города. Здесь что-то определённо произошло. Тени скрывают больше, чем показывают фонари.",
+      "description": "Общественный парк",
       "lat": null,
       "lng": null,
       "address": "",
-      "image": "",
-      "category": "",
+      "image": "locations/park.svg",
+      "category": "Парк",
       "initial": false,
       "discovered": false,
       "clueIds": [],
       "characterIds": [],
-      "actions": [],
+      "actions": [
+        {
+          "id": "action_loc_2",
+          "label": "Исследовать",
+          "description": "Осмотреть Общественный парк",
+          "clueIds": [],
+          "once": true
+        }
+      ],
       "coordinates": {
         "x": 62.3,
         "y": 34.9
@@ -847,17 +1093,25 @@
       "id": "loc_3",
       "title": "Пайн Роуд, Склад",
       "subtitle": "",
-      "description": "Тёмное место на окраине города. Здесь что-то определённо произошло. Тени скрывают больше, чем показывают фонари.",
+      "description": "Старый складской комплекс",
       "lat": null,
       "lng": null,
       "address": "",
-      "image": "",
-      "category": "",
+      "image": "locations/warehouse_generic.svg",
+      "category": "Промышленный",
       "initial": false,
       "discovered": false,
       "clueIds": [],
       "characterIds": [],
-      "actions": [],
+      "actions": [
+        {
+          "id": "action_loc_3",
+          "label": "Исследовать",
+          "description": "Осмотреть Старый складской комплекс",
+          "clueIds": [],
+          "once": true
+        }
+      ],
       "coordinates": {
         "x": 5.6,
         "y": 76.7
@@ -867,17 +1121,25 @@
       "id": "loc_4",
       "title": "Сидар Лейн, Кафе",
       "subtitle": "",
-      "description": "Тёмное место на окраине города. Здесь что-то определённо произошло. Тени скрывают больше, чем показывают фонари.",
+      "description": "Небольшое кафе",
       "lat": null,
       "lng": null,
       "address": "",
-      "image": "",
-      "category": "",
+      "image": "locations/cafe.svg",
+      "category": "Бизнес",
       "initial": false,
       "discovered": false,
       "clueIds": [],
       "characterIds": [],
-      "actions": [],
+      "actions": [
+        {
+          "id": "action_loc_4",
+          "label": "Исследовать",
+          "description": "Осмотреть Небольшое кафе",
+          "clueIds": [],
+          "once": true
+        }
+      ],
       "coordinates": {
         "x": 40.6,
         "y": 36.7
@@ -887,17 +1149,25 @@
       "id": "loc_5",
       "title": "Эльм Стрит, Гараж",
       "subtitle": "",
-      "description": "Тёмное место на окраине города. Здесь что-то определённо произошло. Тени скрывают больше, чем показывают фонари.",
+      "description": "Частный гараж",
       "lat": null,
       "lng": null,
       "address": "",
-      "image": "",
-      "category": "",
+      "image": "locations/garage_small.svg",
+      "category": "Сервис",
       "initial": false,
       "discovered": false,
       "clueIds": [],
       "characterIds": [],
-      "actions": [],
+      "actions": [
+        {
+          "id": "action_loc_5",
+          "label": "Исследовать",
+          "description": "Осмотреть Частный гараж",
+          "clueIds": [],
+          "once": true
+        }
+      ],
       "coordinates": {
         "x": 41.6,
         "y": 13
@@ -905,19 +1175,27 @@
     },
     {
       "id": "loc_6",
-      "title": "Бёрч Драйв, Магазин",
+      "title": "Бёрч Авеню, Офис",
       "subtitle": "",
-      "description": "Тёмное место на окраине города. Здесь что-то определённо произошло. Тени скрывают больше, чем показывают фонари.",
+      "description": "Офисное здание",
       "lat": null,
       "lng": null,
       "address": "",
-      "image": "",
-      "category": "",
+      "image": "locations/office.svg",
+      "category": "Бизнес",
       "initial": false,
       "discovered": false,
       "clueIds": [],
       "characterIds": [],
-      "actions": [],
+      "actions": [
+        {
+          "id": "action_loc_6",
+          "label": "Исследовать",
+          "description": "Осмотреть Офисное здание",
+          "clueIds": [],
+          "once": true
+        }
+      ],
       "coordinates": {
         "x": 16.6,
         "y": 63
@@ -925,19 +1203,27 @@
     },
     {
       "id": "loc_7",
-      "title": "Уолнат Корт, Офис",
+      "title": "Валоут Стрит, Банк",
       "subtitle": "",
-      "description": "Тёмное место на окраине города. Здесь что-то определённо произошло. Тени скрывают больше, чем показывают фонари.",
+      "description": "Отделение банка",
       "lat": null,
       "lng": null,
       "address": "",
-      "image": "",
-      "category": "",
+      "image": "locations/bank.svg",
+      "category": "Финансы",
       "initial": false,
       "discovered": false,
       "clueIds": [],
       "characterIds": [],
-      "actions": [],
+      "actions": [
+        {
+          "id": "action_loc_7",
+          "label": "Исследовать",
+          "description": "Осмотреть Отделение банка",
+          "clueIds": [],
+          "once": true
+        }
+      ],
       "coordinates": {
         "x": 30.3,
         "y": 73.2
@@ -945,19 +1231,27 @@
     },
     {
       "id": "loc_8",
-      "title": "Черри Блоссом, Квартира",
+      "title": "Честнат Роуд, Больница",
       "subtitle": "",
-      "description": "Тёмное место на окраине города. Здесь что-то определённо произошло. Тени скрывают больше, чем показывают фонари.",
+      "description": "Городская больница",
       "lat": null,
       "lng": null,
       "address": "",
-      "image": "",
-      "category": "",
+      "image": "locations/hospital.svg",
+      "category": "Медицина",
       "initial": false,
       "discovered": false,
       "clueIds": [],
       "characterIds": [],
-      "actions": [],
+      "actions": [
+        {
+          "id": "action_loc_8",
+          "label": "Исследовать",
+          "description": "Осмотреть Городская больница",
+          "clueIds": [],
+          "once": true
+        }
+      ],
       "coordinates": {
         "x": 12.1,
         "y": 75.2
@@ -965,19 +1259,27 @@
     },
     {
       "id": "loc_9",
-      "title": "Магнолия Вэй, Подвал",
+      "title": "Аш Стрит, Полицейский участок",
       "subtitle": "",
-      "description": "Тёмное место на окраине города. Здесь что-то определённо произошло. Тени скрывают больше, чем показывают фонари.",
+      "description": "Полицейский участок",
       "lat": null,
       "lng": null,
       "address": "",
-      "image": "",
-      "category": "",
+      "image": "locations/police.svg",
+      "category": "Правоохранение",
       "initial": false,
       "discovered": false,
       "clueIds": [],
       "characterIds": [],
-      "actions": [],
+      "actions": [
+        {
+          "id": "action_loc_9",
+          "label": "Исследовать",
+          "description": "Осмотреть Полицейский участок",
+          "clueIds": [],
+          "once": true
+        }
+      ],
       "coordinates": {
         "x": 56.9,
         "y": 76.7
@@ -985,19 +1287,27 @@
     },
     {
       "id": "loc_10",
-      "title": "Аспен Плейс, Чердак",
+      "title": "Спрус Лейн, Заправка",
       "subtitle": "",
-      "description": "Тёмное место на окраине города. Здесь что-то определённо произошло. Тени скрывают больше, чем показывают фонари.",
+      "description": "АЗС",
       "lat": null,
       "lng": null,
       "address": "",
-      "image": "",
-      "category": "",
+      "image": "locations/gas_station.svg",
+      "category": "Сервис",
       "initial": false,
       "discovered": false,
       "clueIds": [],
       "characterIds": [],
-      "actions": [],
+      "actions": [
+        {
+          "id": "action_loc_10",
+          "label": "Исследовать",
+          "description": "Осмотреть АЗС",
+          "clueIds": [],
+          "once": true
+        }
+      ],
       "coordinates": {
         "x": 35.8,
         "y": 89.2
@@ -1005,19 +1315,27 @@
     },
     {
       "id": "loc_11",
-      "title": "Виллоу Крик, Аллея",
+      "title": "Магнолия Блувард, Торговый центр",
       "subtitle": "",
-      "description": "Тёмное место на окраине города. Здесь что-то определённо произошло. Тени скрывают больше, чем показывают фонари.",
+      "description": "Торговый центр",
       "lat": null,
       "lng": null,
       "address": "",
-      "image": "",
-      "category": "",
+      "image": "locations/mall.svg",
+      "category": "Торговля",
       "initial": false,
       "discovered": false,
       "clueIds": [],
       "characterIds": [],
-      "actions": [],
+      "actions": [
+        {
+          "id": "action_loc_11",
+          "label": "Исследовать",
+          "description": "Осмотреть Торговый центр",
+          "clueIds": [],
+          "once": true
+        }
+      ],
       "coordinates": {
         "x": 72.4,
         "y": 20.8
@@ -1025,19 +1343,27 @@
     },
     {
       "id": "loc_12",
-      "title": "Хикори Хилл, Мост",
+      "title": "Лорел Авеню, Отель",
       "subtitle": "",
-      "description": "Тёмное место на окраине города. Здесь что-то определённо произошло. Тени скрывают больше, чем показывают фонари.",
+      "description": "Отель",
       "lat": null,
       "lng": null,
       "address": "",
-      "image": "",
-      "category": "",
+      "image": "locations/hotel.svg",
+      "category": "Гостиница",
       "initial": false,
       "discovered": false,
       "clueIds": [],
       "characterIds": [],
-      "actions": [],
+      "actions": [
+        {
+          "id": "action_loc_12",
+          "label": "Исследовать",
+          "description": "Осмотреть Отель",
+          "clueIds": [],
+          "once": true
+        }
+      ],
       "coordinates": {
         "x": 47.2,
         "y": 61.5
@@ -1045,19 +1371,27 @@
     },
     {
       "id": "loc_13",
-      "title": "Сикамор Роуд, Набережная",
+      "title": "Хоторн Стрит, Библиотека",
       "subtitle": "",
-      "description": "Тёмное место на окраине города. Здесь что-то определённо произошло. Тени скрывают больше, чем показывают фонари.",
+      "description": "Публичная библиотека",
       "lat": null,
       "lng": null,
       "address": "",
-      "image": "",
-      "category": "",
+      "image": "locations/library.svg",
+      "category": "Образование",
       "initial": false,
       "discovered": false,
       "clueIds": [],
       "characterIds": [],
-      "actions": [],
+      "actions": [
+        {
+          "id": "action_loc_13",
+          "label": "Исследовать",
+          "description": "Осмотреть Публичная библиотека",
+          "clueIds": [],
+          "once": true
+        }
+      ],
       "coordinates": {
         "x": 14.4,
         "y": 27.8
@@ -1065,19 +1399,27 @@
     },
     {
       "id": "loc_14",
-      "title": "Редвуд Драйв, Станция",
+      "title": "Сикомор Лейн, Ресторан",
       "subtitle": "",
-      "description": "Тёмное место на окраине города. Здесь что-то определённо произошло. Тени скрывают больше, чем показывают фонари.",
+      "description": "Ресторан Harbor View",
       "lat": null,
       "lng": null,
       "address": "",
-      "image": "",
-      "category": "",
+      "image": "locations/restaurant.svg",
+      "category": "Бизнес",
       "initial": false,
       "discovered": false,
       "clueIds": [],
       "characterIds": [],
-      "actions": [],
+      "actions": [
+        {
+          "id": "action_loc_14",
+          "label": "Исследовать",
+          "description": "Осмотреть Ресторан Harbor View",
+          "clueIds": [],
+          "once": true
+        }
+      ],
       "coordinates": {
         "x": 82.5,
         "y": 90.5
@@ -1085,19 +1427,27 @@
     },
     {
       "id": "loc_15",
-      "title": "Спрус Стрит, Бар",
+      "title": "Редвуд Драйв, Автошкола",
       "subtitle": "",
-      "description": "Тёмное место на окраине города. Здесь что-то определённо произошло. Тени скрывают больше, чем показывают фонари.",
+      "description": "Автошкола",
       "lat": null,
       "lng": null,
       "address": "",
-      "image": "",
-      "category": "",
+      "image": "locations/driving_school.svg",
+      "category": "Образование",
       "initial": false,
       "discovered": false,
       "clueIds": [],
       "characterIds": [],
-      "actions": [],
+      "actions": [
+        {
+          "id": "action_loc_15",
+          "label": "Исследовать",
+          "description": "Осмотреть Автошкола",
+          "clueIds": [],
+          "once": true
+        }
+      ],
       "coordinates": {
         "x": 64.2,
         "y": 18.6
@@ -1105,19 +1455,27 @@
     },
     {
       "id": "loc_16",
-      "title": "Фир Авеню, Переулок",
+      "title": "Поплар Стрит, Почта",
       "subtitle": "",
-      "description": "Тёмное место на окраине города. Здесь что-то определённо произошло. Тени скрывают больше, чем показывают фонари.",
+      "description": "Почтовое отделение",
       "lat": null,
       "lng": null,
       "address": "",
-      "image": "",
-      "category": "",
+      "image": "locations/post_office.svg",
+      "category": "Сервис",
       "initial": false,
       "discovered": false,
       "clueIds": [],
       "characterIds": [],
-      "actions": [],
+      "actions": [
+        {
+          "id": "action_loc_16",
+          "label": "Исследовать",
+          "description": "Осмотреть Почтовое отделение",
+          "clueIds": [],
+          "once": true
+        }
+      ],
       "coordinates": {
         "x": 48.8,
         "y": 29.3
@@ -1125,19 +1483,27 @@
     },
     {
       "id": "loc_17",
-      "title": "Хемлок Лейн, Парк",
+      "title": "Уиллоу Авеню, Фитнес-центр",
       "subtitle": "",
-      "description": "Тёмное место на окраине города. Здесь что-то определённо произошло. Тени скрывают больше, чем показывают фонари.",
+      "description": "Спортивный зал",
       "lat": null,
       "lng": null,
       "address": "",
-      "image": "",
-      "category": "",
+      "image": "locations/gym.svg",
+      "category": "Спорт",
       "initial": false,
       "discovered": false,
       "clueIds": [],
       "characterIds": [],
-      "actions": [],
+      "actions": [
+        {
+          "id": "action_loc_17",
+          "label": "Исследовать",
+          "description": "Осмотреть Спортивный зал",
+          "clueIds": [],
+          "once": true
+        }
+      ],
       "coordinates": {
         "x": 42.6,
         "y": 78
@@ -1145,19 +1511,27 @@
     },
     {
       "id": "loc_18",
-      "title": "Джунипер Вэй, Склад",
+      "title": "Ок Стрит, Кинотеатр",
       "subtitle": "",
-      "description": "Тёмное место на окраине города. Здесь что-то определённо произошло. Тени скрывают больше, чем показывают фонари.",
+      "description": "Кинотеатр",
       "lat": null,
       "lng": null,
       "address": "",
-      "image": "",
-      "category": "",
+      "image": "locations/cinema.svg",
+      "category": "Развлечения",
       "initial": false,
       "discovered": false,
       "clueIds": [],
       "characterIds": [],
-      "actions": [],
+      "actions": [
+        {
+          "id": "action_loc_18",
+          "label": "Исследовать",
+          "description": "Осмотреть Кинотеатр",
+          "clueIds": [],
+          "once": true
+        }
+      ],
       "coordinates": {
         "x": 41.6,
         "y": 22.2
@@ -1165,19 +1539,27 @@
     },
     {
       "id": "loc_19",
-      "title": "Ларч Корт, Кафе",
+      "title": "Сайпресс Лейн, Химчистка",
       "subtitle": "",
-      "description": "Тёмное место на окраине города. Здесь что-то определённо произошло. Тени скрывают больше, чем показывают фонари.",
+      "description": "Химчистка",
       "lat": null,
       "lng": null,
       "address": "",
-      "image": "",
-      "category": "",
+      "image": "locations/dry_cleaner.svg",
+      "category": "Сервис",
       "initial": false,
       "discovered": false,
       "clueIds": [],
       "characterIds": [],
-      "actions": [],
+      "actions": [
+        {
+          "id": "action_loc_19",
+          "label": "Исследовать",
+          "description": "Осмотреть Химчистка",
+          "clueIds": [],
+          "once": true
+        }
+      ],
       "coordinates": {
         "x": 89,
         "y": 77
@@ -1185,19 +1567,27 @@
     },
     {
       "id": "loc_20",
-      "title": "Тамарак Плейс, Гараж",
+      "title": "Фир Стрит, Ветклиника",
       "subtitle": "",
-      "description": "Тёмное место на окраине города. Здесь что-то определённо произошло. Тени скрывают больше, чем показывают фонари.",
+      "description": "Ветеринарная клиника",
       "lat": null,
       "lng": null,
       "address": "",
-      "image": "",
-      "category": "",
+      "image": "locations/vet.svg",
+      "category": "Медицина",
       "initial": false,
       "discovered": false,
       "clueIds": [],
       "characterIds": [],
-      "actions": [],
+      "actions": [
+        {
+          "id": "action_loc_20",
+          "label": "Исследовать",
+          "description": "Осмотреть Ветеринарная клиника",
+          "clueIds": [],
+          "once": true
+        }
+      ],
       "coordinates": {
         "x": 26,
         "y": 87.4
@@ -1205,19 +1595,27 @@
     },
     {
       "id": "loc_21",
-      "title": "Коттонвуд Драйв, Магазин",
+      "title": "Хемлок Авеню, Музей",
       "subtitle": "",
-      "description": "Тёмное место на окраине города. Здесь что-то определённо произошло. Тени скрывают больше, чем показывают фонари.",
+      "description": "Городской музей",
       "lat": null,
       "lng": null,
       "address": "",
-      "image": "",
-      "category": "",
+      "image": "locations/museum.svg",
+      "category": "Культура",
       "initial": false,
       "discovered": false,
       "clueIds": [],
       "characterIds": [],
-      "actions": [],
+      "actions": [
+        {
+          "id": "action_loc_21",
+          "label": "Исследовать",
+          "description": "Осмотреть Городской музей",
+          "clueIds": [],
+          "once": true
+        }
+      ],
       "coordinates": {
         "x": 57.2,
         "y": 90.8
@@ -1225,19 +1623,27 @@
     },
     {
       "id": "loc_22",
-      "title": "Бассвуд Роуд, Офис",
+      "title": "Джунипер Лейн, Аптека",
       "subtitle": "",
-      "description": "Тёмное место на окраине города. Здесь что-то определённо произошло. Тени скрывают больше, чем показывают фонари.",
+      "description": "Аптека",
       "lat": null,
       "lng": null,
       "address": "",
-      "image": "",
-      "category": "",
+      "image": "locations/pharmacy.svg",
+      "category": "Медицина",
       "initial": false,
       "discovered": false,
       "clueIds": [],
       "characterIds": [],
-      "actions": [],
+      "actions": [
+        {
+          "id": "action_loc_22",
+          "label": "Исследовать",
+          "description": "Осмотреть Аптека",
+          "clueIds": [],
+          "once": true
+        }
+      ],
       "coordinates": {
         "x": 86.1,
         "y": 24.9
@@ -1245,19 +1651,27 @@
     },
     {
       "id": "loc_23",
-      "title": "Айронвуд Лейн, Квартира",
+      "title": "Ларч Стрит, Бар",
       "subtitle": "",
-      "description": "Тёмное место на окраине города. Здесь что-то определённо произошло. Тени скрывают больше, чем показывают фонари.",
+      "description": "Бар",
       "lat": null,
       "lng": null,
       "address": "",
-      "image": "",
-      "category": "",
+      "image": "locations/bar.svg",
+      "category": "Развлечения",
       "initial": false,
       "discovered": false,
       "clueIds": [],
       "characterIds": [],
-      "actions": [],
+      "actions": [
+        {
+          "id": "action_loc_23",
+          "label": "Исследовать",
+          "description": "Осмотреть Бар",
+          "clueIds": [],
+          "once": true
+        }
+      ],
       "coordinates": {
         "x": 13,
         "y": 79.8
@@ -1265,19 +1679,27 @@
     },
     {
       "id": "loc_24",
-      "title": "Боксельдер Вэй, Подвал",
+      "title": "Свитгам Авеню, Цветочный магазин",
       "subtitle": "",
-      "description": "Тёмное место на окраине города. Здесь что-то определённо произошло. Тени скрывают больше, чем показывают фонари.",
+      "description": "Цветочный магазин",
       "lat": null,
       "lng": null,
       "address": "",
-      "image": "",
-      "category": "",
+      "image": "locations/florist.svg",
+      "category": "Торговля",
       "initial": false,
       "discovered": false,
       "clueIds": [],
       "characterIds": [],
-      "actions": [],
+      "actions": [
+        {
+          "id": "action_loc_24",
+          "label": "Исследовать",
+          "description": "Осмотреть Цветочный магазин",
+          "clueIds": [],
+          "once": true
+        }
+      ],
       "coordinates": {
         "x": 80.5,
         "y": 21.9
@@ -1285,19 +1707,27 @@
     },
     {
       "id": "loc_25",
-      "title": "Катамба Корт, Чердак",
+      "title": "Коттонвуд Лейн, Прачечная",
       "subtitle": "",
-      "description": "Тёмное место на окраине города. Здесь что-то определённо произошло. Тени скрывают больше, чем показывают фонари.",
+      "description": "Прачечная",
       "lat": null,
       "lng": null,
       "address": "",
-      "image": "",
-      "category": "",
+      "image": "locations/laundry.svg",
+      "category": "Сервис",
       "initial": false,
       "discovered": false,
       "clueIds": [],
       "characterIds": [],
-      "actions": [],
+      "actions": [
+        {
+          "id": "action_loc_25",
+          "label": "Исследовать",
+          "description": "Осмотреть Прачечная",
+          "clueIds": [],
+          "once": true
+        }
+      ],
       "coordinates": {
         "x": 67.9,
         "y": 94.6
@@ -1305,19 +1735,27 @@
     },
     {
       "id": "loc_26",
-      "title": "Мейпл Стрит, Аллея",
+      "title": "Редседар Стрит, Антикварный магазин",
       "subtitle": "",
-      "description": "Тёмное место на окраине города. Здесь что-то определённо произошло. Тени скрывают больше, чем показывают фонари.",
+      "description": "Антикварный магазин",
       "lat": null,
       "lng": null,
       "address": "",
-      "image": "",
-      "category": "",
+      "image": "locations/antique.svg",
+      "category": "Торговля",
       "initial": false,
       "discovered": false,
       "clueIds": [],
       "characterIds": [],
-      "actions": [],
+      "actions": [
+        {
+          "id": "action_loc_26",
+          "label": "Исследовать",
+          "description": "Осмотреть Антикварный магазин",
+          "clueIds": [],
+          "once": true
+        }
+      ],
       "coordinates": {
         "x": 73.5,
         "y": 42.6
@@ -1325,19 +1763,27 @@
     },
     {
       "id": "loc_27",
-      "title": "Оук Авеню, Мост",
+      "title": "Биглиф Авеню, Нотариус",
       "subtitle": "",
-      "description": "Тёмное место на окраине города. Здесь что-то определённо произошло. Тени скрывают больше, чем показывают фонари.",
+      "description": "Нотариальная контора",
       "lat": null,
       "lng": null,
       "address": "",
-      "image": "",
-      "category": "",
+      "image": "locations/notary.svg",
+      "category": "Юридический",
       "initial": false,
       "discovered": false,
       "clueIds": [],
       "characterIds": [],
-      "actions": [],
+      "actions": [
+        {
+          "id": "action_loc_27",
+          "label": "Исследовать",
+          "description": "Осмотреть Нотариальная контора",
+          "clueIds": [],
+          "once": true
+        }
+      ],
       "coordinates": {
         "x": 45.4,
         "y": 69.4
@@ -1345,19 +1791,27 @@
     },
     {
       "id": "loc_28",
-      "title": "Пайн Роуд, Набережная",
+      "title": "Винewood Лейн, Студия звукозаписи",
       "subtitle": "",
-      "description": "Тёмное место на окраине города. Здесь что-то определённо произошло. Тени скрывают больше, чем показывают фонари.",
+      "description": "Студия",
       "lat": null,
       "lng": null,
       "address": "",
-      "image": "",
-      "category": "",
+      "image": "locations/studio.svg",
+      "category": "Развлечения",
       "initial": false,
       "discovered": false,
       "clueIds": [],
       "characterIds": [],
-      "actions": [],
+      "actions": [
+        {
+          "id": "action_loc_28",
+          "label": "Исследовать",
+          "description": "Осмотреть Студия",
+          "clueIds": [],
+          "once": true
+        }
+      ],
       "coordinates": {
         "x": 64.4,
         "y": 77.3
@@ -1365,19 +1819,27 @@
     },
     {
       "id": "loc_29",
-      "title": "Сидар Лейн, Станция",
+      "title": "Палм Стрит, Турфирма",
       "subtitle": "",
-      "description": "Тёмное место на окраине города. Здесь что-то определённо произошло. Тени скрывают больше, чем показывают фонари.",
+      "description": "Турфирма",
       "lat": null,
       "lng": null,
       "address": "",
-      "image": "",
-      "category": "",
+      "image": "locations/travel_agency.svg",
+      "category": "Бизнес",
       "initial": false,
       "discovered": false,
       "clueIds": [],
       "characterIds": [],
-      "actions": [],
+      "actions": [
+        {
+          "id": "action_loc_29",
+          "label": "Исследовать",
+          "description": "Осмотреть Турфирма",
+          "clueIds": [],
+          "once": true
+        }
+      ],
       "coordinates": {
         "x": 87.2,
         "y": 63.4
@@ -1387,17 +1849,25 @@
       "id": "loc_30",
       "title": "Эльм Стрит, Бар",
       "subtitle": "",
-      "description": "Тёмное место на окраине города. Здесь что-то определённо произошло. Тени скрывают больше, чем показывают фонари.",
+      "description": "Паб",
       "lat": null,
       "lng": null,
       "address": "",
-      "image": "",
-      "category": "",
+      "image": "locations/pub.svg",
+      "category": "Развлечения",
       "initial": false,
       "discovered": false,
       "clueIds": [],
       "characterIds": [],
-      "actions": [],
+      "actions": [
+        {
+          "id": "action_loc_30",
+          "label": "Исследовать",
+          "description": "Осмотреть Паб",
+          "clueIds": [],
+          "once": true
+        }
+      ],
       "coordinates": {
         "x": 64.3,
         "y": 58.1
@@ -1944,5 +2414,164 @@
         ]
       }
     ]
-  }
+  },
+  "keywordDefinitions": {
+    "бизнес": {
+      "description": "Финансовый мотив Cross Industries",
+      "triggersEvent": "business_revealed",
+      "unlocksLocations": [
+        "cross_tower"
+      ]
+    },
+    "деньги": {
+      "description": "Финансовая выгода",
+      "triggersEvent": "money_trail_found",
+      "unlocksLocations": [
+        "loc_7"
+      ]
+    },
+    "контроль": {
+      "description": "Желание скрыть правду",
+      "triggersEvent": "control_exposed"
+    },
+    "свидетель": {
+      "description": "Майя — свидетель",
+      "triggersEvent": "witness_identified"
+    },
+    "фотограф": {
+      "description": "Майя фотографировала",
+      "unlocksLocations": [
+        "rainier_lab"
+      ]
+    },
+    "правда": {
+      "description": "Раскрытие истины",
+      "triggersEvent": "truth_revealed"
+    },
+    "сообщник": {
+      "description": "Помощник преступника",
+      "unlocksLocations": [
+        "reed_garage"
+      ]
+    },
+    "подкуп": {
+      "description": "Финансовое вознаграждение",
+      "triggersEvent": "bribe_exposed"
+    },
+    "угрозы": {
+      "description": "Запугивание",
+      "triggersEvent": "threats_found"
+    },
+    "отмывание": {
+      "description": "Легализация доходов",
+      "unlocksLocations": [
+        "loc_7",
+        "cross_tower"
+      ]
+    },
+    "похищение": {
+      "description": "Незаконное лишение свободы",
+      "unlocksLocations": [
+        "abandoned_warehouse"
+      ]
+    }
+  },
+  "newsFeed": [
+    {
+      "id": "news_01",
+      "headline": "Подросток пропал в Сиэтле",
+      "summary": "Майя Беннетт не вернулась домой",
+      "source": "Seattle Times",
+      "timestamp": "20:45",
+      "impact": "opening",
+      "relatedCharacters": [
+        "maya",
+        "elena"
+      ]
+    },
+    {
+      "id": "news_02",
+      "headline": "Свидетели видели подозрительный фургон",
+      "summary": "Серый фургон возле школы",
+      "source": "KING 5 News",
+      "timestamp": "21:15",
+      "impact": "clue",
+      "relatedCharacters": [
+        "marcus"
+      ],
+      "relatedClues": [
+        "clue_03_van"
+      ]
+    },
+    {
+      "id": "news_03",
+      "headline": "Cross Industries под подозрением",
+      "summary": "Полиция интересуется компанией",
+      "source": "Seattle Ledger",
+      "timestamp": "22:00",
+      "impact": "suspicion",
+      "relatedCharacters": [
+        "victor"
+      ]
+    },
+    {
+      "id": "news_04",
+      "headline": "Найден телефон пропавшей",
+      "summary": "Телефон обнаружен дома",
+      "source": "KIRO 7",
+      "timestamp": "22:30",
+      "impact": "clue",
+      "relatedCharacters": [
+        "maya",
+        "elena"
+      ],
+      "relatedClues": [
+        "clue_01_phone"
+      ]
+    },
+    {
+      "id": "news_05",
+      "headline": "Журналистка получила анонимные материалы",
+      "summary": "Компрометирующие документы",
+      "source": "Seattle Ledger",
+      "timestamp": "23:00",
+      "impact": "breakthrough",
+      "relatedCharacters": [
+        "leah"
+      ],
+      "relatedClues": [
+        "clue_10_news"
+      ]
+    },
+    {
+      "id": "news_06",
+      "headline": "Арест в деле о похищении",
+      "summary": "Задержан владелец автомастерской",
+      "source": "Seattle Times",
+      "timestamp": "01:30",
+      "impact": "arrest",
+      "relatedCharacters": [
+        "sam"
+      ],
+      "relatedClues": [
+        "clue_18_confession"
+      ]
+    },
+    {
+      "id": "news_07",
+      "headline": "Майя Беннетт найдена живой",
+      "summary": "Пропавшая школьница обнаружена",
+      "source": "KING 5 News",
+      "timestamp": "03:00",
+      "impact": "resolution",
+      "relatedCharacters": [
+        "maya",
+        "victor"
+      ],
+      "relatedClues": [
+        "clue_23_final",
+        "clue_24_location"
+      ]
+    }
+  ]
 }
