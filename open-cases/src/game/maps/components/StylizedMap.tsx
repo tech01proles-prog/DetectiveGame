@@ -241,12 +241,39 @@ const StylizedMap: React.FC<StylizedMapProps> = ({
   // Если есть кастомное фоновое изображение, не рисуем процедурный фон (реки, дороги, парки)
   const isCustomMap = !!backgroundImage;
 
-  // Calculate min scale to fit map height to container while preventing seeing beyond bounds
-  // SVG viewBox is 800x400, container has aspectRatio 2/1 (height is 400px at base)
-  // At scale=1, the 400px height exactly fills the container height, no background visible
-  const minScale = 1; // At scale 1, the 400px height fits the container perfectly, no background visible
+  // Calculate min scale dynamically based on container aspect ratio to ensure map fills by height
+  // SVG viewBox is 800x400 (2:1 aspect ratio)
+  // We want the map to fill the container by height (the limiting factor), so no background is visible
+  const [minScale, setMinScale] = useState(1);
   const maxScale = 2.5; // Maximum zoom level
   const initialScale = 1.5; // Start at 150% zoom
+
+  // Update minScale when container resizes to ensure height always fills the container
+  useEffect(() => {
+    const updateMinScale = () => {
+      if (!containerRef.current) return;
+      const containerWidth = containerRef.current.clientWidth;
+      const containerHeight = containerRef.current.clientHeight;
+      
+      // SVG viewBox is 800x400, so aspect ratio is 2:1
+      // To fill by height (the limiting factor), we need:
+      // scaledHeight (400 * scale) >= containerHeight
+      // So minScale = containerHeight / 400
+      const scaleForHeight = containerHeight / 400;
+      
+      // Also ensure width fills if container is wider than 2:1
+      const scaleForWidth = containerWidth / 800;
+      
+      // Use the larger scale to ensure both dimensions fill the container
+      setMinScale(Math.max(scaleForHeight, scaleForWidth));
+    };
+
+    updateMinScale();
+    
+    // Listen for resize events
+    window.addEventListener('resize', updateMinScale);
+    return () => window.removeEventListener('resize', updateMinScale);
+  }, []);
 
   // Pan and zoom handlers
   const handleWheel = (e: React.WheelEvent) => {
@@ -299,10 +326,10 @@ const StylizedMap: React.FC<StylizedMapProps> = ({
     setPosition({ x: 0, y: 0 });
   };
 
-  // Initialize scale to initialScale on mount
+  // Initialize scale to max(initialScale, minScale) on mount to ensure map fills container
   useEffect(() => {
-    setScale(initialScale);
-  }, []);
+    setScale(Math.max(initialScale, minScale));
+  }, [minScale]);
 
   return (
     <div ref={containerRef} className="relative w-full h-full bg-[#f5f5f4] rounded-lg overflow-hidden shadow-inner" style={{ aspectRatio: '2/1' }}>
