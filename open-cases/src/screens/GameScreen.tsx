@@ -1,5 +1,5 @@
-import {useMemo,useState,useEffect} from 'react';
-import {BookOpen,ChevronRight,FileText,MessageSquare,NotebookPen,Search,Users,Clock3,Lock,Check,PanelRightClose,PanelRightOpen,Send,MapPin,Radio,Eye,Camera,FileSearch,CircleAlert,Repeat,StickyNote,Stamp,FileSpreadsheet,Newspaper,ZoomIn,X} from 'lucide-react';
+import {useMemo,useState,useEffect,useRef} from 'react';
+import {BookOpen,ChevronRight,FileText,MessageSquare,NotebookPen,Search,Users,Clock3,Lock,Check,PanelRightClose,PanelRightOpen,Send,MapPin,Radio,Eye,Camera,FileSearch,CircleAlert,Repeat,StickyNote,Stamp,FileSpreadsheet,Newspaper,ZoomIn,X,Car} from 'lucide-react';
 import MapView from '@/game/MapView';
 import InvestigationBoard from '@/game/InvestigationBoard';
 import {calculateScore,discoverFromClues,performAction,getDynamicDialogueNode,saveGame,loadGame} from '@/game/engine';
@@ -53,6 +53,9 @@ export default function GameScreen({state,setState,onFinish,onRestart,scenario}:
   const [eventNotice,setEventNotice]=useState<{title:string;text:string;clues:string[]}|null>(null);
   const [dialogueNodeId,setDialogueNodeId]=useState<string|null>(null);
   const [macroMode,setMacroMode]=useState<{active:boolean;clueId:string}|{active:false;clueId?:string}>({active:false,clueId:''});
+  const [travelOverlay,setTravelOverlay]=useState<{show:boolean;fromLocation:string;toLocation:string;newTime:number}|{show:false;fromLocation?:string;toLocation?:string;newTime?:number}>({show:false});
+  const travelTimeoutRef = useRef<number | null>(null);
+  
   const locations = scenario.locations;
   const characters = scenario.characters;
   const clues = scenario.clues;
@@ -74,11 +77,55 @@ export default function GameScreen({state,setState,onFinish,onRestart,scenario}:
     if (hours >= 17 && hours < 20) return 'time-dusk';
     return 'time-night';
   };
+  
+  // Format game time as HH:MM
+  const formatTime = (minutes: number): string => {
+    const baseHours = 8; // Start at 8:00 AM
+    const totalMinutes = (baseHours * 60) + minutes;
+    const hours = Math.floor(totalMinutes / 60) % 24;
+    const mins = totalMinutes % 60;
+    return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+  };
 
   // Helper to get character by ID
   const getCharacter = (id: string) => characters.find(c => c.id === id);
 
-  const select=(id:string)=>setState(s=>s?({...s,selectedLocationId:id,selectedTab:'case'}):null);
+  const select=(id:string)=>{
+    const fromLoc = locations.find(l => l.id === state.selectedLocationId);
+    const toLoc = locations.find(l => l.id === id);
+    
+    if (fromLoc && toLoc && fromLoc.id !== toLoc.id && !travelOverlay.show) {
+      // Calculate travel time based on distance (random between 15-45 minutes)
+      const travelTime = Math.floor(Math.random() * 30) + 15;
+      const newTime = (state.gameTime || 0) + travelTime;
+      
+      // Show travel overlay
+      setTravelOverlay({show: true, fromLocation: fromLoc.title, toLocation: toLoc.title, newTime});
+      
+      // Auto-hide after animation
+      if (travelTimeoutRef.current) clearTimeout(travelTimeoutRef.current);
+      travelTimeoutRef.current = setTimeout(() => {
+        setState(s => s ? ({...s, selectedLocationId: id, selectedTab: 'case', gameTime: newTime}): null);
+        setTravelOverlay({show: false});
+        
+        // Check for random events during travel
+        if (Math.random() < 0.3) { // 30% chance of event
+          const eventText = [
+            'По дороге вы заметили подозрительную машину.',
+            'Ваш телефон зазвонил, но звонок сбросили.',
+            'Вы стали свидетелем странного разговора.',
+            'Кто-то следовал за вами, но потерялся в толпе.',
+            'Вы получили анонимное сообщение.'
+          ];
+          const randomEvent = eventText[Math.floor(Math.random() * eventText.length)];
+          setEventNotice({title: 'Событие в пути', text: randomEvent, clues: []});
+        }
+      }, 2500);
+    } else if (!travelOverlay.show) {
+      setState(s=>s?({...s,selectedLocationId:id,selectedTab:'case'}):null);
+    }
+  };
+  
   const action=(id:string)=>{
     if(!state) return;
     const before=new Set(state.foundClueIds);
@@ -200,7 +247,7 @@ export default function GameScreen({state,setState,onFinish,onRestart,scenario}:
     <div className="vignette-overlay"></div>
     <div className="film-grain"></div>
     
-    <header className="game-top"><div className="brand"><span className="brand-mark">OC</span><div><b>OPEN CASES</b><small>Дело №001 · Тишина на Мэдисон</small></div></div><div className="top-status"><span><span className="live-dot"/> СИСТЕМА АКТИВНА</span><span>{found.length} / {totalClues} улик</span><button onClick={onRestart} className="top-link">Сбросить</button></div></header>
+    <header className="game-top"><div className="brand"><span className="brand-mark">OC</span><div><b>OPEN CASES</b><small>Дело №001 · Тишина на Мэдисон</small></div></div><div className="top-status"><span><span className="live-dot"/> СИСТЕМА АКТИВНА</span><span>{found.length} / {totalClues} улик</span><span className="game-time-display"><Clock3 size={14}/>{formatTime(state.gameTime || 0)}</span><button onClick={onRestart} className="top-link">Сбросить</button></div></header>
     <div className="game-body">
       <aside className={`left-rail ${sidebar?'':'collapsed'}`}>{sidebar&&<><div className="rail-head"><div><span className="eyebrow">РАССЛЕДОВАНИЕ</span><strong>Тишина на Мэдисон</strong></div><button onClick={()=>setSidebar(false)} aria-label="Свернуть панель"><PanelRightClose size={17}/></button></div><nav>{tabs.map(t=>{const Icon=t.icon;return <button key={t.id} className={state.selectedTab===t.id?'active':''} onClick={()=>setState(s=>s?({...s,selectedTab:t.id as Tab}):null)}><Icon size={17}/><span>{t.label}</span>{t.id==='clues'&&found.length>0&&<em>{found.length}</em>}</button>})}</nav><div className="rail-progress"><div><span>Материалы дела</span><b>{progress}%</b></div><div className="progress"><i style={{width:`${progress}%`}}/></div><small>Открыто {discovered.length} из {locations.length} точек</small></div></>}{!sidebar&&<button className="expand-rail" onClick={()=>setSidebar(true)} aria-label="Развернуть панель"><PanelRightOpen size={18}/></button>}</aside>
       <section className="map-panel">{state.selectedTab === 'board' ? <InvestigationBoard state={state} setState={setState} scenario={scenario}/> : <><MapView locations={locations} discovered={discovered} selectedId={state.selectedLocationId} mode={state.mapMode} onSelect={select} mapTemplateId={mapTemplateId}/><div className="map-hint"><MapPin size={13}/><span>Выберите точку на карте</span></div><div className="map-legend"><span><i className="legend-dot open"/> открыта</span><span><i className="legend-dot new"/> выбрана</span><span><i className="legend-dot locked"/> неизвестна</span></div><div className="case-stamp">SEATTLE<br/><b>CASE 001</b></div></>}</section>
@@ -234,6 +281,26 @@ export default function GameScreen({state,setState,onFinish,onRestart,scenario}:
               </div>
             );
           })()}
+        </div>
+      </div>
+    )}
+    
+    {/* Travel overlay with time animation */}
+    {travelOverlay.show && (
+      <div className="travel-overlay">
+        <div className="travel-content">
+          <div className="travel-icon">
+            <Car size={64} />
+          </div>
+          <div className="travel-route">
+            <span className="travel-from">{travelOverlay.fromLocation}</span>
+            <ChevronRight size={24} className="travel-arrow" />
+            <span className="travel-to">{travelOverlay.toLocation}</span>
+          </div>
+          <div className="travel-time-display">
+            <Clock3 size={32} />
+            <span className="time-big">{formatTime(travelOverlay.newTime!)}</span>
+          </div>
         </div>
       </div>
     )}
