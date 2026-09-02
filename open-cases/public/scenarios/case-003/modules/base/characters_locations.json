@@ -3,7 +3,6 @@
   "moduleType": "base",
   "version": "1.0",
   "description": "Базовые данные сценария case-003: персонажи и локации",
-  
   "scenario": {
     "id": "case-003",
     "title": "Тень на Мэдисон",
@@ -11,9 +10,10 @@
     "year": 2026,
     "duration": "120 минут",
     "players": "1-6",
-    "difficulty": "Сложная"
+    "difficulty": "Сложная",
+    "premise": "Майя Беннетт пропала после того как сфотографировала что-то важное",
+    "opening": "Вечер. Телефон Майи больше не отвечает."
   },
-
   "characters": [
     {
       "id": "victor",
@@ -124,7 +124,6 @@
       "baseTrust": 5
     }
   ],
-
   "locations": [
     {
       "id": "bennett_home",
@@ -138,7 +137,10 @@
       "category": "Жильё",
       "initial": true,
       "discovered": true,
-      "coordinates": {"x": 36, "y": 33.6}
+      "coordinates": {
+        "x": 36,
+        "y": 33.6
+      }
     },
     {
       "id": "lincoln_school",
@@ -152,7 +154,10 @@
       "category": "Образование",
       "initial": true,
       "discovered": true,
-      "coordinates": {"x": 50, "y": 40}
+      "coordinates": {
+        "x": 50,
+        "y": 40
+      }
     },
     {
       "id": "rainier_lab",
@@ -166,7 +171,10 @@
       "category": "Сервис",
       "initial": true,
       "discovered": true,
-      "coordinates": {"x": 25, "y": 55}
+      "coordinates": {
+        "x": 25,
+        "y": 55
+      }
     },
     {
       "id": "madison_market",
@@ -180,7 +188,10 @@
       "category": "Торговля",
       "initial": true,
       "discovered": true,
-      "coordinates": {"x": 45, "y": 45}
+      "coordinates": {
+        "x": 45,
+        "y": 45
+      }
     },
     {
       "id": "reed_garage",
@@ -194,7 +205,10 @@
       "category": "Сервис",
       "initial": true,
       "discovered": true,
-      "coordinates": {"x": 30, "y": 65}
+      "coordinates": {
+        "x": 30,
+        "y": 65
+      }
     },
     {
       "id": "cross_tower",
@@ -208,7 +222,10 @@
       "category": "Бизнес",
       "initial": true,
       "discovered": true,
-      "coordinates": {"x": 20, "y": 50}
+      "coordinates": {
+        "x": 20,
+        "y": 50
+      }
     },
     {
       "id": "city_news",
@@ -222,7 +239,10 @@
       "category": "Медиа",
       "initial": true,
       "discovered": true,
-      "coordinates": {"x": 15, "y": 40}
+      "coordinates": {
+        "x": 15,
+        "y": 40
+      }
     },
     {
       "id": "northline_storage",
@@ -237,7 +257,10 @@
       "initial": false,
       "discovered": false,
       "lockedReason": "Требуется ордер или ключ",
-      "coordinates": {"x": 55, "y": 25}
+      "coordinates": {
+        "x": 55,
+        "y": 25
+      }
     },
     {
       "id": "abandoned_warehouse",
@@ -252,7 +275,11 @@
       "initial": false,
       "discovered": false,
       "lockedReason": "Местоположение неизвестно",
-      "coordinates": {"x": 25, "y": 75}
+      "coordinates": {
+        "x": 25,
+        "y": 75
+      }
     }
-  ]
+  ],
+  "mapTemplateId": "city_district"
 }

@@ -456,10 +456,10 @@ const StylizedMap: React.FC<StylizedMapProps> = ({
             <g
               key={location.id}
               transform={`translate(${coords.x}, ${coords.y})`}
-              onClick={() => onLocationClick(location)}
+              onClick={(e) => { e.stopPropagation(); onLocationClick(location); }}
               onMouseEnter={() => setHoveredLocation(location.id)}
               onMouseLeave={() => setHoveredLocation(null)}
-              style={{ cursor: enablePanZoom && scale > 1 ? 'default' : 'pointer' }}
+              style={{ cursor: 'pointer' }}
               filter={isActive ? 'url(#glow)' : undefined}
             >
               {/* Маркер локации - smaller in game mode */}
