@@ -78,6 +78,17 @@ export const mapTemplates: MapTemplate[] = [
     stylizedType: 'countryside',
   },
   {
+    id: 'city_district',
+    name: 'Городской район',
+    description: 'Стандартная карта городского района. Подходит для большинства городских сценариев.',
+    minZoom: 13,
+    maxZoom: 16,
+    bounds: [[47.590, -122.340], [47.625, -122.300]],
+    center: [47.608, -122.320],
+    defaultZoom: 14.0,
+    stylizedType: 'city_district',
+  },
+  {
     id: 'case_001_seattle',
     name: 'Сиэтл (Дело case-001)',
     description: 'Кастомная карта Сиэтла для дела \"Тишина на Мэдисон\". Использует заранее отрисованную карту.',
