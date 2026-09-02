@@ -1608,3 +1608,125 @@ h1, h2, h3, h4 {
   100% { opacity: 0; transform: translateY(-10px); }
 }
 
+/* Game time display in header */
+.game-time-display {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font: 600 13px 'Inter', sans-serif;
+  color: #fbbf24;
+}
+
+/* Travel overlay with cinematic time animation */
+.travel-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.9) 100%);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  animation: travelFadeIn 0.3s ease-out;
+}
+
+@keyframes travelFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.travel-content {
+  text-align: center;
+  color: #fff;
+  animation: travelContentPulse 2s ease-in-out;
+}
+
+@keyframes travelContentPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.9; }
+}
+
+.travel-icon {
+  margin-bottom: 30px;
+  color: #fbbf24;
+  animation: carMove 1.5s ease-in-out infinite;
+}
+
+@keyframes carMove {
+  0%, 100% { transform: translateX(-10px); }
+  50% { transform: translateX(10px); }
+}
+
+.travel-route {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 40px;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.travel-from,
+.travel-to {
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.travel-arrow {
+  color: #fbbf24;
+  animation: arrowPulse 1s ease-in-out infinite;
+}
+
+@keyframes arrowPulse {
+  0%, 100% { transform: translateX(0); opacity: 1; }
+  50% { transform: translateX(5px); opacity: 0.7; }
+}
+
+.travel-time-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  color: #fbbf24;
+}
+
+.time-big {
+  font-size: 72px;
+  font-weight: 700;
+  font-family: 'Playfair Display', serif;
+  letter-spacing: 2px;
+  animation: timeFlyIn 0.5s ease-out 0.3s both, timeFlyOut 0.5s ease-in 2s both;
+  text-shadow: 0 0 30px rgba(251, 191, 36, 0.5);
+}
+
+@keyframes timeFlyIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50px) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes timeFlyOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-100px) scale(0.5);
+  }
+}
+
