@@ -110,9 +110,40 @@ export function loadScenarioFromJson(jsonString: string): { success: boolean; da
 
 /**
  * Fetches a scenario from the public folder
+ * Supports both legacy single-file format and new modular format
  */
 export async function fetchScenario(scenarioId: string): Promise<{ success: boolean; data?: ScenarioData; errors?: string[] }> {
   try {
+    // Try modular format first (case-003 and newer)
+    if (scenarioId === 'case-003' || scenarioId.startsWith('case-00')) {
+      const modularResponse = await fetch(`/scenarios/${scenarioId}/modules/base/characters_locations.json`);
+      if (modularResponse.ok) {
+        const baseData = await modularResponse.json();
+        
+        const scenarioResponse = await fetch(`/scenarios/${scenarioId}/modules/scenario/${scenarioId.replace('-', '_')}_scenario.json`);
+        if (scenarioResponse.ok) {
+          const scenarioData = await scenarioResponse.json();
+          
+          // Merge modules
+          const mergedData = {
+            ...baseData,
+            ...scenarioData,
+            characters: baseData.characters || [],
+            locations: baseData.locations || [],
+            clues: scenarioData.clues || [],
+            timeline: scenarioData.timeline || [],
+            dialogueNodes: scenarioData.dialogueNodes || {},
+            initialCharacterLocations: scenarioData.initialCharacterLocations || {},
+            characterMovementSchedule: scenarioData.characterMovementSchedule || [],
+            solution: scenarioData.solution || {}
+          };
+          
+          return loadScenarioFromJson(JSON.stringify(mergedData));
+        }
+      }
+    }
+    
+    // Fall back to legacy single-file format
     const response = await fetch(`/scenarios/${scenarioId}/scenario.json`);
     if (!response.ok) {
       return { success: false, errors: [`Scenario not found: ${scenarioId}`] };

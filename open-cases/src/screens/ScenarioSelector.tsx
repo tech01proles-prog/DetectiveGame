@@ -149,6 +149,7 @@ const CaseFolder: React.FC<CaseFolderProps> = ({ scenario, onSelect, onEdit }) =
 const KNOWN_SCENARIO_IDS = [
   'case-001',
   'case-002',
+  'case-003',
   // Добавляйте новые ID сюда при создании дел
 ];
 

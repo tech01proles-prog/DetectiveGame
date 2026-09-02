@@ -2,23 +2,7 @@
 # Dependencies
 node_modules/
 
-# Logs
-*.log
-
-# Environment variables
-.env
-.env.local
-.env.*
-
-# IDE and editor settings
-.vscode/
-.idea/
-
-# OS generated files
-.DS_Store
-Thumbs.db
-
-# Build outputs
+# Build artifacts
 dist/
 build/
 target/
@@ -32,19 +16,50 @@ __pycache__/
 env/
 venv/
 .venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.git/modules/
+*.sublime-workspace
+.pytest_cache/
+.hypothesis/
+
+# Logs
+*.log
+
+# Environment variables
+.env
+.env.local
+.env.*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Coverage
+coverage/
+htmlcov/
 
 # Temporary files
 *.tmp
 *.temp
 *.bak
-*.swp
-*.swo
+*.backup
 
-# Coverage reports
-coverage/
-htmlcov/
-
-# Compression artifacts
+# Compressed files
 *.zip
 *.gz
 *.tar
@@ -67,5 +82,4 @@ htmlcov/
 *.tar.bz2
 *.tar.xz
 *.tar.zst
-
 ```
