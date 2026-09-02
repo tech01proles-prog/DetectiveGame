@@ -290,7 +290,8 @@ const StylizedMap: React.FC<StylizedMapProps> = ({
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
-    if (!enablePanZoom || scale <= minScale) return;
+    if (!enablePanZoom) return;
+    // Allow panning at any zoom level when enablePanZoom is true
     setIsDragging(true);
     setDragStart({ x: e.clientX - position.x, y: e.clientY - position.y });
   };
