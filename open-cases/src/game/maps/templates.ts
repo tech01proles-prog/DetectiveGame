@@ -111,6 +111,29 @@ export const mapTemplates: MapTemplate[] = [
       'abandoned_warehouse': { x: 30, y: 85 },
     },
   },
+  {
+    id: 'case_003_seattle',
+    name: 'Сиэтл (Дело case-003)',
+    description: 'Кастомная карта Сиэтла для дела "Тень на Мэдисон". Использует заранее отрисованную карту.',
+    minZoom: 12,
+    maxZoom: 16,
+    bounds: [[47.590, -122.340], [47.625, -122.300]],
+    center: [47.608, -122.320],
+    defaultZoom: 13.5,
+    stylizedType: 'city_district',
+    backgroundImage: 'map-bg.png',
+    locationCoordinates: {
+      'bennett_home': { x: 280, y: 120 },
+      'lincoln_school': { x: 420, y: 80 },
+      'rainier_lab': { x: 260, y: 180 },
+      'madison_market': { x: 380, y: 150 },
+      'reed_garage': { x: 400, y: 200 },
+      'city_news': { x: 150, y: 220 },
+      'northline_storage': { x: 320, y: 320 },
+      'cross_tower': { x: 25, y: 55 },
+      'abandoned_warehouse': { x: 30, y: 85 },
+    },
+  },
 ];
 
 export function getMapTemplate(templateId: string): MapTemplate | undefined {

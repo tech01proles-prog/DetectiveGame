@@ -3,7 +3,6 @@
   "moduleType": "scenario",
   "version": "1.0",
   "description": "Сценарий case-003: улики, диалоги, события, начальные условия",
-  
   "clues": [
     {
       "id": "clue_01_phone",
@@ -13,8 +12,13 @@
       "detail": "Сообщение.",
       "locationId": "bennett_home",
       "importance": "critical",
-      "relatedCharacters": ["maya", "elena"],
-      "relatedClues": ["clue_02_photo"],
+      "relatedCharacters": [
+        "maya",
+        "elena"
+      ],
+      "relatedClues": [
+        "clue_02_photo"
+      ],
       "foundWhen": "При осмотре комнаты Майи"
     },
     {
@@ -25,8 +29,12 @@
       "detail": "Фургон.",
       "locationId": "bennett_home",
       "importance": "critical",
-      "relatedCharacters": ["maya"],
-      "relatedClues": ["clue_03_van"],
+      "relatedCharacters": [
+        "maya"
+      ],
+      "relatedClues": [
+        "clue_03_van"
+      ],
       "foundWhen": "При осмотре комнаты Майи"
     },
     {
@@ -37,7 +45,9 @@
       "detail": "Треугольник.",
       "locationId": "madison_market",
       "importance": "important",
-      "relatedCharacters": ["marcus"],
+      "relatedCharacters": [
+        "marcus"
+      ],
       "foundWhen": "Опрос Маркуса"
     },
     {
@@ -48,7 +58,9 @@
       "detail": "Карта 20:07.",
       "locationId": "lincoln_school",
       "importance": "important",
-      "relatedCharacters": ["daniel"],
+      "relatedCharacters": [
+        "daniel"
+      ],
       "foundWhen": "Проверка журнала доступа"
     },
     {
@@ -59,7 +71,9 @@
       "detail": "Уезжает.",
       "locationId": "reed_garage",
       "importance": "critical",
-      "relatedCharacters": ["sam"],
+      "relatedCharacters": [
+        "sam"
+      ],
       "foundWhen": "Просмотр записей камеры"
     },
     {
@@ -70,7 +84,9 @@
       "detail": "I-90.",
       "locationId": "reed_garage",
       "importance": "important",
-      "relatedCharacters": ["sam"],
+      "relatedCharacters": [
+        "sam"
+      ],
       "foundWhen": "Обыск гаража"
     },
     {
@@ -81,7 +97,9 @@
       "detail": "Подпись.",
       "locationId": "madison_market",
       "importance": "critical",
-      "relatedCharacters": ["leah"],
+      "relatedCharacters": [
+        "leah"
+      ],
       "foundWhen": "Получено от Лии"
     },
     {
@@ -92,7 +110,10 @@
       "detail": "Отправь Лии.",
       "locationId": "lincoln_school",
       "importance": "critical",
-      "relatedCharacters": ["june", "leah"],
+      "relatedCharacters": [
+        "june",
+        "leah"
+      ],
       "foundWhen": "Разговор с Джун"
     },
     {
@@ -103,7 +124,9 @@
       "detail": "Паллеты.",
       "locationId": "rainier_lab",
       "importance": "important",
-      "relatedCharacters": ["nora"],
+      "relatedCharacters": [
+        "nora"
+      ],
       "foundWhen": "Опрос Норы"
     },
     {
@@ -114,7 +137,9 @@
       "detail": "Материалы.",
       "locationId": "city_news",
       "importance": "critical",
-      "relatedCharacters": ["leah"],
+      "relatedCharacters": [
+        "leah"
+      ],
       "foundWhen": "Визит в редакцию"
     },
     {
@@ -125,7 +150,9 @@
       "detail": "Cross.",
       "locationId": "northline_storage",
       "importance": "critical",
-      "relatedCharacters": ["victor"],
+      "relatedCharacters": [
+        "victor"
+      ],
       "foundWhen": "Проверка журнала доступа"
     },
     {
@@ -136,7 +163,9 @@
       "detail": "Водитель.",
       "locationId": "cross_tower",
       "importance": "critical",
-      "relatedCharacters": ["victor"],
+      "relatedCharacters": [
+        "victor"
+      ],
       "foundWhen": "Допрос в офисе"
     },
     {
@@ -147,7 +176,10 @@
       "detail": "Оффшор.",
       "locationId": "madison_market",
       "importance": "critical",
-      "relatedCharacters": ["marcus", "victor"],
+      "relatedCharacters": [
+        "marcus",
+        "victor"
+      ],
       "foundWhen": "Обыск фургона"
     },
     {
@@ -158,7 +190,10 @@
       "detail": "Забудь.",
       "locationId": "lincoln_school",
       "importance": "important",
-      "relatedCharacters": ["daniel", "victor"],
+      "relatedCharacters": [
+        "daniel",
+        "victor"
+      ],
       "foundWhen": "Разговор с Дэниелом"
     },
     {
@@ -169,7 +204,9 @@
       "detail": "Оболочка.",
       "locationId": "cross_tower",
       "importance": "important",
-      "relatedCharacters": ["victor"],
+      "relatedCharacters": [
+        "victor"
+      ],
       "foundWhen": "Взлом сервера"
     },
     {
@@ -180,7 +217,9 @@
       "detail": "20:45.",
       "locationId": "northline_storage",
       "importance": "important",
-      "relatedCharacters": ["victor"],
+      "relatedCharacters": [
+        "victor"
+      ],
       "foundWhen": "Опрос охранника"
     },
     {
@@ -191,7 +230,10 @@
       "detail": "ДНК.",
       "locationId": "reed_garage",
       "importance": "critical",
-      "relatedCharacters": ["sam", "maya"],
+      "relatedCharacters": [
+        "sam",
+        "maya"
+      ],
       "foundWhen": "Обыск гаража"
     },
     {
@@ -202,7 +244,10 @@
       "detail": "Кросс.",
       "locationId": "reed_garage",
       "importance": "critical",
-      "relatedCharacters": ["sam", "victor"],
+      "relatedCharacters": [
+        "sam",
+        "victor"
+      ],
       "foundWhen": "Давление на Сэма"
     },
     {
@@ -213,7 +258,9 @@
       "detail": "Выплаты.",
       "locationId": "cross_tower",
       "importance": "critical",
-      "relatedCharacters": ["victor"],
+      "relatedCharacters": [
+        "victor"
+      ],
       "foundWhen": "Обыск офиса"
     },
     {
@@ -224,7 +271,9 @@
       "detail": "Платежи.",
       "locationId": "cross_tower",
       "importance": "important",
-      "relatedCharacters": ["victor"],
+      "relatedCharacters": [
+        "victor"
+      ],
       "foundWhen": "Обыск офиса"
     },
     {
@@ -235,7 +284,9 @@
       "detail": "Алиби.",
       "locationId": "cross_tower",
       "importance": "important",
-      "relatedCharacters": ["victor"],
+      "relatedCharacters": [
+        "victor"
+      ],
       "isRedHerring": true,
       "isFalseDocument": true,
       "documentTexture": "receipt",
@@ -251,7 +302,9 @@
       "detail": "До 20:00.",
       "locationId": "cross_tower",
       "importance": "critical",
-      "relatedCharacters": ["victor"],
+      "relatedCharacters": [
+        "victor"
+      ],
       "foundWhen": "Допрос Виктора"
     },
     {
@@ -262,7 +315,10 @@
       "detail": "Склад.",
       "locationId": "abandoned_warehouse",
       "importance": "critical",
-      "relatedCharacters": ["maya", "leah"],
+      "relatedCharacters": [
+        "maya",
+        "leah"
+      ],
       "foundWhen": "Расшифровка сообщений"
     },
     {
@@ -273,24 +329,85 @@
       "detail": "Борьба.",
       "locationId": "abandoned_warehouse",
       "importance": "critical",
-      "relatedCharacters": ["maya", "victor"],
+      "relatedCharacters": [
+        "maya",
+        "victor"
+      ],
       "foundWhen": "Осмотр склада"
     }
   ],
-
   "timeline": [
-    {"id": "t1", "time": "18:02", "title": "Занятие окончено", "text": "Майя выходит из класса фотографии.", "source": "Журнал доступа"},
-    {"id": "t2", "time": "18:15", "title": "Разговор с учителем", "text": "Майя обсуждает с Дэниелом проект.", "source": "Показания Дэниела"},
-    {"id": "t3", "time": "19:30", "title": "Визит в лабораторию", "text": "Майя печатает фотографии.", "source": "Запись камеры Rainier Lab"},
-    {"id": "t4", "time": "20:07", "title": "Использование карты", "text": "Карта доступа использована у запасного выхода.", "source": "Электронный журнал"},
-    {"id": "t5", "time": "20:14", "title": "Последний выход", "text": "Майя покидает школу.", "source": "Журнал доступа"},
-    {"id": "t6", "time": "20:19", "title": "Фургон у школы", "text": "Ford Transit замечен рядом со школой.", "source": "Камера Madison Market"},
-    {"id": "t7", "time": "20:30", "title": "Звонок Елене", "text": "Последний известный звонок.", "source": "Детализация звонков"},
-    {"id": "t8", "time": "20:45", "title": "Въезд на склад", "text": "Фургон въезжает на территорию Northline Storage.", "source": "Камера охраны"},
-    {"id": "t9", "time": "21:00", "title": "Отъезд со склада", "text": "Фургон покидает склад.", "source": "Камера охраны"},
-    {"id": "t10", "time": "21:15", "title": "Прибытие в гараж", "text": "Фургон прибывает в Reed Auto Repair.", "source": "Соседи"}
+    {
+      "id": "t1",
+      "time": "18:02",
+      "title": "Занятие окончено",
+      "text": "Майя выходит из класса фотографии.",
+      "source": "Журнал доступа"
+    },
+    {
+      "id": "t2",
+      "time": "18:15",
+      "title": "Разговор с учителем",
+      "text": "Майя обсуждает с Дэниелом проект.",
+      "source": "Показания Дэниела"
+    },
+    {
+      "id": "t3",
+      "time": "19:30",
+      "title": "Визит в лабораторию",
+      "text": "Майя печатает фотографии.",
+      "source": "Запись камеры Rainier Lab"
+    },
+    {
+      "id": "t4",
+      "time": "20:07",
+      "title": "Использование карты",
+      "text": "Карта доступа использована у запасного выхода.",
+      "source": "Электронный журнал"
+    },
+    {
+      "id": "t5",
+      "time": "20:14",
+      "title": "Последний выход",
+      "text": "Майя покидает школу.",
+      "source": "Журнал доступа"
+    },
+    {
+      "id": "t6",
+      "time": "20:19",
+      "title": "Фургон у школы",
+      "text": "Ford Transit замечен рядом со школой.",
+      "source": "Камера Madison Market"
+    },
+    {
+      "id": "t7",
+      "time": "20:30",
+      "title": "Звонок Елене",
+      "text": "Последний известный звонок.",
+      "source": "Детализация звонков"
+    },
+    {
+      "id": "t8",
+      "time": "20:45",
+      "title": "Въезд на склад",
+      "text": "Фургон въезжает на территорию Northline Storage.",
+      "source": "Камера охраны"
+    },
+    {
+      "id": "t9",
+      "time": "21:00",
+      "title": "Отъезд со склада",
+      "text": "Фургон покидает склад.",
+      "source": "Камера охраны"
+    },
+    {
+      "id": "t10",
+      "time": "21:15",
+      "title": "Прибытие в гараж",
+      "text": "Фургон прибывает в Reed Auto Repair.",
+      "source": "Соседи"
+    }
   ],
-
   "dialogueNodes": {
     "home_elena_1": {
       "id": "home_elena_1",
@@ -307,13 +424,17 @@
           "id": "route",
           "label": "Расспросить о маршруте домой",
           "text": "Елена описывает привычный путь Майи и упоминает конверт.",
-          "clueIds": ["clue_01_phone"]
+          "clueIds": [
+            "clue_01_phone"
+          ]
         },
         {
           "id": "phone",
           "label": "Спросить о телефоне",
           "text": "Елена вспоминает, что телефон оставался дома уже в 20:51.",
-          "clueIds": ["clue_01_phone"]
+          "clueIds": [
+            "clue_01_phone"
+          ]
         }
       ]
     },
@@ -332,13 +453,17 @@
           "id": "records",
           "label": "Показать журнал доступа",
           "text": "Когда вы показываете ему 20:07, Дэниел замолкает и вспоминает запасную карту.",
-          "clueIds": ["clue_04_attendance"]
+          "clueIds": [
+            "clue_04_attendance"
+          ]
         },
         {
           "id": "threat",
           "label": "Спросить об угрозах",
           "text": "Дэниел показывает письмо с предупреждением забыть то, что он видел.",
-          "clueIds": ["clue_14_threat"]
+          "clueIds": [
+            "clue_14_threat"
+          ]
         }
       ]
     },
@@ -357,13 +482,17 @@
           "id": "deleted",
           "label": "Спросить о скрытом сообщении",
           "text": "Джун всё-таки показывает сообщение, которое сначала удалила.",
-          "clueIds": ["clue_08_chat"]
+          "clueIds": [
+            "clue_08_chat"
+          ]
         },
         {
           "id": "liapath",
           "label": "Почему Майя доверяла Лии?",
           "text": "Джун объясняет, что Лия уже помогала Майе проверять один старый снимок.",
-          "clueIds": ["clue_08_chat"]
+          "clueIds": [
+            "clue_08_chat"
+          ]
         }
       ]
     },
@@ -382,13 +511,17 @@
           "id": "receipt",
           "label": "Попросить показать внутренние записи",
           "text": "Нора достаёт квитанцию с номерами заказов RB-14.",
-          "clueIds": ["clue_09_boxes"]
+          "clueIds": [
+            "clue_09_boxes"
+          ]
         },
         {
           "id": "boxes",
           "label": "Спросить про RB-14",
           "text": "Нора подтверждает, что код встречался в заказах чаще обычного.",
-          "clueIds": ["clue_09_boxes"]
+          "clueIds": [
+            "clue_09_boxes"
+          ]
         }
       ]
     },
@@ -407,7 +540,9 @@
           "id": "van",
           "label": "Описать фургон",
           "text": "Маркус неохотно признаёт, что видел белый Ford Transit с треугольной наклейкой.",
-          "clueIds": ["clue_03_van"]
+          "clueIds": [
+            "clue_03_van"
+          ]
         },
         {
           "id": "money",
@@ -432,13 +567,17 @@
           "id": "photos",
           "label": "Что было на фото?",
           "text": "Лия показывает копии: грузовые контейнеры с маркировкой RB-14.",
-          "clueIds": ["clue_07_manifest"]
+          "clueIds": [
+            "clue_07_manifest"
+          ]
         },
         {
           "id": "envelope",
           "label": "Что в конверте?",
           "text": "Лия передаёт конверт с дополнительными материалами.",
-          "clueIds": ["clue_10_news"]
+          "clueIds": [
+            "clue_10_news"
+          ]
         }
       ]
     },
@@ -463,7 +602,9 @@
           "id": "garage",
           "label": "Осмотреть гараж",
           "text": "Вы находите следы борьбы и кровь на полу.",
-          "clueIds": ["clue_17_garage"]
+          "clueIds": [
+            "clue_17_garage"
+          ]
         }
       ]
     },
@@ -482,18 +623,21 @@
           "id": "alibi",
           "label": "Где вы были вечером?",
           "text": "Виктор утверждает, что был на деловом ужине.",
-          "clueIds": ["clue_22_alibi"]
+          "clueIds": [
+            "clue_22_alibi"
+          ]
         },
         {
           "id": "employee",
           "label": "Кто такой Джейсон?",
           "text": "Виктор делает вид, что не знает такого сотрудника.",
-          "clueIds": ["clue_12_cross"]
+          "clueIds": [
+            "clue_12_cross"
+          ]
         }
       ]
     }
   },
-
   "initialCharacterLocations": {
     "elena": "bennett_home",
     "daniel": "lincoln_school",
@@ -504,46 +648,118 @@
     "victor": "cross_tower",
     "leah": "city_news"
   },
-
   "characterMovementSchedule": [
     {
       "characterId": "daniel",
       "movements": [
-        {"time": 480, "locationId": "lincoln_school", "duration": 180, "reason": "Уроки"},
-        {"time": 660, "locationId": "bennett_home", "duration": 60, "reason": "Визит к Елене"},
-        {"time": 720, "locationId": "lincoln_school", "duration": 120, "reason": "Проверка журналов"}
+        {
+          "time": 480,
+          "locationId": "lincoln_school",
+          "duration": 180,
+          "reason": "Уроки"
+        },
+        {
+          "time": 660,
+          "locationId": "bennett_home",
+          "duration": 60,
+          "reason": "Визит к Елене"
+        },
+        {
+          "time": 720,
+          "locationId": "lincoln_school",
+          "duration": 120,
+          "reason": "Проверка журналов"
+        }
       ]
     },
     {
       "characterId": "marcus",
       "movements": [
-        {"time": 480, "locationId": "madison_market", "duration": 120, "reason": "Разгрузка"},
-        {"time": 600, "locationId": "reed_garage", "duration": 60, "reason": "Встреча с Сэмом"},
-        {"time": 660, "locationId": "madison_market", "duration": 180, "reason": "Работа"}
+        {
+          "time": 480,
+          "locationId": "madison_market",
+          "duration": 120,
+          "reason": "Разгрузка"
+        },
+        {
+          "time": 600,
+          "locationId": "reed_garage",
+          "duration": 60,
+          "reason": "Встреча с Сэмом"
+        },
+        {
+          "time": 660,
+          "locationId": "madison_market",
+          "duration": 180,
+          "reason": "Работа"
+        }
       ]
     },
     {
       "characterId": "victor",
       "movements": [
-        {"time": 480, "locationId": "cross_tower", "duration": 300, "reason": "Работа в офисе"},
-        {"time": 780, "locationId": "northline_storage", "duration": 90, "reason": "Проверка склада"},
-        {"time": 870, "locationId": "cross_tower", "duration": 60, "reason": "Возвращение"}
+        {
+          "time": 480,
+          "locationId": "cross_tower",
+          "duration": 300,
+          "reason": "Работа в офисе"
+        },
+        {
+          "time": 780,
+          "locationId": "northline_storage",
+          "duration": 90,
+          "reason": "Проверка склада"
+        },
+        {
+          "time": 870,
+          "locationId": "cross_tower",
+          "duration": 60,
+          "reason": "Возвращение"
+        }
       ]
     },
     {
       "characterId": "leah",
       "movements": [
-        {"time": 480, "locationId": "city_news", "duration": 360, "reason": "Работа в редакции"},
-        {"time": 840, "locationId": "rainier_lab", "duration": 60, "reason": "Встреча с Норой"}
+        {
+          "time": 480,
+          "locationId": "city_news",
+          "duration": 360,
+          "reason": "Работа в редакции"
+        },
+        {
+          "time": 840,
+          "locationId": "rainier_lab",
+          "duration": 60,
+          "reason": "Встреча с Норой"
+        }
       ]
     }
   ],
-
   "solution": {
     "culpritCharacterId": "victor",
-    "motiveKeywords": ["сокрытие", "незаконные операции", "offshore"],
-    "methodKeywords": ["похищение", "фургон", "garage"],
+    "motiveKeywords": [
+      "сокрытие",
+      "незаконные операции",
+      "offshore"
+    ],
+    "methodKeywords": [
+      "похищение",
+      "фургон",
+      "garage"
+    ],
     "keyLocationId": "abandoned_warehouse",
     "minimumCluesRequired": 12
+  },
+  "scenario": {
+    "id": "case-003",
+    "title": "Тень на Мэдисон",
+    "city": "Сиэтл",
+    "year": 2026,
+    "duration": "120 минут",
+    "players": "1-6",
+    "difficulty": "Сложная",
+    "premise": "Майя Беннетт пропала после того как сфотографировала что-то важное",
+    "opening": "Вечер. Телефон Майи больше не отвечает."
   }
 }
