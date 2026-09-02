@@ -1,6 +1,13 @@
 ```gitignore
 # Dependencies
+.venv/
+venv/
 node_modules/
+target/
+.gradle/
+.mypy_cache/
+.pytest_cache/
+.julia/
 
 # Build artifacts
 dist/
